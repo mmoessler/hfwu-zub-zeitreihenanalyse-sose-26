@@ -5,43 +5,52 @@ author: ["markus.moessler@uni-hohenheim.de"]
 tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 ---
 
-# HfWU Zeitreihenanalyse Sommer 2026: Session 0) Kick-Off
+---
+
+# Session 0) Kick-Off
 
 ---
 
-## Gliederung
+## ✅ Gliederung
 
-- [Gliederung](#gliederung)
-- [Lernziele](#lernziele)
-- [Theorie](#theorie)
-- [Praxis](#praxis)
-- [Fragen](#fragen)
+- [✅ Gliederung](#-gliederung)
+- [❗ Lernziele](#-lernziele)
+- [📄 Theorie](#-theorie)
+- [💻 Praxis](#-praxis)
+- [❓ Fragen](#-fragen)
   - [Frage 1)](#frage-1)
   - [Frage 2)](#frage-2)
 
 ---
 
-## Lernziele
+## ❗ Lernziele
 
 - ...
 - ...
 
 ---
 
-## Theorie
+## 📄 Theorie
 
-...
+<iframe 
+  src="./hfwu_za_sose_26_00_00_ueberblick.pdf"
+  width="100%" 
+  height="800px"
+  style="border:1px solid #ccc; border-radius:8px;">
+</iframe>
+
+⬇️ [Folien herunterladen](./hfwu_za_sose_26_00_00_ueberblick.pdf)
 
 ---
 
-## Praxis
+## 💻 Praxis
 
 - ...
 - ...
 
 ---
 
-## Fragen
+## ❓ Fragen
 
 ### Frage 1)
 
