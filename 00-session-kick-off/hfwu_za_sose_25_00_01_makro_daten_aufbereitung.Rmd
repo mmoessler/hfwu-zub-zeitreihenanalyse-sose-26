@@ -1,0 +1,102 @@
+---
+title: "Makrodaten Vorbereitung"
+date: "2025-04-08"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+# Setup
+
+```{r}
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(readxl)
+library(zoo)
+```
+
+# Rohdaten
+
+Die "Makrorohdaten" können auf der folgenden Internetseite gefunden werden: [Ausgewählte Ressourcen für Studierende – Stock und Watsons Einführung in die Ökonometrie, 4. Auflage (U.S.)](https://www.princeton.edu/~mwatson/Stock-Watson_4E/Stock-Watson-Resources-4e.html)
+
+# Aufbereitung
+
+## Quartalsfrequenz
+
+```{r}
+
+us_macro_qua <- read_xlsx(
+  rprojroot::find_rstudio_root_file("03-daten/USMacro_Monthly_Quarterly/us_macro_quarterly.xlsx"))
+
+# Umwandlung in Zeitreihe
+us_macro_qua_ts <- ts(us_macro_qua, frequency = 4, start = c(1955, 1), end = c(2017, 4))
+
+# Quartalsweise Datumssequenz als Basis für monatliche Zeitreihe
+qua_date_seq <- seq.Date(from = as.Date("1950-01-01"), to = as.Date("2026-01-01"), by = "quarter")
+qua_date_seq_ts <- ts(cbind(qua_date_seq,
+                            as.character(qua_date_seq),
+                            as.character(as.yearqtr(qua_date_seq))),
+                      frequency = 4, start = c(1950, 1), end = c(2026,1))
+
+colnames(qua_date_seq_ts) <- c("datum_num", "datum_tag", "datum_qtr")
+```
+
+## Monatsfrequenz
+
+```{r}
+us_macro_mon <- read_xlsx(
+  rprojroot::find_rstudio_root_file("03-daten/USMacro_Monthly_Quarterly/us_macro_monthly.xlsx"))
+
+# Umwandlung in Zeitreihe
+us_macro_mon_ts <- ts(us_macro_mon, frequency = 12, start = c(1955, 1), end = c(2017, 12))
+
+# Monatliche Datumssequenz als Basis für monatliche Zeitreihe
+qua_date_seq <- seq.Date(from = as.Date("1950-01-01"), to = as.Date("2026-01-01"), by = "month")
+mon_date_seq <- ts(qua_date_seq, frequency = 12, start = c(1950, 1), end = c(2026,1))
+```
+
+## Zusammenführen von Quartals- und Monatsdaten
+
+```{r}
+
+# 1. Gleitender 3-Monats-Durchschnitt (rückblickend)
+mon_roll <- rollapply(us_macro_mon_ts, width = 3, FUN = mean, align = "right")
+
+# 2. Umwandlung in quartalsweise Zeitreihe und Ausrichtung auf Quartalsdaten
+us_macro_mon_qua_aligned <- ts(mon_roll[cycle(mon_roll) %in% c(3, 6, 9, 12),],
+                               frequency = 4, start = c(1955, 1))
+
+# 3. Zusammenführen beider Datensätze
+us_macro_qua_mon_ts <- cbind(qua_date_seq_ts, 
+  us_macro_qua_ts[, !(colnames(us_macro_qua_ts) %in% c("freq"))], 
+  us_macro_mon_qua_aligned[, !(colnames(us_macro_mon_qua_aligned) %in% c("freq", "CPIAUCSL"))])
+
+colnames(us_macro_qua_mon_ts) <- c("datum_num", "datum_tag", "datum_qtr", "GDPC1", "JAPAN_IP",
+                                   "PCECTPI", "CPIAUCSL", "EXUSUK", "FEDFUNDS", "GS1", "GS10",
+                                   "INDPRO", "PCEPI", "TB3MS", "UNRATE", "WPU0561", "PAYEMS", "DJIA")
+
+# 4. Speichern als CSV
+write.table(us_macro_qua_mon_ts, 
+          file = rprojroot::find_rstudio_root_file("03-daten/us_macro_quarterly_merged.csv"),
+          row.names = FALSE,
+          sep = ";")
+```
+
+### Frage
+
+Wie werden die Quartals- und Monatsdaten in dem Skript zusammengeführt?
+
+### Antwort
+
+* Die Monatsdaten werden als zurückblickender gleitender 3-Monats Mittelwert auf die Quartalsdaten gamappt. (siehe: `mon_roll <- rollapply(us_macro_mon_ts, width = 3, FUN = mean, align = "right")`)
+* Alternativ könnte auch einfach der Monatswert vom Januar, April, Juli und Oktober genommen werden.
+* Dadruch wird allerdings potentiell wichtige Informaiton in den Monatsdaten ignoriert.

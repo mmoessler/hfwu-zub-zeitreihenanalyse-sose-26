@@ -1,0 +1,50 @@
+---
+title: "Kurze Einführung in die Verwendung von RMarkdown-Dateien"
+---
+
+## Projektstruktur
+
+Ein gut organisiertes R-Projekt könnte wie folgt aussehen:
+
+```bash
+.
+|-- 01-folien               # Hier liegen z.B. Folien für eine Präsentation oder die Seminararbeit
+|   `-- ...
+|-- 02-code                 # Hier liegen die Codes oder .Rmd (und gerenderte .html/.pdf) Dateien
+|   `-- ...
+|-- 03-daten                # Hier liegen die Daten der Analyse (roh und gesäubert)
+|   `-- ...
+|-- 05-ergebnisse           # Hier liegen die Ergebnisse der Analyse (Grafiken, ...)
+|   `-- ...
+`-- veranstaltung-01.Rproj  # Das ist die Datei für das R-Projekt
+```
+
+Die Datei `veranstaltung-01.Rproj` definiert den Projektordner als Arbeitsverzeichnis. Das ist besonders hilfreich beim Umgang mit relativen Pfaden.
+
+## Arbeitsverzeichnis richtig setzen
+
+Standardmäßig verwendet RMarkdown das Verzeichnis der `.Rmd`-Datei als Referenzpfad. Das kann zu Problemen führen, wenn du auf Daten aus einem anderen Projektordner zugreifen möchtest. Um stattdessen das Projektverzeichnis zu nutzen, füge folgenden Code ganz oben in deine `.Rmd`-Datei ein:
+
+```{r setup-working-dir, include=FALSE}
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+## Einstellungen für saubere Ausgaben
+
+Um beim Rendern störende Konsolenausgaben oder Warnungen zu vermeiden, kannst du diese globalen Chunk-Optionen setzen:
+
+```{r setup-chunk-options, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+## Zugriff auf Dateien im Projektverzeichnis
+
+Wenn du in einem Codeblock auf Dateien im Projektverzeichnis zugreifen möchtest, verwende `rprojroot::find_rstudio_root_file()`:
+
+```{r}
+dummy <- read.csv(rprojroot::find_rstudio_root_file("03-daten/dummy.csv"))
+```
