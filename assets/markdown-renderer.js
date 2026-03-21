@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const baseName = htmlFile.replace(/\.html$/i, '') || 'index';
   const mdFile = `${baseName}.md`;
 
+  console.log("Logging of baseName: ", baseName);
+
   // Fetch and render Markdown file
   fetch(mdFile)
     .then(response => {
