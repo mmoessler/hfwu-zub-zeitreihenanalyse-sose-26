@@ -2,7 +2,7 @@
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
-  --link-color: #293c87;
+  --link-color: #00305e;
 }
 
 body {
@@ -50,13 +50,15 @@ body.dark-mode table.table-striped tbody tr:nth-of-type(even) {
 }
 
 p {
-  /* font-size: 20px; */
     font-size: large;
 }
 
-.ukudla-green {
-    background: #3b8b47;
-    /* border-radius: 5px; */
+.hfwu-blue {
+    background: #00305e;
+}
+
+.hfwu-yellow {
+    background: #fabb00;
 }
 
 /* Style all nav links */
@@ -69,14 +71,13 @@ p {
 
 .navbar-nav .nav-link {
     margin-left: 5px;
-    /* font-size: 20px; */
     font-size: large;
 }
 
 /* Hover effect */
 .navbar-nav .nav-link:hover {
-    background-color: #efc62c;
-    color: #a41c22;
+    background-color: #fabb00;
+    color: #00305e;
 }
 
 /* Active link styling */
@@ -91,13 +92,13 @@ a:hover {
 }
 
 .btn-primary {
-    background-color: #293c87;
-    border-color: #293c87;
+    background-color: #00305e;
+    border-color: #00305e;
 }
 
 .btn-primary:hover {
-    background-color: #efc62c;
-    border-color: #efc62c;
+    background-color: #fabb00;
+    border-color: #fabb00;
     color: #a41c22;
 }
 
@@ -109,8 +110,8 @@ a:hover {
 
 .btn-primary:focus,
 .btn-primary:focus-visible {
-    background-color: #293c87;
-    border-color: #293c87;
+    background-color: #00305e;
+    border-color: #00305e;
     color: white;
     outline: none;
     box-shadow: none;
@@ -118,11 +119,11 @@ a:hover {
 
 .back-to-outline {
   font-size: small;
-  color: #293c87;
+  color: #00305e;
   text-decoration: none;
 }
 
 .back-to-outline:hover {
   text-decoration: underline;
-  color: #293c87;
+  color: #00305e;
 }

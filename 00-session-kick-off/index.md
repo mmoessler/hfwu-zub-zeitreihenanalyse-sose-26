@@ -17,9 +17,7 @@ tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 - [❗ Lernziele](#-lernziele)
 - [📄 Theorie](#-theorie)
 - [💻 Praxis](#-praxis)
-- [❓ Fragen](#-fragen)
-  - [Frage 1)](#frage-1)
-  - [Frage 2)](#frage-2)
+- [❓ Frage](#-frage)
 
 ---
 
@@ -35,7 +33,7 @@ tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 <iframe 
   src="./hfwu_za_sose_26_00_00_ueberblick.pdf"
   width="100%" 
-  height="800px"
+  height="500px"
   style="border:1px solid #ccc; border-radius:8px;">
 </iframe>
 
@@ -45,17 +43,11 @@ tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 
 ## 💻 Praxis
 
-- ...
+- [Aufbereitung US Makro Daten](./03-berichte/hfwu_za_sose_25_00_01_makro_daten_aufbereitung_page.html)
 - ...
 
 ---
 
-## ❓ Fragen
+## ❓ Frage
 
-### Frage 1)
-
-...
-
-### Frage 2)
-
-...
+Wie werden die Quartals- und Monatsdaten in dem [*R*-Skript](./02-code/daten_vorbereitung.R) zusammengeführt?

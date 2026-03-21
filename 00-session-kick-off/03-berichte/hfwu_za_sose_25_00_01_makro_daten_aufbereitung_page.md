@@ -9,7 +9,8 @@ editor_options:
 
 # Setup
 
-```{r}
+
+``` r
 # Optionen Rendering
 knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE,
@@ -33,7 +34,8 @@ Die "Makrorohdaten" können auf der folgenden Internetseite gefunden werden: [Au
 
 # Vorbereitung
 
-```{r}
+
+``` r
 source(here("00-session-kick-off", "02-code", "daten_vorbereitung.R"))
 ```
 
@@ -43,7 +45,8 @@ source(here("00-session-kick-off", "02-code", "daten_vorbereitung.R"))
 
 Einlesen der Daten.
 
-```{r}
+
+``` r
 us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
                        header = TRUE,
                        sep = ";"
@@ -52,7 +55,8 @@ us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarter
 
 Umwandlung in ein `ts` Object.
 
-```{r}
+
+``` r
 us_macro_ts <- ts(
   us_macro,
   frequency = 4,
@@ -64,19 +68,20 @@ us_macro_ts <- window(us_macro_ts,
                       start = c(1955, 1),
                       end = c(2017, 4)
 )
-
 ```
 
 Berechnung der annualisierten Wachstumsrate.
 
-```{r}
+
+``` r
 GDP <- us_macro_ts[,4]
 GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
 ```
 
 Darstellung der Wachstumsrate.
 
-```{r gdp_wachstum_grafik}
+
+``` r
 plot(GDPGrowth,
      col = "steelblue",
      lwd = 2,
@@ -84,4 +89,9 @@ plot(GDPGrowth,
      xlab = "Datum",
      main = "Wachstumsrate des realen US-BIP")
 ```
+
+<div class="figure" style="text-align: center">
+<img src="figures/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
+<p class="caption">plot of chunk gdp_wachstum_grafik</p>
+</div>
 

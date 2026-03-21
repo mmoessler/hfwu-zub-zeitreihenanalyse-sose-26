@@ -2,31 +2,32 @@
 title: "Kurze Einführung in die Verwendung von RMarkdown-Dateien"
 ---
 
-## Projektstruktur
+## Kursstruktur
 
 Ein gut organisiertes R-Projekt könnte wie folgt aussehen:
 
 ```bash
 .
-|-- 01-folien               # Hier liegen z.B. Folien für eine Präsentation oder die Seminararbeit
+|-- 01-doc          # Hier liegen die Dokumentationen
 |   `-- ...
-|-- 02-code                 # Hier liegen die Codes oder .Rmd (und gerenderte .html/.pdf) Dateien
+|-- 02-daten        # Hier liegen die Daten der Analyse (roh und gesäubert)
 |   `-- ...
-|-- 03-daten                # Hier liegen die Daten der Analyse (roh und gesäubert)
+|-- 03-code         # Hier liegen die .R Codes mit den Analysen
 |   `-- ...
-|-- 05-ergebnisse           # Hier liegen die Ergebnisse der Analyse (Grafiken, ...)
+|-- 04-ergebnisse   # Hier liegen die Ergebnisse der Analyse (Tabellen, Grafiken, ...)
 |   `-- ...
-`-- veranstaltung-01.Rproj  # Das ist die Datei für das R-Projekt
+|-- 05-berichte     # Hier liegen die .Rmd mit den Interpretationen (und gerenderte .html/.pdf) Dateien
+    `-- ...
 ```
 
-Die Datei `veranstaltung-01.Rproj` definiert den Projektordner als Arbeitsverzeichnis. Das ist besonders hilfreich beim Umgang mit relativen Pfaden.
+Die Datei `hfwu-zub-zeitreihenanalyse-sose-26-01.Rproj` definiert den Kursordner als Arbeitsverzeichnis. Das ist besonders hilfreich beim Umgang mit relativen Pfaden.
 
 ## Arbeitsverzeichnis richtig setzen
 
 Standardmäßig verwendet RMarkdown das Verzeichnis der `.Rmd`-Datei als Referenzpfad. Das kann zu Problemen führen, wenn du auf Daten aus einem anderen Projektordner zugreifen möchtest. Um stattdessen das Projektverzeichnis zu nutzen, füge folgenden Code ganz oben in deine `.Rmd`-Datei ein:
 
 ```{r setup-working-dir, include=FALSE}
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_knit$set(root.dir = here::here())
 ```
 
 ## Einstellungen für saubere Ausgaben
@@ -46,5 +47,7 @@ knitr::opts_chunk$set(
 Wenn du in einem Codeblock auf Dateien im Projektverzeichnis zugreifen möchtest, verwende `rprojroot::find_rstudio_root_file()`:
 
 ```{r}
-dummy <- read.csv(rprojroot::find_rstudio_root_file("03-daten/dummy.csv"))
+dummy <- read.csv(
+  here("00-session-kick-off", "01-daten", "dummy.csv")
+)
 ```
