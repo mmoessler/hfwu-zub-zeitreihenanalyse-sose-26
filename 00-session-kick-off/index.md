@@ -13,11 +13,12 @@ tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 
 ## ✅ Gliederung
 
-- [✅ Gliederung](#-gliederung)
-- [❗ Lernziele](#-lernziele)
-- [📄 Theorie](#-theorie)
-- [💻 Praxis](#-praxis)
-- [❓ Frage](#-frage)
+- [Session 0) Kick-Off](#session-0-kick-off)
+  - [✅ Gliederung](#-gliederung)
+  - [❗ Lernziele](#-lernziele)
+  - [📄 Theorie](#-theorie)
+  - [💻 Praxis](#-praxis)
+  - [❓ Frage](#-frage)
 
 ---
 
@@ -43,7 +44,7 @@ tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 
 ## 💻 Praxis
 
-- [Aufbereitung US Makro Daten](./03-berichte/hfwu_za_sose_25_00_01_makro_daten_aufbereitung_page.html)
+- [Aufbereitung US Makro Daten](./hfwu_za_sose_25_00_01_makro_daten_aufbereitung_page.html)
 - ...
 
 ---

@@ -91,7 +91,7 @@ plot(GDPGrowth,
 ```
 
 <div class="figure" style="text-align: center">
-<img src="figures/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
+<img src="03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
 <p class="caption">plot of chunk gdp_wachstum_grafik</p>
 </div>
 
