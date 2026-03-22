@@ -85,3 +85,18 @@ plot(GDPGrowth,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
+---
+
+# Frage
+
+Wie werden die Quartals- und Monatsdaten in dem Skript `daten_vorbereitung.R` zusammengeführt?
+
+...
+
+...
+
+...
+
+...
+
+...

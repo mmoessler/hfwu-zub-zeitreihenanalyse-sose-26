@@ -1,0 +1,313 @@
+---
+title: "Kurze Einführung in R"
+output: pdf_document
+---
+
+# Setup
+
+```{r}
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Packete
+library(astsa)
+library(dynlm)
+```
+
+# Grundlagen
+
+* Shumway, R. H., Stoffer, D. S., & Stoffer, D. S. (2017). Zeitreihenanalyse und ihre Anwendungen (Bd. 4). New York: Springer.
+* [GitHub Stoffer: R-Grundlagen](https://dsstoffer.github.io/Rtoot#basics)
+* [CRAN: astsa: Angewandte statistische Zeitreihenanalyse](https://cran.r-project.org/web/packages/astsa/index.html)
+
+## Einfache Berechnungen
+
+```{r}
+2+2               # Addition
+5*5 + 2           # Multiplikation und Addition
+5/5 - 3           # Division und Subtraktion
+log(exp(pi))      # Logarithmus, Exponentialfunktion, pi
+sin(pi/2)         # Sinusfunktion
+exp(1)^(-2)       # Potenz
+sqrt(8)           # Quadratwurzel
+1:5               # Sequenzen
+seq(1, 10, by=2)  # Sequenzen
+rep(2, 3)         # Wiederhole 2 dreimal
+```
+
+## Zuweisung und Objekte
+
+```{r}
+x <- 1 + 2      # speichere 1 + 2 in Objekt x
+x = 1 + 2       # gleich wie oben
+1 + 2 -> x      # gleich
+x               # zeige Objekt x an
+
+(y <- 9 * 3)     # speichere 9 mal 3 in y und zeige das Ergebnis
+(z <- rnorm(5))  # speichere 5 Standardnormalverteilungen in z und zeige z
+```
+
+```{r}
+x <- c(1, 2, 3, 4); y <- 2*x; z <- c(10, 20); w <- c(8, 3, 2)
+x * y     
+x + z     
+#x + w    # was würde hier passieren?
+```
+
+```{r}
+ls()                
+ls(pattern = "my")  
+rm(dummy)           
+rm(list=ls())       
+# help.start()     
+# data()           
+# help(exp)        
+# getwd()          
+# setwd()          
+# q()              
+```
+
+## Daten
+
+R verfügt über verschiedene Datenobjekte, darunter:
+
+- Vektoren
+- Matrizen
+- Listen
+- Datenframe
+- Zeitreihenobjekte (`ts`, `zoo`, `xts`)
+
+```{r}
+x <- c(1, 2, 3, 4, 5) # Numerischer vektor
+y <- matrix(1:9, nrow=3) # Matrix
+z <- list(a = 1, b = "text", c = TRUE) # Liste
+df <- data.frame(time = 1:5, value = rnorm(5)) # Datenframe
+```
+
+```{r}
+mydata <- c(1,2,3,2,1) 
+mydata                      
+mydata[3]                   
+mydata[3:5]                 
+mydata[-(1:2)]              
+length(mydata)              
+dim(mydata)                 
+
+mydata <- as.matrix(mydata)  
+dim(mydata)                 
+```
+
+```{r}
+# Angenommen, "dummy.txt" existiert im Arbeitsverzeichnis
+(dummy <- scan(rprojroot::find_rstudio_root_file("03-daten/dummy.txt")))
+(dummy <- read.table(rprojroot::find_rstudio_root_file("03-daten/dummy.txt")))
+dummy$V2
+colnames(dummy) <- c("Hund", "Katze", "Ratte", "Schwein", "Mensch")
+attach(dummy)
+Katze
+Ratte*(Schwein - Mensch)
+head(dummy)
+detach(dummy)
+```
+
+```{r}
+# CSV mit Header lesen
+(dummy <- read.csv(rprojroot::find_rstudio_root_file("03-daten/dummy.csv")))
+```
+
+```{r}
+x = 1:3; y = 4:6
+(u <- c(x, y))       
+(u1 <- cbind(x, y))  
+(u2 <- rbind(x ,y))  
+```
+
+## Packete, Funktionen, bedingte Anweisungen und Schleifen
+
+### Packete
+
+Installiere und lade Packete:
+
+```{r}
+# install.packages("tidyverse") # nur einmal notwendig!
+# library(tidyverse)
+```
+
+### Funktionen
+
+Funktionen werden mit `function` erstellt:
+
+Funktionen 
+
+```{r}
+my_function <- function(x) {
+  return(x^2)
+}
+my_function(4)
+```
+
+### Bedingte Anweistungen
+
+```{r}
+x <- 10
+if (x > 5) {
+  print("x is greater than 5")
+} else {
+  print("x is 5 or less")
+}
+
+for (i in 1:5) {
+  print(i)
+}
+```
+
+### Schleifen
+
+Ein sehr geläufiger Schleifentyp sind for-Schleifen.
+
+```{r}
+for (i in 1:5) {
+  print(i)
+}
+```
+
+Ein weiterer Schleifentyp sind while-Schleifen.
+
+```{r}
+i <- 1
+while (i <= 5) {
+  print(i)
+  i <- i + 1
+}
+```
+
+Eine weitere Art von Schleifen bietet die Familie von apply Funktionen
+
+```{r}
+lapply(1:5, function(a) {a + 1})
+```
+
+## Base R vs. Tidyverse
+
+Base R verwendet einfache Funktionen, während Tidyverse eine unter anderem verkettbare Syntax bietet.
+
+```{r}
+# Base R
+df$time <- as.Date(df$time, origin="1970-01-01")
+
+# # Tidyverse
+# df <- df %>% mutate(time = as.Date(time, origin="1970-01-01"))
+
+```
+
+## Einfache Simulationen
+
+```{r}
+set.seed(90210)                         
+x <- rnorm(25, 10, 4)                   
+c( mean(x), median(x), var(x), sd(x) )  
+c( min(x), max(x) )                     
+which.max(x)                            
+summary(x)                              
+boxplot(x); hist(x); stem(x)            
+```
+
+# Einführung in Zeitreihen
+
+## Zeitreihenobjekt
+
+```{r}
+(mydata <- c(1,2,3,2,1))                              
+(mydata <- as.ts(mydata))                             
+(mydata <- ts(mydata, start=1950))                    
+(mydata <- ts(mydata, start=c(1950,3), frequency=4))  
+time(mydata)                                          
+(x <- window(mydata, start=c(1951,1), end=c(1951,3))) 
+```
+
+Hinweis: `ts`-Objekte sind nützlich für Zeitreihen mit regelmäßigen Intervallen (z.B. `frequency=4` für Quartalsdaten), aber nicht für tägliche Daten geeignet.
+
+## Verzögerung und Differenzen
+
+```{r}
+(x <- ts(1:5))                        
+cbind(x, stats::lag(x), stats::lag(x,-1))           
+ts.intersect(x, stats::lag(x,1), stats::lag(x,-1))  
+diff(x)                               
+diff(x, 2)                            
+diff(diff(x))                         
+diff(x, diff=2)                       
+```
+
+## Regressionen
+
+```{r}
+set.seed(1999)          
+(x <- rnorm(10))        
+(y <- x + rnorm(10))    
+summary(fit <- lm(y~x)) 
+plot(x, y)              
+abline(fit)             
+```
+
+```{r}
+resid(fit)                    
+fitted(fit)                   
+summary(fit <- lm(y ~ 0 + x))
+```
+
+```{r}
+library(astsa)
+ded <- ts.intersect(cmort, part, part4=stats::lag(part,-4))
+summary(fit <- lm(cmort~part+part4, data=ded, na.action=NULL))
+
+library(dynlm)
+fit = dynlm(cmort~part + L(part,4))                             
+summary(fit)
+```
+
+# Grafiken
+
+## Einzelne Zeitreihe plotten
+
+```{r}
+par(mfrow = c(1,1))
+plot(speech)
+```
+
+## Mehrere Zeitreihen plotten
+
+```{r}
+plot.ts(cbind(soi, rec))
+
+par(mfrow = c(2,1))
+plot(soi, ylab='', xlab='', main='Southern Oscillation Index')
+plot(rec, ylab='', xlab='', main='Rekrutierung')
+```
+
+```{r}
+ts.plot(cmort, tempr, part, col=1:3)
+legend('topright', legend=c('M','T','P'), lty=1, col=1:3)
+```
+
+## Plots exportieren
+
+```{r}
+dev.new(width=7, height=4)                
+par(mar=c(3,3,1,1), mgp=c(1.6,.6,0) )     
+plot(speech, type='n')
+grid(lty=1, col=gray(.9)); lines(speech)
+dev.off()
+
+pdf(file=rprojroot::find_rstudio_root_file("05-ergebnisse/speech.pdf"), width=7, height=4)
+par(mar=c(3,3,1,1), mgp=c(1.6,.6,0) )     
+plot(speech, type='n')
+grid(lty=1, col=gray(.9)); lines(speech)
+dev.off()
+```

@@ -91,7 +91,22 @@ plot(GDPGrowth,
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
+<img src="/home/rstudio/workspace/00-session-kick-off/03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
 <p class="caption">plot of chunk gdp_wachstum_grafik</p>
 </div>
 
+---
+
+# Frage
+
+Wie werden die Quartals- und Monatsdaten in dem Skript `daten_vorbereitung.R` zusammengeführt?
+
+...
+
+...
+
+...
+
+...
+
+...

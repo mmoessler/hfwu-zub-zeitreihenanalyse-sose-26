@@ -1,0 +1,267 @@
+---
+title: "Kapitel 1) Einführung in die Zeitreihenregression und -prognose"
+output: pdf_document
+---
+
+# Setup
+
+```{r}
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Packete
+library(AER)
+library(readxl)
+library(xts)
+library(quantmod)
+```
+
+# Kapitel 1.1) Einführung in Zeitreihendaten
+
+## Verwendung von Regressionsmodellen zur Prognose
+
+### Frage 1
+
+Was ist der Unterschied zwischen der Schätzung von Modellen zur Analyse von kausalen Effekten und zur Prognose?
+
+### Antwort 1
+
+...
+
+...
+
+...
+
+...
+
+...
+
+Nehmen Sie ein einfaches Beispiel zur Schätzung des kausalen Effekts des Schüler-Lehrer-Verhältnisses auf Testergebnisse unter Verwendung eines einfachen Regressionsmodellsn aus dem Textbuch S&W 2020. Verwenden Sie `help("CASchools")`, für mehr Informationen über den Datensatz.
+
+```{r, warning = FALSE, message=FALSE}
+data(CASchools)   
+CASchools$STR <- CASchools$students/CASchools$teachers       
+CASchools$score <- (CASchools$read + CASchools$math)/2
+
+mod <- lm(score ~ STR, data = CASchools)
+
+coeftest(mod, vcov. = vcovHC, type = "HC1")
+```
+
+### Frage 2
+
+Hat die Schätzung des Koeffizienten für das Schüler-Lehrer-Verhältnis eine kausale Interpretation?
+
+Hinweis: Die Einbeziehung des Anteils der englischsprachigen Schüler ergibt folgenden geschätzten Effekt des Schüler-Lehrer-Verhältnisses:
+
+```{r, warning = FALSE, message=FALSE}
+mult.mod <- lm(score ~ STR + english, data = CASchools)
+
+coeftest(mult.mod, vcov. = vcovHC, type = "HC1")
+```
+
+### Antwort 2
+
+...
+
+...
+
+...
+
+...
+
+...
+
+Bei der Entscheidung, auf welche Schule ihr Kind gehen soll, könnte es für eine Mutter dennoch sinnvoll sein, `mod` zur Prognose der Testergebnisse in Schulbezirken zu verwenden, für die keine öffentlichen Daten zu den Ergebnissen verfügbar sind.
+
+### Frage 3
+
+Ist das einfache Regressionsmodell nützlich zur Prognose von Testergebnissen in Schulbezirken ohne öffentliche Daten zu Testergebnissen?
+
+Beispiel: Angenommen, die durchschnittliche Klasse in einem Bezirk hat $25$ Schüler.
+
+```{r}
+predict(mod, newdata = data.frame("STR" = 25))
+```
+
+### Antwort 3
+
+...
+
+...
+
+...
+
+...
+
+...
+
+### Frage 4
+
+Welche zusätzlichen Informationen könnten in einem Zeitreihenkontext zur Prognose von Testergebnissen genutzt werden?
+
+### Antwort 4
+
+...
+
+...
+
+...
+
+...
+
+...
+
+## US-Reales BIP
+
+Das BIP wird als der Gesamtwert aller in einem bestimmten Zeitraum produzierten Waren und Dienstleistungen definiert. Der Datensatz `us_macro_quarterly.xlsx` enthält vierteljährliche Daten zum realen BIP der USA (d.h. inflationsbereinigt) von 1947 bis 2004.
+
+Ein guter Ausgangspunkt ist die grafische Darstellung der Daten.
+
+```{r, warning=FALSE, message=FALSE}
+
+```
+
+```{r}
+USMacroSWQ <- read_xlsx(rprojroot::find_rstudio_root_file("03-daten/us_macro_quarterly.xlsx"),
+                        sheet = 1,
+                        col_types = c("text", rep("numeric", 9)))
+USMacroSWQ$...1 <- as.yearqtr(USMacroSWQ$...1, format = "%Y:0%q")
+colnames(USMacroSWQ) <- c("Date", "GDPC96", "JAPAN_IP", "PCECTPI", 
+                          "GS10", "GS1", "TB3MS", "UNRATE", "EXUSUK", "CPIAUCSL")
+```
+
+```{r}
+
+GDP <- xts(USMacroSWQ$GDPC96, USMacroSWQ$Date)["1960::2013"]
+GDPGrowth <- xts(400 * log(GDP/lag(GDP)))
+```
+
+```{r, fig.align='center', fig.height=4}
+plot(log(as.zoo(GDP)),
+     col = "steelblue",
+     lwd = 2,
+     ylab = "Logarithmus",
+     xlab = "Datum",
+     main = "Reales vierteljährliches US-BIP")
+```
+
+```{r, fig.align='center', fig.height=4}
+plot(as.zoo(GDPGrowth),
+     col = "steelblue",
+     lwd = 2,
+     ylab = "Logarithmus",
+     xlab = "Datum",
+     main = "Wachstumsrate des realen US-BIP")
+```
+
+### Frage 5
+
+Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transformation zur Wachstumsrate sinnvoll?
+
+### Antwort 5
+
+...
+
+...
+
+...
+
+...
+
+...
+
+## Autokorrelation
+
+Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korrelation nennt man *Autokorrelation* oder *serielle Korrelation*.
+
+```{r}
+acf(na.omit(GDPGrowth), lag.max = 10, plot = F)
+```
+
+```{r}
+acf(na.omit(GDPGrowth), , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
+```
+
+### Frage 6
+
+Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
+
+### Antwort 6
+
+...
+
+...
+
+...
+
+...
+
+...
+
+## Weitere Beispiele wirtschaftlicher Zeitreihen
+
+```{r}
+USUnemp <- xts(USMacroSWQ$UNRATE, USMacroSWQ$Date)["1960::2013"]
+DollarPoundFX <- xts(USMacroSWQ$EXUSUK, USMacroSWQ$Date)["1960::2013"]
+JPIndProd <- xts(log(USMacroSWQ$JAPAN_IP), USMacroSWQ$Date)["1960::2013"]
+data("NYSESW")
+NYSESW <- xts(Delt(NYSESW))
+```
+
+```{r, fig.align='center',fig.height=6}
+par(mfrow = c(2, 2))
+plot(as.zoo(USUnemp), col = "steelblue", lwd = 2, ylab = "Prozent", xlab = "Datum", main = "US-Arbeitslosenquote", cex.main = 0.8)
+plot(as.zoo(DollarPoundFX), col = "steelblue", lwd = 2, ylab = "Dollar pro Pfund", xlab = "Datum", main = "US-Dollar / Britisches Pfund Wechselkurs", cex.main = 0.8)
+plot(as.zoo(JPIndProd), col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum", main = "Japanische Industrieproduktion", cex.main = 0.8)
+plot(as.zoo(NYSESW), col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
+```
+
+### Frage 7
+
+Beschreiben und vergleichen Sie die Eigenschaften dieser verschiedenen wirtschaftlichen Zeitreihen.
+
+### Antwort 7
+
+...
+
+...
+
+...
+
+...
+
+...
+
+Zur genaueren Analyse der täglichen Veränderungen des New York Stock Exchange Composite Index berechnen wir die Stichprobenautokorrelationen.
+
+```{r}
+acf(na.omit(NYSESW), plot = F, lag.max = 10)
+```
+
+```{r, fig.align='center', fig.height=4}
+par(mfrow = c(1, 1))
+acf(na.omit(NYSESW), main = "Stichprobenautokorrelation der täglichen Veränderung des NYSESW")
+```
+
+### Frage 8
+
+Beschreiben Sie die Eigenschaften des New York Stock Exchange Composite Index genauer.
+
+### Antwort 8
+
+...
+
+...
+
+...
+
+...
+
+...
