@@ -32,11 +32,7 @@ Die Datei `hfwu-zub-zeitreihenanalyse-sose-26-01.Rproj` definiert den Kursordner
 
 Standardmäßig verwendet RMarkdown das Verzeichnis der `.Rmd`-Datei als Referenzpfad. Das kann zu Problemen führen, wenn du auf Daten aus einem anderen Projektordner zugreifen möchtest. Um stattdessen das Projektverzeichnis zu nutzen, füge folgenden Code ganz oben in deine `.Rmd`-Datei ein:
 
-```{r setup-working-dir, include=FALSE}
 
-
-knitr::opts_knit$set(root.dir = here::here())
-```
 
 ---
 
@@ -44,13 +40,7 @@ knitr::opts_knit$set(root.dir = here::here())
 
 Um beim Rendern störende Konsolenausgaben oder Warnungen zu vermeiden, kannst du diese globalen Chunk-Optionen setzen:
 
-```{r setup-chunk-options, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = FALSE,
-  warning = FALSE
-)
-```
+
 
 ---
 
@@ -58,7 +48,8 @@ knitr::opts_chunk$set(
 
 Wenn du in einem Codeblock auf Dateien im Projektverzeichnis zugreifen möchtest, verwende `here()` mit dem Pfad-Komponenten der Datei. Z.B.
 
-```{r}
+
+``` r
 # Lade here Paket
 library(here)
 

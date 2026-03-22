@@ -11,17 +11,17 @@ editor_options:
 
 
 ``` r
+# Lade here Paket
+library(here)
+
 # Optionen Rendering
-knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_knit$set(root.dir = here())
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       warning = FALSE)
 
 # Säubere Umgebung
 rm(list=ls())
-
-# Lade Pakete
-library(here)
 ```
 
 ---
@@ -91,7 +91,7 @@ plot(GDPGrowth,
 ```
 
 <div class="figure" style="text-align: center">
-<img src="03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
+<img src="/home/rstudio/workspace/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
 <p class="caption">plot of chunk gdp_wachstum_grafik</p>
 </div>
 

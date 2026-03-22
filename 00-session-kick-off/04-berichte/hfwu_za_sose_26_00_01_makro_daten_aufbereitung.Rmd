@@ -10,17 +10,17 @@ editor_options:
 # Setup
 
 ```{r}
+# Lade here Paket
+library(here)
+
 # Optionen Rendering
-knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_knit$set(root.dir = here())
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       warning = FALSE)
 
 # Säubere Umgebung
 rm(list=ls())
-
-# Lade Pakete
-library(here)
 ```
 
 ---
