@@ -2,66 +2,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('markdown-content');
   if (!container) return;
 
-  // Derive markdown filename from current HTML file
-  const htmlFile = window.location.pathname.split('/').pop();
-  const baseName = htmlFile.replace(/\.html$/i, '') || 'index';
-  const mdFile = `${baseName}.md`;
+  const params = new URLSearchParams(window.location.search);
+  let page = params.get('page') || 'index';
 
-  console.log("Logging of baseName: ", baseName);
+  // allow both:
+  // ?page=foo
+  // ?page=foo.md
+  if (!page.endsWith('.md')) {
+    page += '.md';
+  }
 
-  // Fetch and render Markdown file
-  fetch(mdFile)
+  console.log('Loading markdown page:', page);
+
+  fetch(page)
     .then(response => {
-      if (!response.ok) throw new Error('Markdown file not found');
+      if (!response.ok) throw new Error(`Markdown file not found: ${page}`);
       return response.text();
     })
     .then(markdown => {
-      // Remove YAML front matter (--- ... ---)
       markdown = markdown.replace(/^---[\s\S]*?---\s*/, '');
 
-      // Robust plugin reference (works with ESM or UMD)
       const anchorPlugin =
         window.markdownitAnchor ||
-        window.markdownItAnchor ||     // <-- added capital "I" variant
+        window.markdownItAnchor ||
         window.markdownitAnchor?.default;
+
       if (!anchorPlugin) {
-        console.error("❌ markdown-it-anchor plugin failed to load.");
+        console.error('❌ markdown-it-anchor plugin failed to load.');
         container.innerHTML = `<p class="text-danger">Markdown-It-Anchor plugin not found. Check your script includes.</p>`;
         return;
       }
 
-      // Initialize markdown-it
       const md = window.markdownit({
         html: true,
         linkify: true,
         typographer: true,
-        highlight: (str, lang) => {
+        highlight: function (str, lang) {
           const safeLang = lang || 'none';
           return `<pre data-lang="${safeLang}"><code class="language-${safeLang}">${md.utils.escapeHtml(str)}</code></pre>`;
         }
       }).use(anchorPlugin, {
-        // GitHub-style slug generation
         slugify: s => s.trim().toLowerCase()
           .replace(/[^\w\s-]/g, '')
           .replace(/\s+/g, '-'),
-        permalink: false, // set to window.markdownitAnchor.permalink.headerLink() if you want clickable anchors
+        permalink: false,
       });
 
-      // Render Markdown → HTML
       container.innerHTML = md.render(markdown);
 
-      // Convert fenced mermaid code blocks
       document.querySelectorAll('pre code.language-mermaid').forEach(code => {
         const pre = code.parentElement;
-
         const wrapper = document.createElement('div');
         wrapper.className = 'mermaid';
         wrapper.textContent = code.textContent;
-
         pre.replaceWith(wrapper);
       });
 
-      // Run Mermaid
       if (window.mermaid) {
         try {
           mermaid.initialize({ startOnLoad: false });
@@ -71,24 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Add bootstrap table attributes to tables
-      const observer = new MutationObserver(() => {
-        document
-          .querySelectorAll("#markdown-content table:not(.table)")
-          .forEach(table => {
-            table.classList.add("table");
-          });
-      });
+      document
+        .querySelectorAll('#markdown-content table:not(.table)')
+        .forEach(table => {
+          table.classList.add('table');
+        });
 
-      observer.observe(document.getElementById("markdown-content"), {
-        childList: true,
-        subtree: true,
-      })
-
-      // Add copy buttons for code blocks
       document.querySelectorAll('pre').forEach(block => {
         const lang = block.dataset.lang || '';
-        if (/^(text|plain|none)$/i.test(lang)) return; // Skip plain/text blocks
+        if (/^(text|plain|none)$/i.test(lang)) return;
 
         const wrapper = document.createElement('div');
         wrapper.className = 'code-block position-relative';
@@ -104,12 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.appendChild(block);
       });
 
-      // Re-run Prism for syntax highlighting
       if (window.Prism) Prism.highlightAll();
-
-      // Initialize copy button logic (if defined elsewhere)
       if (window.initCopyButtons) window.initCopyButtons();
-      
     })
     .catch(err => {
       console.error(err);
