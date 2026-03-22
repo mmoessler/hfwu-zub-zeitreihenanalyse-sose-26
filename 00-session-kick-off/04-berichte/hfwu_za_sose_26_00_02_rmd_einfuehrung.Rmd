@@ -4,20 +4,22 @@ title: "Kurze Einführung in die Verwendung von RMarkdown-Dateien"
 
 ## Kursstruktur
 
-Ein gut organisiertes R-Projekt könnte wie folgt aussehen:
+Das R-Projekt für diesen Kurse könnte wie folgt aussehen:
 
 ```bash
-.
-|-- 01-doc          # Hier liegen die Dokumentationen
-|   `-- ...
-|-- 02-daten        # Hier liegen die Daten der Analyse (roh und gesäubert)
-|   `-- ...
-|-- 03-code         # Hier liegen die .R Codes mit den Analysen
-|   `-- ...
-|-- 04-ergebnisse   # Hier liegen die Ergebnisse der Analyse (Tabellen, Grafiken, ...)
-|   `-- ...
-|-- 05-berichte     # Hier liegen die .Rmd mit den Interpretationen (und gerenderte .html/.pdf) Dateien
-    `-- ...
+├── 00-session-kick-off
+│   ├── 01-daten
+│   ├── 02-code
+│   ├── 03-ergebnisse
+│   └── 04-berichte
+├── 01-session-01-01-einfuehrung
+│   ├── 01-daten
+│   ├── 02-code
+│   ├── 03-ergebnisse
+│   ├── 04-berichte
+│   └── 04-berichte
+├── ...
+└── hfwu-zub-zeitreihenanalyse-sose-26.Rproj
 ```
 
 Die Datei `hfwu-zub-zeitreihenanalyse-sose-26-01.Rproj` definiert den Kursordner als Arbeitsverzeichnis. Das ist besonders hilfreich beim Umgang mit relativen Pfaden.
