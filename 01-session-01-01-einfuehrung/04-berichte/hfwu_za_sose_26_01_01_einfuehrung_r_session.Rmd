@@ -173,7 +173,7 @@ us_macro_ts <- window(us_macro_ts,
 Berechnung der annualisierten Wachstumsrate.
 
 ```{r}
-GDP <- us_macro_ts[,4]
+GDP <- us_macro_ts[,"GDPC1"]
 GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
 ```
 
@@ -202,21 +202,23 @@ plot(GDPGrowth,
 
 
 
-```{r}
+```{r, eval=FALSE}
+
 USMacroSWQ <- read_xlsx(rprojroot::find_rstudio_root_file("03-daten/us_macro_quarterly.xlsx"),
                         sheet = 1,
                         col_types = c("text", rep("numeric", 9)))
 USMacroSWQ$...1 <- as.yearqtr(USMacroSWQ$...1, format = "%Y:0%q")
 colnames(USMacroSWQ) <- c("Date", "GDPC96", "JAPAN_IP", "PCECTPI", 
                           "GS10", "GS1", "TB3MS", "UNRATE", "EXUSUK", "CPIAUCSL")
+
 ```
 
-```{r}
+```{r, eval=FALSE}
 GDP <- xts(USMacroSWQ$GDPC96, USMacroSWQ$Date)["1960::2013"]
 GDPGrowth <- xts(400 * log(GDP/lag(GDP)))
 ```
 
-```{r, fig.align='center', fig.height=4}
+```{r, fig.align='center', fig.height=4, eval=FALSE}
 plot(log(as.zoo(GDP)),
      col = "steelblue",
      lwd = 2,
@@ -225,7 +227,7 @@ plot(log(as.zoo(GDP)),
      main = "Reales vierteljährliches US-BIP")
 ```
 
-```{r, fig.align='center', fig.height=4}
+```{r, fig.align='center', fig.height=4, eval=FALSE}
 plot(as.zoo(GDPGrowth),
      col = "steelblue",
      lwd = 2,
@@ -233,6 +235,8 @@ plot(as.zoo(GDPGrowth),
      xlab = "Datum",
      main = "Wachstumsrate des realen US-BIP")
 ```
+
+
 
 ---
 
@@ -258,12 +262,20 @@ Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transform
 
 Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korrelation nennt man *Autokorrelation* oder *serielle Korrelation*.
 
-```{r}
+```{r, eval=FALSE}
 acf(na.omit(GDPGrowth), lag.max = 10, plot = F)
 ```
 
 ```{r}
+acf(GDPGrowth, lag.max = 10, plot = F)
+```
+
+```{r, eval=FALSE}
 acf(na.omit(GDPGrowth), , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
+```
+
+```{r}
+acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
 
 ---
@@ -288,7 +300,7 @@ Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
 
 ## Weitere Beispiele wirtschaftlicher Zeitreihen
 
-```{r}
+```{r, eval=FALSE}
 USUnemp <- xts(USMacroSWQ$UNRATE, USMacroSWQ$Date)["1960::2013"]
 DollarPoundFX <- xts(USMacroSWQ$EXUSUK, USMacroSWQ$Date)["1960::2013"]
 JPIndProd <- xts(log(USMacroSWQ$JAPAN_IP), USMacroSWQ$Date)["1960::2013"]
@@ -296,12 +308,48 @@ data("NYSESW")
 NYSESW <- xts(Delt(NYSESW))
 ```
 
-```{r, fig.align='center',fig.height=6}
+```{r}
+
+us_macro_ts <- window(us_macro_ts,
+                      start = c(1960, 1),
+                      end = c(2013, 4)
+)
+
+GDP <- us_macro_ts[,"GDPC1"]
+USUnemp <- us_macro_ts[,"UNRATE"]
+DollarPoundFX <- us_macro_ts[,"EXUSUK"]
+JPIndProd <- us_macro_ts[,"JAPAN_IP"]
+
+```
+
+
+
+```{r}
+# Lade Daily NYSE Composite Index von AER/Ecdat Paket
+data("NYSESW")
+
+# Berechne Differenz
+NYSESW <- diff(NYSESW)
+
+acf(na.omit(NYSESW), plot = F, lag.max = 10)
+```
+
+
+
+```{r, fig.align='center',fig.height=6, eval=FALSE}
 par(mfrow = c(2, 2))
 plot(as.zoo(USUnemp), col = "steelblue", lwd = 2, ylab = "Prozent", xlab = "Datum", main = "US-Arbeitslosenquote", cex.main = 0.8)
 plot(as.zoo(DollarPoundFX), col = "steelblue", lwd = 2, ylab = "Dollar pro Pfund", xlab = "Datum", main = "US-Dollar / Britisches Pfund Wechselkurs", cex.main = 0.8)
 plot(as.zoo(JPIndProd), col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum", main = "Japanische Industrieproduktion", cex.main = 0.8)
 plot(as.zoo(NYSESW), col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
+```
+
+```{r, fig.align='center',fig.height=6}
+par(mfrow = c(2, 2))
+plot(USUnemp, col = "steelblue", lwd = 2, ylab = "Prozent", xlab = "Datum", main = "US-Arbeitslosenquote", cex.main = 0.8)
+plot(DollarPoundFX, col = "steelblue", lwd = 2, ylab = "Dollar pro Pfund", xlab = "Datum", main = "US-Dollar / Britisches Pfund Wechselkurs", cex.main = 0.8)
+plot(JPIndProd, col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum", main = "Japanische Industrieproduktion", cex.main = 0.8)
+plot(NYSESW, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
 ```
 
 
@@ -328,14 +376,16 @@ Beschreiben und vergleichen Sie die Eigenschaften dieser verschiedenen wirtschaf
 
 Zur genaueren Analyse der täglichen Veränderungen des New York Stock Exchange Composite Index berechnen wir die Stichprobenautokorrelationen.
 
-```{r}
+```{r, eval=TRUE}
 acf(na.omit(NYSESW), plot = F, lag.max = 10)
 ```
 
-```{r, fig.align='center', fig.height=4}
+```{r, fig.align='center', fig.height=4, eval=TRUE}
 par(mfrow = c(1, 1))
 acf(na.omit(NYSESW), main = "Stichprobenautokorrelation der täglichen Veränderung des NYSESW")
 ```
+
+
 
 ---
 
