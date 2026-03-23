@@ -25,5 +25,5 @@
 - [Makro Daten (zusammengeführt)](./01-daten/us_macro_quarterly_merged.csv)
 - [*R*-Skript Datenaufbereitung: Zusammenführung monatliche und quartalsweise Daten](./02-code/daten_vorbereitung.R)
 - [*R*-Session: Aufbereitung US Makro Daten](./01-session-einfuehrung.html?page=hfwu_za_sose_26_00_01_makro_daten_aufbereitung_page)
-- [*R*-Session: Einführung in die Zeitreihenregression und -prognose](./01-session-einfuehrung.html?page=hfwu_za_sose_26_01_01_einfuehrung_r_session)
+- [*R*-Session: Einführung in die Zeitreihenregression und -prognose](./01-session-einfuehrung.html?page=hfwu_za_sose_26_01_01_einfuehrung_r_session_page)
 
