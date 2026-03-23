@@ -28,7 +28,8 @@ Der Kurs ist in mehrere Sessions unterteilt. Jede Session besteht aus:
 
 ## ➡️ Sessions
 
-* [Session 1: Einführung in die Zeitreihenregression und -prognose](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/01-session-einfuehrung.html?page=index)
+* [Session 1: Einführung in die Zeitreihenregression und -prognose](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/01-session-einfuehrung.html?page=index)
+* ...
 
 > *(Weitere Sessions werden im Verlauf der Vorlesung ergänzt.)*
 
