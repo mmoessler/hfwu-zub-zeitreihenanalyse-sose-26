@@ -137,9 +137,5 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-/* Margins */
-pre {
-  margin-bottom: 16;
+  margin: 1rem;
 }

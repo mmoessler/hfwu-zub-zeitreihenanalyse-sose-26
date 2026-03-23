@@ -11,7 +11,7 @@
 
 pre[class*="language-"] {
   background: transparent !important; /* remove Prism’s white */
-  margin: 1rem;
+  margin: 0;
   padding: 0;
 }
 
@@ -27,6 +27,7 @@ pre[class*="language-"] {
 pre.language-text,
 pre.language-plain,
 pre[data-lang="text"],
+pre[data-lang="none"],
 pre[data-lang="plain"] {
   background: #f8f9fa !important;        /* match your .code-block */
   border: 1px solid #dee2e6;
