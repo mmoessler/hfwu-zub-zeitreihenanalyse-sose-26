@@ -585,10 +585,10 @@ boxplot(x); hist(x); stem(x)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/simulation-1.svg" alt="plot of chunk simulation"  />
+<img src="./00-session-kick-off/03-ergebnisse/simulation-1.svg" alt="plot of chunk simulation"  />
 <p class="caption">plot of chunk simulation</p>
 </div><div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/simulation-2.svg" alt="plot of chunk simulation"  />
+<img src="./00-session-kick-off/03-ergebnisse/simulation-2.svg" alt="plot of chunk simulation"  />
 <p class="caption">plot of chunk simulation</p>
 </div>
 
@@ -828,7 +828,7 @@ abline(fit)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/regression-1.svg" alt="plot of chunk regression"  />
+<img src="./00-session-kick-off/03-ergebnisse/regression-1.svg" alt="plot of chunk regression"  />
 <p class="caption">plot of chunk regression</p>
 </div>
 
@@ -954,7 +954,7 @@ plot(speech)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/speech-1.svg" alt="plot of chunk speech"  />
+<img src="./00-session-kick-off/03-ergebnisse/speech-1.svg" alt="plot of chunk speech"  />
 <p class="caption">plot of chunk speech</p>
 </div>
 
@@ -968,7 +968,7 @@ plot.ts(cbind(soi, rec))
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/plots-1.svg" alt="plot of chunk plots"  />
+<img src="./00-session-kick-off/03-ergebnisse/plots-1.svg" alt="plot of chunk plots"  />
 <p class="caption">plot of chunk plots</p>
 </div>
 
@@ -979,7 +979,7 @@ plot(rec, ylab='', xlab='', main='Rekrutierung')
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/plots-2.svg" alt="plot of chunk plots"  />
+<img src="./00-session-kick-off/03-ergebnisse/plots-2.svg" alt="plot of chunk plots"  />
 <p class="caption">plot of chunk plots</p>
 </div>
 
@@ -990,7 +990,7 @@ legend('topright', legend=c('M','T','P'), lty=1, col=1:3)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/03-ergebnisse/ts_plot-1.svg" alt="plot of chunk ts_plot"  />
+<img src="./00-session-kick-off/03-ergebnisse/ts_plot-1.svg" alt="plot of chunk ts_plot"  />
 <p class="caption">plot of chunk ts_plot</p>
 </div>
 
