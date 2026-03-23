@@ -223,7 +223,7 @@ plot(GDP,
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/us_gdp_grafik-1.svg" alt="plot of chunk us_gdp_grafik"  />
+<img src="./03-ergebnisse/us_gdp_grafik-1.svg" alt="plot of chunk us_gdp_grafik"  />
 <p class="caption">plot of chunk us_gdp_grafik</p>
 </div>
 
@@ -240,7 +240,7 @@ plot(GDPGrowth,
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/us_gdp_wachstum_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_grafik"  />
+<img src="./03-ergebnisse/us_gdp_wachstum_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_grafik"  />
 <p class="caption">plot of chunk us_gdp_wachstum_grafik</p>
 </div>
 
@@ -285,7 +285,7 @@ acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_acf_grafik"  />
+<img src="./03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_acf_grafik"  />
 <p class="caption">plot of chunk us_gdp_wachstum_acf_grafik</p>
 </div>
 
@@ -347,7 +347,7 @@ plot(NYSEIndexRet, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = 
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/weitere_zeitreihen_grafik-1.svg" alt="plot of chunk weitere_zeitreihen_grafik"  />
+<img src="./03-ergebnisse/weitere_zeitreihen_grafik-1.svg" alt="plot of chunk weitere_zeitreihen_grafik"  />
 <p class="caption">plot of chunk weitere_zeitreihen_grafik</p>
 </div>
 
@@ -391,7 +391,7 @@ acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen 
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/nyse_re_acf_grafik-1.svg" alt="plot of chunk nyse_re_acf_grafik"  />
+<img src="./03-ergebnisse/nyse_re_acf_grafik-1.svg" alt="plot of chunk nyse_re_acf_grafik"  />
 <p class="caption">plot of chunk nyse_re_acf_grafik</p>
 </div>
 
