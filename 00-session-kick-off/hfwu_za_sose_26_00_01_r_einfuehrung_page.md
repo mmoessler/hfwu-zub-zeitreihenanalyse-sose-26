@@ -25,6 +25,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       warning = FALSE,
                       fig.align = "center",
+                      fig.cap = "",
                       fig.height = 5,
                       fig.width = 8)
 
@@ -584,13 +585,7 @@ summary(x)
 boxplot(x); hist(x); stem(x)            
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/simulation-1.svg" alt="plot of chunk simulation"  />
-<p class="caption">plot of chunk simulation</p>
-</div><div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/simulation-2.svg" alt="plot of chunk simulation"  />
-<p class="caption">plot of chunk simulation</p>
-</div>
+<img src="./03-ergebnisse/simulation-1.svg" style="display: block; margin: auto;" /><img src="./03-ergebnisse/simulation-2.svg" style="display: block; margin: auto;" />
 
 ```
 ## 
@@ -827,10 +822,7 @@ plot(x, y)
 abline(fit)             
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/regression-1.svg" alt="plot of chunk regression"  />
-<p class="caption">plot of chunk regression</p>
-</div>
+<img src="./03-ergebnisse/regression-1.svg" style="display: block; margin: auto;" />
 
 
 ``` r
@@ -953,10 +945,7 @@ par(mfrow = c(1,1))
 plot(speech)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/speech-1.svg" alt="plot of chunk speech"  />
-<p class="caption">plot of chunk speech</p>
-</div>
+<img src="./03-ergebnisse/speech-1.svg" style="display: block; margin: auto;" />
 
 ---
 
@@ -967,10 +956,7 @@ plot(speech)
 plot.ts(cbind(soi, rec))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/plots-1.svg" alt="plot of chunk plots"  />
-<p class="caption">plot of chunk plots</p>
-</div>
+<img src="./03-ergebnisse/plots-1.svg" style="display: block; margin: auto;" />
 
 ``` r
 par(mfrow = c(2,1))
@@ -978,10 +964,7 @@ plot(soi, ylab='', xlab='', main='Southern Oscillation Index')
 plot(rec, ylab='', xlab='', main='Rekrutierung')
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/plots-2.svg" alt="plot of chunk plots"  />
-<p class="caption">plot of chunk plots</p>
-</div>
+<img src="./03-ergebnisse/plots-2.svg" style="display: block; margin: auto;" />
 
 
 ``` r
@@ -989,10 +972,7 @@ ts.plot(cmort, tempr, part, col=1:3)
 legend('topright', legend=c('M','T','P'), lty=1, col=1:3)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/ts_plot-1.svg" alt="plot of chunk ts_plot"  />
-<p class="caption">plot of chunk ts_plot</p>
-</div>
+<img src="./03-ergebnisse/ts_plot-1.svg" style="display: block; margin: auto;" />
 
 ---
 

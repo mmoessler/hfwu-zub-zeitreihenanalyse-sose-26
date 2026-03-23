@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       warning = FALSE,
                       fig.align = "center",
+                      fig.cap = "",
                       fig.height = 5,
                       fig.width = 8)
 
@@ -96,7 +97,4 @@ plot(GDPGrowth,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
-<p class="caption">plot of chunk gdp_wachstum_grafik</p>
-</div>
+<img src="./03-ergebnisse/gdp_wachstum_grafik-1.svg" style="display: block; margin: auto;" />

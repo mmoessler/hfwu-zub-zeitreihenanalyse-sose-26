@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       warning = FALSE,
                       fig.align = "center",
+                      fig.cap = "",
                       fig.height = 5,
                       fig.width = 8)
 
@@ -222,10 +223,7 @@ plot(GDP,
      main = "Reales US-BIP")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/us_gdp_grafik-1.svg" alt="plot of chunk us_gdp_grafik"  />
-<p class="caption">plot of chunk us_gdp_grafik</p>
-</div>
+<img src="./03-ergebnisse/us_gdp_grafik-1.svg" style="display: block; margin: auto;" />
 
 Darstellung der Wachstumsrate.
 
@@ -239,10 +237,7 @@ plot(GDPGrowth,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/us_gdp_wachstum_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_grafik"  />
-<p class="caption">plot of chunk us_gdp_wachstum_grafik</p>
-</div>
+<img src="./03-ergebnisse/us_gdp_wachstum_grafik-1.svg" style="display: block; margin: auto;" />
 
 ---
 
@@ -284,10 +279,7 @@ acf(GDPGrowth, lag.max = 10, plot = F)
 acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_acf_grafik"  />
-<p class="caption">plot of chunk us_gdp_wachstum_acf_grafik</p>
-</div>
+<img src="./03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" style="display: block; margin: auto;" />
 
 ---
 
@@ -346,10 +338,7 @@ plot(JPIndProd, col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum"
 plot(NYSEIndexRet, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/weitere_zeitreihen_grafik-1.svg" alt="plot of chunk weitere_zeitreihen_grafik"  />
-<p class="caption">plot of chunk weitere_zeitreihen_grafik</p>
-</div>
+<img src="./03-ergebnisse/weitere_zeitreihen_grafik-1.svg" style="display: block; margin: auto;" />
 
 ---
 
@@ -390,10 +379,7 @@ par(mfrow = c(1, 1))
 acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen Returns des NYSE Composite Index")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/nyse_re_acf_grafik-1.svg" alt="plot of chunk nyse_re_acf_grafik"  />
-<p class="caption">plot of chunk nyse_re_acf_grafik</p>
-</div>
+<img src="./03-ergebnisse/nyse_re_acf_grafik-1.svg" style="display: block; margin: auto;" />
 
 ---
 

@@ -11,7 +11,7 @@
 
 
 
-<title>Kurze Einführung in R</title>
+<title>hfwu_za_sose_26_00_01_r_einfuehrung.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,7 +348,6 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Kurze Einführung in <em>R</em></h1>
 
 </div>
 
@@ -370,6 +369,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       warning = FALSE,
                       fig.align = &quot;center&quot;,
+                      fig.cap = &quot;&quot;,
                       fig.height = 5,
                       fig.width = 8)
 
@@ -426,7 +426,7 @@ x               # zeige Objekt x an</code></pre>
 <pre class="r"><code>(y &lt;- 9 * 3)     # speichere 9 mal 3 in y und zeige das Ergebnis</code></pre>
 <pre><code>## [1] 27</code></pre>
 <pre class="r"><code>(z &lt;- rnorm(5))  # speichere 5 Standardnormalverteilungen in z und zeige z</code></pre>
-<pre><code>## [1]  2.67475503 -0.78580345  0.07856191  0.82967707  0.60324557</code></pre>
+<pre><code>## [1] -0.1093411 -0.6560803 -2.0309495  0.6769467 -0.2470860</code></pre>
 <pre class="r"><code>x &lt;- c(1, 2, 3, 4); y &lt;- 2*x; z &lt;- c(10, 20); w &lt;- c(8, 3, 2)
 x * y     </code></pre>
 <pre><code>## [1]  2  8 18 32</code></pre>
