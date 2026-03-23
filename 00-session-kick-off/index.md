@@ -1,24 +1,11 @@
 ---
 title: "HfWU Zeitreihenanalyse Sommer 2026: Session 0) Kick-Off"
 date: "2026-03-24"
-author: ["markus.moessler@uni-hohenheim.de"]
-tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 ---
 
 ---
 
 # Session 0) Kick-Off
-
----
-
-## ✅ Gliederung
-
-- [Session 0) Kick-Off](#session-0-kick-off)
-  - [✅ Gliederung](#-gliederung)
-  - [❗ Lernziele](#-lernziele)
-  - [📄 Theorie](#-theorie)
-  - [💻 Praxis](#-praxis)
-  - [❓ Frage](#-frage)
 
 ---
 
@@ -44,11 +31,11 @@ tags: ["hfwu", "zub", "zeitreihenanalyse", "sose-26", "00-seession-kick-off"]
 
 ## 💻 Praxis
 
-- [Aufbereitung US Makro Daten](./hfwu_za_sose_25_00_01_makro_daten_aufbereitung_page.html)
-- ...
+- [Makro Rohdaten (monatlich)](./01-daten/USMacro_Monthly_Quarterly_raw/us_macro_monthly.xlsx)
+- [Makro Rohdaten (quartalsweise)](./01-daten/USMacro_Monthly_Quarterly_raw/us_macro_quarterly.xlsx)
+- [*R*-Skript Datenaufbereitung: Zusammenführung monatliche und quartalsweise Daten](./02-code/daten_vorbereitung.R)
+- [Bericht: Aufbereitung US Makro Daten](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/00-session-kick-off.html?page=hfwu_za_sose_26_00_01_makro_daten_aufbereitung_page)
 
----
+## ➕ Zusätzliches Material
 
-## ❓ Frage
-
-Wie werden die Quartals- und Monatsdaten in dem [*R*-Skript](./02-code/daten_vorbereitung.R) zusammengeführt?
+- [Bericht: Einführung `.rmd` Dateien](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/00-session-kick-off.html?page=hfwu_za_sose_26_00_02_rmd_einfuehrung_page)

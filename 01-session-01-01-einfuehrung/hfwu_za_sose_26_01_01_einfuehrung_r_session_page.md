@@ -8,7 +8,8 @@ editor_options:
 
 # Setup
 
-```{r, message=FALSE, warning=FALSE}
+
+``` r
 # Lade here Paket
 library(here)
 
@@ -55,7 +56,8 @@ Was ist der Unterschied zwischen der Schätzung von Modellen zur Analyse von kau
 
 Nehmen Sie ein einfaches Beispiel zur Schätzung des kausalen Effekts des Schüler-Lehrer-Verhältnisses auf Testergebnisse unter Verwendung eines einfachen Regressionsmodellsn aus dem Textbuch S&W 2020. Verwenden Sie `help("CASchools")`, für mehr Informationen über den Datensatz.
 
-```{r}
+
+``` r
 data(CASchools)   
 CASchools$STR <- CASchools$students/CASchools$teachers       
 CASchools$score <- (CASchools$read + CASchools$math)/2
@@ -63,6 +65,17 @@ CASchools$score <- (CASchools$read + CASchools$math)/2
 mod <- lm(score ~ STR, data = CASchools)
 
 coeftest(mod, vcov. = vcovHC, type = "HC1")
+```
+
+```
+## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value  Pr(>|t|)    
+## (Intercept) 698.93295   10.36436 67.4362 < 2.2e-16 ***
+## STR          -2.27981    0.51949 -4.3886 1.447e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
 ---
@@ -73,10 +86,23 @@ Hat die Schätzung des Koeffizienten für das Schüler-Lehrer-Verhältnis eine k
 
 Hinweis: Die Einbeziehung des Anteils der englischsprachigen Schüler ergibt folgenden geschätzten Effekt des Schüler-Lehrer-Verhältnisses:
 
-```{r}
+
+``` r
 mult_mod <- lm(score ~ STR + english, data = CASchools)
 
 coeftest(mult_mod, vcov. = vcovHC, type = "HC1")
+```
+
+```
+## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) 686.032245   8.728225  78.5993  < 2e-16 ***
+## STR          -1.101296   0.432847  -2.5443  0.01131 *  
+## english      -0.649777   0.031032 -20.9391  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
 ...
@@ -101,8 +127,14 @@ Ist das einfache Regressionsmodell nützlich zur Prognose von Testergebnissen in
 
 Beispiel: Angenommen, die durchschnittliche Klasse in einem Bezirk hat $25$ Schüler.
 
-```{r}
+
+``` r
 predict(mod, newdata = data.frame("STR" = 25))
+```
+
+```
+##        1 
+## 641.9377
 ```
 
 ...
@@ -141,7 +173,8 @@ Ein guter Ausgangspunkt ist die grafische Darstellung der Daten.
 
 Einlesen der Daten.
 
-```{r}
+
+``` r
 us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
                        header = TRUE,
                        sep = ";"
@@ -150,7 +183,8 @@ us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarter
 
 Umwandlung in ein `ts` Object.
 
-```{r}
+
+``` r
 us_macro_ts <- ts(
   us_macro,
   frequency = 4,
@@ -166,14 +200,16 @@ us_macro_ts <- window(us_macro_ts,
 
 Berechnung der annualisierten Wachstumsrate.
 
-```{r}
+
+``` r
 GDP <- us_macro_ts[,"GDPC1"]
 GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
 ```
 
 Darstellung des realen US-BIP.
 
-```{r us_gdp_grafik}
+
+``` r
 plot(GDP,
      col = "steelblue",
      lwd = 2,
@@ -182,9 +218,15 @@ plot(GDP,
      main = "Reales US-BIP")
 ```
 
+<div class="figure" style="text-align: center">
+<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/us_gdp_grafik-1.svg" alt="plot of chunk us_gdp_grafik"  />
+<p class="caption">plot of chunk us_gdp_grafik</p>
+</div>
+
 Darstellung der Wachstumsrate.
 
-```{r us_gdp_wachstum_grafik}
+
+``` r
 plot(GDPGrowth,
      col = "steelblue",
      lwd = 2,
@@ -192,6 +234,11 @@ plot(GDPGrowth,
      xlab = "Datum",
      main = "Wachstumsrate des realen US-BIP")
 ```
+
+<div class="figure" style="text-align: center">
+<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/us_gdp_wachstum_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_grafik"  />
+<p class="caption">plot of chunk us_gdp_wachstum_grafik</p>
+</div>
 
 ---
 
@@ -215,13 +262,28 @@ Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transform
 
 Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korrelation nennt man *Autokorrelation* oder *serielle Korrelation*.
 
-```{r}
+
+``` r
 acf(GDPGrowth, lag.max = 10, plot = F)
 ```
 
-```{r us_gdp_wachstum_acf_grafik}
+```
+## 
+## Autocorrelations of series 'GDPGrowth', by lag
+## 
+##   0.00   0.25   0.50   0.75   1.00   1.25   1.50   1.75   2.00   2.25   2.50 
+##  1.000  0.332  0.205  0.080  0.041 -0.065  0.007 -0.039 -0.069  0.040  0.062
+```
+
+
+``` r
 acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
+
+<div class="figure" style="text-align: center">
+<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" alt="plot of chunk us_gdp_wachstum_acf_grafik"  />
+<p class="caption">plot of chunk us_gdp_wachstum_acf_grafik</p>
+</div>
 
 ---
 
@@ -245,7 +307,8 @@ Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
 
 Makro Zeitreihen
 
-```{r}
+
+``` r
 us_macro_ts <- window(us_macro_ts,
                       start = c(1960, 1),
                       end = c(2013, 4)
@@ -259,7 +322,8 @@ JPIndProd <- us_macro_ts[,"JAPAN_IP"]
 
 Finanzmarkt Zeitreihe
 
-```{r}
+
+``` r
 # Daily NYSE Composite Index
 data("NYSESW")
 
@@ -269,13 +333,19 @@ NYSEIndexRet <- 100 * diff(log(NYSESW))
 
 Darstellung
 
-```{r weitere_zeitreihen_grafik}
+
+``` r
 par(mfrow = c(2, 2))
 plot(USUnemp, col = "steelblue", lwd = 2, ylab = "Prozent", xlab = "Datum", main = "US-Arbeitslosenquote", cex.main = 0.8)
 plot(DollarPoundFX, col = "steelblue", lwd = 2, ylab = "Dollar pro Pfund", xlab = "Datum", main = "US-Dollar / Britisches Pfund Wechselkurs", cex.main = 0.8)
 plot(JPIndProd, col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum", main = "Japanische Industrieproduktion", cex.main = 0.8)
 plot(NYSEIndexRet, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
 ```
+
+<div class="figure" style="text-align: center">
+<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/weitere_zeitreihen_grafik-1.svg" alt="plot of chunk weitere_zeitreihen_grafik"  />
+<p class="caption">plot of chunk weitere_zeitreihen_grafik</p>
+</div>
 
 ---
 
@@ -297,14 +367,29 @@ Beschreiben und vergleichen Sie die Eigenschaften dieser verschiedenen wirtschaf
 
 Zur genaueren Analyse der täglichen Veränderungen des New York Stock Exchange Composite Index berechnen wir die Stichprobenautokorrelationen.
 
-```{r}
+
+``` r
 acf(as.numeric(NYSEIndexRet), plot = F, lag.max = 10)
 ```
 
-```{r nyse_re_acf_grafik}
+```
+## 
+## Autocorrelations of series 'as.numeric(NYSEIndexRet)', by lag
+## 
+##      0      1      2      3      4      5      6      7      8      9     10 
+##  1.000  0.041 -0.015 -0.023  0.000 -0.036 -0.027 -0.058  0.013  0.017  0.004
+```
+
+
+``` r
 par(mfrow = c(1, 1))
 acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen Returns des NYSE Composite Index")
 ```
+
+<div class="figure" style="text-align: center">
+<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/nyse_re_acf_grafik-1.svg" alt="plot of chunk nyse_re_acf_grafik"  />
+<p class="caption">plot of chunk nyse_re_acf_grafik</p>
+</div>
 
 ---
 
