@@ -31,5 +31,5 @@ date: "2026-03-24"
 
 ## 💻 Praxis
 
-- [Daten](./01-daten/us_macro_quarterly_merged.csv)
-- [R-Session](./01-session-einfuehrung.html?page=hfwu_za_sose_26_01_01_einfuehrung_r_session)
+- [Makro Rohdaten (zusammengeführt)](./01-daten/us_macro_quarterly_merged.csv)
+- [*R*-Session: Einführung in die Zeitreihenregression und -prognose](./01-session-einfuehrung.html?page=hfwu_za_sose_26_01_01_einfuehrung_r_session)
