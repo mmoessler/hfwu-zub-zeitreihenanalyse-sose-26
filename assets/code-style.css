@@ -11,7 +11,7 @@
 
 pre[class*="language-"] {
   background: transparent !important; /* remove Prism’s white */
-  margin: 0;
+  margin: 1rem;
   padding: 0;
 }
 
