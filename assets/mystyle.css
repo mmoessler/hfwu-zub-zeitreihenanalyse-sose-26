@@ -5,13 +5,26 @@
   --link-color: #00305e;
 }
 
+.hfwu-blue {
+    background: #00305e;
+}
+
+.hfwu-yellow {
+    background: #fabb00;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
 }
 
+p {
+    font-size: large;
+}
+
 a {
   color: var(--link-color);
+  font-size: large;
 }
 
 /* 🌙 Dark mode overrides */
@@ -49,17 +62,7 @@ body.dark-mode table.table-striped tbody tr:nth-of-type(even) {
   background-color: rgba(255, 255, 255, 0.02) !important;
 }
 
-p {
-    font-size: large;
-}
-
-.hfwu-blue {
-    background: #00305e;
-}
-
-.hfwu-yellow {
-    background: #fabb00;
-}
+/* Navbar */
 
 /* Style all nav links */
 .navbar-nav .nav-link {
@@ -127,6 +130,8 @@ a:hover {
   text-decoration: underline;
   color: #00305e;
 }
+
+/* Figures */
 
 .figure {
   display: flex;

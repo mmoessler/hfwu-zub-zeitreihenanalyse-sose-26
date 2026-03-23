@@ -9,7 +9,7 @@ library(zoo)
 
 # Laden der Rohodaten
 us_macro_qua <- read_xlsx(
-  here("00-session-kick-off", "01-daten", "USMacro_Monthly_Quarterly_raw", "us_macro_quarterly.xlsx")
+  here("01-session-01-01-einfuehrung", "01-daten", "USMacro_Monthly_Quarterly_raw", "us_macro_quarterly.xlsx")
 )
 
 # Umwandlung in Zeitreihe
@@ -44,7 +44,7 @@ colnames(qua_date_seq_ts) <- c("datum_num", "datum_tag", "datum_qtr")
 # Monatsfrequenz ----
 
 us_macro_mon <- read_xlsx(
-  here("00-session-kick-off", "01-daten", "USMacro_Monthly_Quarterly_raw", "us_macro_monthly.xlsx")
+  here("01-session-01-01-einfuehrung", "01-daten", "USMacro_Monthly_Quarterly_raw", "us_macro_monthly.xlsx")
 )
 
 # Umwandlung in Zeitreihe
@@ -98,7 +98,7 @@ colnames(us_macro_qua_mon_ts) <- c("datum_num", "datum_tag", "datum_qtr", "GDPC1
 
 # 4. Speichern als CSV
 write.table(us_macro_qua_mon_ts,
-            here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
+            here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
             row.names = FALSE,
             sep = ";"
 )

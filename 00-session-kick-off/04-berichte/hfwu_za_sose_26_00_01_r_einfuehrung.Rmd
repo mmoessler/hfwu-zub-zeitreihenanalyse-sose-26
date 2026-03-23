@@ -1,16 +1,31 @@
 ---
-title: "Kurze Einführung in R"
-output: pdf_document
+output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
-# Setup
+---
 
-```{r}
+# Kurze Einführung in *R*
+
+Dieses Dokument bietet eine kurze Einführung in die Statistiksoftware *R*.
+
+---
+
+## Setup
+
+```{r, message=FALSE, warning=FALSE}
+# Lade here Paket
+library(here)
+
 # Optionen Rendering
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_knit$set(root.dir = here())
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.height = 5,
+                      fig.width = 8)
 
 # Säubere Umgebung
 rm(list=ls())
@@ -20,13 +35,17 @@ library(astsa)
 library(dynlm)
 ```
 
-# Grundlagen
+---
+
+## Grundlagen
 
 * Shumway, R. H., Stoffer, D. S., & Stoffer, D. S. (2017). Zeitreihenanalyse und ihre Anwendungen (Bd. 4). New York: Springer.
 * [GitHub Stoffer: R-Grundlagen](https://dsstoffer.github.io/Rtoot#basics)
 * [CRAN: astsa: Angewandte statistische Zeitreihenanalyse](https://cran.r-project.org/web/packages/astsa/index.html)
 
-## Einfache Berechnungen
+---
+
+### Einfache Berechnungen
 
 ```{r}
 2+2               # Addition
@@ -41,7 +60,9 @@ seq(1, 10, by=2)  # Sequenzen
 rep(2, 3)         # Wiederhole 2 dreimal
 ```
 
-## Zuweisung und Objekte
+---
+
+### Zuweisung und Objekte
 
 ```{r}
 x <- 1 + 2      # speichere 1 + 2 in Objekt x
@@ -73,9 +94,11 @@ rm(list=ls())
 # q()              
 ```
 
-## Daten
+---
 
-R verfügt über verschiedene Datenobjekte, darunter:
+### Daten
+
+*R* verfügt über verschiedene Datenobjekte, darunter:
 
 - Vektoren
 - Matrizen
@@ -105,8 +128,9 @@ dim(mydata)
 
 ```{r}
 # Angenommen, "dummy.txt" existiert im Arbeitsverzeichnis
-(dummy <- scan(rprojroot::find_rstudio_root_file("03-daten/dummy.txt")))
-(dummy <- read.table(rprojroot::find_rstudio_root_file("03-daten/dummy.txt")))
+(dummy <- scan(here("00-session-kick-off", "01-daten", "dummy.txt")))
+
+(dummy <- read.table(here("00-session-kick-off", "01-daten", "dummy.txt")))
 dummy$V2
 colnames(dummy) <- c("Hund", "Katze", "Ratte", "Schwein", "Mensch")
 attach(dummy)
@@ -118,7 +142,7 @@ detach(dummy)
 
 ```{r}
 # CSV mit Header lesen
-(dummy <- read.csv(rprojroot::find_rstudio_root_file("03-daten/dummy.csv")))
+(dummy <- read.csv(here("00-session-kick-off", "01-daten", "dummy.csv")))
 ```
 
 ```{r}
@@ -128,9 +152,13 @@ x = 1:3; y = 4:6
 (u2 <- rbind(x ,y))  
 ```
 
-## Packete, Funktionen, bedingte Anweisungen und Schleifen
+---
 
-### Packete
+### Packete, Funktionen, bedingte Anweisungen und Schleifen
+
+---
+
+#### Packete
 
 Installiere und lade Packete:
 
@@ -139,7 +167,9 @@ Installiere und lade Packete:
 # library(tidyverse)
 ```
 
-### Funktionen
+---
+
+#### Funktionen
 
 Funktionen werden mit `function` erstellt:
 
@@ -152,7 +182,9 @@ my_function <- function(x) {
 my_function(4)
 ```
 
-### Bedingte Anweistungen
+---
+
+#### Bedingte Anweistungen
 
 ```{r}
 x <- 10
@@ -167,7 +199,9 @@ for (i in 1:5) {
 }
 ```
 
-### Schleifen
+---
+
+#### Schleifen
 
 Ein sehr geläufiger Schleifentyp sind for-Schleifen.
 
@@ -193,7 +227,9 @@ Eine weitere Art von Schleifen bietet die Familie von apply Funktionen
 lapply(1:5, function(a) {a + 1})
 ```
 
-## Base R vs. Tidyverse
+---
+
+### Base R vs. Tidyverse
 
 Base R verwendet einfache Funktionen, während Tidyverse eine unter anderem verkettbare Syntax bietet.
 
@@ -206,9 +242,11 @@ df$time <- as.Date(df$time, origin="1970-01-01")
 
 ```
 
-## Einfache Simulationen
+---
 
-```{r}
+### Einfache Simulationen
+
+```{r simulation}
 set.seed(90210)                         
 x <- rnorm(25, 10, 4)                   
 c( mean(x), median(x), var(x), sd(x) )  
@@ -218,9 +256,13 @@ summary(x)
 boxplot(x); hist(x); stem(x)            
 ```
 
-# Einführung in Zeitreihen
+---
 
-## Zeitreihenobjekt
+## Einführung in Zeitreihen
+
+---
+
+### Zeitreihenobjekt
 
 ```{r}
 (mydata <- c(1,2,3,2,1))                              
@@ -233,7 +275,9 @@ time(mydata)
 
 Hinweis: `ts`-Objekte sind nützlich für Zeitreihen mit regelmäßigen Intervallen (z.B. `frequency=4` für Quartalsdaten), aber nicht für tägliche Daten geeignet.
 
-## Verzögerung und Differenzen
+---
+
+### Verzögerung und Differenzen
 
 ```{r}
 (x <- ts(1:5))                        
@@ -245,9 +289,11 @@ diff(diff(x))
 diff(x, diff=2)                       
 ```
 
-## Regressionen
+---
 
-```{r}
+### Regressionen
+
+```{r regression}
 set.seed(1999)          
 (x <- rnorm(10))        
 (y <- x + rnorm(10))    
@@ -272,18 +318,24 @@ fit = dynlm(cmort~part + L(part,4))
 summary(fit)
 ```
 
-# Grafiken
+---
 
-## Einzelne Zeitreihe plotten
+## Grafiken
 
-```{r}
+---
+
+### Einzelne Zeitreihe plotten
+
+```{r speech}
 par(mfrow = c(1,1))
 plot(speech)
 ```
 
-## Mehrere Zeitreihen plotten
+---
 
-```{r}
+### Mehrere Zeitreihen plotten
+
+```{r plots}
 plot.ts(cbind(soi, rec))
 
 par(mfrow = c(2,1))
@@ -291,21 +343,23 @@ plot(soi, ylab='', xlab='', main='Southern Oscillation Index')
 plot(rec, ylab='', xlab='', main='Rekrutierung')
 ```
 
-```{r}
+```{r ts_plot}
 ts.plot(cmort, tempr, part, col=1:3)
 legend('topright', legend=c('M','T','P'), lty=1, col=1:3)
 ```
 
-## Plots exportieren
+---
 
-```{r}
+### Plots exportieren
+
+```{r export}
 dev.new(width=7, height=4)                
 par(mar=c(3,3,1,1), mgp=c(1.6,.6,0) )     
 plot(speech, type='n')
 grid(lty=1, col=gray(.9)); lines(speech)
 dev.off()
 
-pdf(file=rprojroot::find_rstudio_root_file("05-ergebnisse/speech.pdf"), width=7, height=4)
+pdf(file=here("00-session-kick-off", "03-ergebnisse", "speech.pdf"), width=7, height=4)
 par(mar=c(3,3,1,1), mgp=c(1.6,.6,0) )     
 plot(speech, type='n')
 grid(lty=1, col=gray(.9)); lines(speech)

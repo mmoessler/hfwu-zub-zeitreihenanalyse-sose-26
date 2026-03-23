@@ -1,12 +1,16 @@
 ---
-title: "Kapitel 1) Einführung in die Zeitreihenregression und -prognose"
+output: html_document
 editor_options: 
   chunk_output_type: console
 ---
 
 ---
 
-# Setup
+# Kapitel 1) Einführung in die Zeitreihenregression und -prognose
+
+---
+
+## Setup
 
 
 ``` r
@@ -30,15 +34,15 @@ library(AER)
 library(readxl)
 ```
 
-# Kapitel 1.1) Einführung in Zeitreihendaten
+## Kapitel 1.1) Einführung in Zeitreihendaten
 
 ---
 
-## Verwendung von Regressionsmodellen zur Prognose
+### Verwendung von Regressionsmodellen zur Prognose
 
 ---
 
-### Frage 1
+#### Frage 1
 
 Was ist der Unterschied zwischen der Schätzung von Modellen zur Analyse von kausalen Effekten und zur Prognose?
 
@@ -80,7 +84,7 @@ coeftest(mod, vcov. = vcovHC, type = "HC1")
 
 ---
 
-### Frage 2
+#### Frage 2
 
 Hat die Schätzung des Koeffizienten für das Schüler-Lehrer-Verhältnis eine kausale Interpretation?
 
@@ -121,7 +125,7 @@ Bei der Entscheidung, auf welche Schule ihr Kind gehen soll, könnte es für ein
 
 ---
 
-### Frage 3
+#### Frage 3
 
 Ist das einfache Regressionsmodell nützlich zur Prognose von Testergebnissen in Schulbezirken ohne öffentliche Daten zu Testergebnissen?
 
@@ -149,7 +153,7 @@ predict(mod, newdata = data.frame("STR" = 25))
 
 ---
 
-### Frage 4
+#### Frage 4
 
 Welche zusätzlichen Informationen könnten in einem Zeitreihenkontext zur Prognose von Testergebnissen genutzt werden?
 
@@ -165,7 +169,7 @@ Welche zusätzlichen Informationen könnten in einem Zeitreihenkontext zur Progn
 
 ---
 
-## US-Reales BIP
+### US-Reales BIP
 
 Das BIP wird als der Gesamtwert aller in einem bestimmten Zeitraum produzierten Waren und Dienstleistungen definiert. Der Datensatz `us_macro_quarterly.xlsx` enthält vierteljährliche Daten zum realen BIP der USA (d.h. inflationsbereinigt) von 1947 bis 2004.
 
@@ -175,7 +179,7 @@ Einlesen der Daten.
 
 
 ``` r
-us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
+us_macro <- read.table(here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
                        header = TRUE,
                        sep = ";"
 )
@@ -242,7 +246,7 @@ plot(GDPGrowth,
 
 ---
 
-### Frage 5
+#### Frage 5
 
 Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transformation zur Wachstumsrate sinnvoll?
 
@@ -258,7 +262,7 @@ Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transform
 
 ---
 
-## Autokorrelation
+### Autokorrelation
 
 Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korrelation nennt man *Autokorrelation* oder *serielle Korrelation*.
 
@@ -287,7 +291,7 @@ acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 
 ---
 
-### Frage 6
+#### Frage 6
 
 Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
 
@@ -303,7 +307,7 @@ Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
 
 ---
 
-## Weitere Beispiele wirtschaftlicher Zeitreihen
+### Weitere Beispiele wirtschaftlicher Zeitreihen
 
 Makro Zeitreihen
 
@@ -349,7 +353,7 @@ plot(NYSEIndexRet, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = 
 
 ---
 
-### Frage 7
+#### Frage 7
 
 Beschreiben und vergleichen Sie die Eigenschaften dieser verschiedenen wirtschaftlichen Zeitreihen.
 
@@ -393,7 +397,7 @@ acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen 
 
 ---
 
-### Frage 8
+#### Frage 8
 
 Beschreiben Sie die Eigenschaften des New York Stock Exchange Composite Index genauer.
 

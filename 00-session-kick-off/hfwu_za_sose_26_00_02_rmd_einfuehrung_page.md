@@ -1,12 +1,18 @@
 ---
-title: "Kurze Einführung in die Verwendung von RMarkdown-Dateien"
+output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
+
+---
+
+# Kurze Einführung in die Verwendung von *R*-Markdown-Dateien
 
 ---
 
 ## Kursstruktur
 
-Das R-Projekt für diesen Kurse könnte wie folgt aussehen:
+Das *R*-Projekt für diesen Kurse könnte wie folgt aussehen:
 
 ```bash
 ├── 00-session-kick-off
@@ -54,7 +60,7 @@ Wenn du in einem Codeblock auf Dateien im Projektverzeichnis zugreifen möchtest
 library(here)
 
 # Lade Datei
-us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
+us_macro <- read.table(here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
                        header = TRUE,
                        sep = ";"
 )

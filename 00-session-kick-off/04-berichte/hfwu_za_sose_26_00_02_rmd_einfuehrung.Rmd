@@ -1,12 +1,18 @@
 ---
-title: "Kurze Einführung in die Verwendung von RMarkdown-Dateien"
+output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
+
+---
+
+# Kurze Einführung in die Verwendung von *R*-Markdown-Dateien
 
 ---
 
 ## Kursstruktur
 
-Das R-Projekt für diesen Kurse könnte wie folgt aussehen:
+Das *R*-Projekt für diesen Kurse könnte wie folgt aussehen:
 
 ```bash
 ├── 00-session-kick-off
@@ -45,11 +51,12 @@ knitr::opts_knit$set(root.dir = here::here())
 Um beim Rendern störende Konsolenausgaben oder Warnungen zu vermeiden, kannst du diese globalen Chunk-Optionen setzen:
 
 ```{r setup-chunk-options, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = FALSE,
-  warning = FALSE
-)
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.height = 5,
+                      fig.width = 8)
 ```
 
 ---
@@ -63,7 +70,7 @@ Wenn du in einem Codeblock auf Dateien im Projektverzeichnis zugreifen möchtest
 library(here)
 
 # Lade Datei
-us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
+us_macro <- read.table(here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
                        header = TRUE,
                        sep = ";"
 )

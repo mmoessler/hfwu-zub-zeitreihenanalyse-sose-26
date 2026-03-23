@@ -1,13 +1,16 @@
 ---
-title: "Makrodaten Vorbereitung"
-date: "2026-03-24"
+output: html_document
 editor_options: 
   chunk_output_type: console
 ---
 
 ---
 
-# Setup
+# Vorbereitung Makrodaten
+
+---
+
+## Setup
 
 
 ``` r
@@ -18,7 +21,10 @@ library(here)
 knitr::opts_knit$set(root.dir = here())
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.height = 5,
+                      fig.width = 8)
 
 # Säubere Umgebung
 rm(list=ls())
@@ -26,28 +32,28 @@ rm(list=ls())
 
 ---
 
-# Rohdaten
+## Rohdaten
 
 Die "Makrorohdaten" können auf der folgenden Internetseite gefunden werden: [Ausgewählte Ressourcen für Studierende – Stock und Watsons Einführung in die Ökonometrie, 4. Auflage (U.S.)](https://www.princeton.edu/~mwatson/Stock-Watson_4E/Stock-Watson-Resources-4e.html)
 
 ---
 
-# Vorbereitung
+## Vorbereitung
 
 
 ``` r
-source(here("00-session-kick-off", "02-code", "daten_vorbereitung.R"))
+source(here("01-session-01-01-einfuehrung", "02-code", "daten_vorbereitung.R"))
 ```
 
 ---
 
-# Darstellung der Daten
+## Darstellung der Daten
 
 Einlesen der Daten.
 
 
 ``` r
-us_macro <- read.table(here("00-session-kick-off", "01-daten", "us_macro_quarterly_merged.csv"),
+us_macro <- read.table(here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
                        header = TRUE,
                        sep = ";"
 )
@@ -91,22 +97,6 @@ plot(GDPGrowth,
 ```
 
 <div class="figure" style="text-align: center">
-<img src="/home/rstudio/workspace/00-session-kick-off/03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
+<img src="/home/rstudio/workspace/github/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/03-ergebnisse/gdp_wachstum_grafik-1.svg" alt="plot of chunk gdp_wachstum_grafik"  />
 <p class="caption">plot of chunk gdp_wachstum_grafik</p>
 </div>
-
----
-
-# Frage
-
-Wie werden die Quartals- und Monatsdaten in dem Skript `daten_vorbereitung.R` zusammengeführt?
-
-...
-
-...
-
-...
-
-...
-
-...

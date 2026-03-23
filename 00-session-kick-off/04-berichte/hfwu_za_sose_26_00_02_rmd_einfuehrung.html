@@ -11,7 +11,7 @@
 
 
 
-<title>Kurze Einführung in die Verwendung von RMarkdown-Dateien</title>
+<title>hfwu_za_sose_26_00_02_rmd_einfuehrung.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,16 +348,19 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Kurze Einführung in die Verwendung von
-RMarkdown-Dateien</h1>
 
 </div>
 
 
 <hr />
+<div id="kurze-einführung-in-die-verwendung-von-r-markdown-dateien" class="section level1">
+<h1>Kurze Einführung in die Verwendung von
+<em>R</em>-Markdown-Dateien</h1>
+<hr />
 <div id="kursstruktur" class="section level2">
 <h2>Kursstruktur</h2>
-<p>Das R-Projekt für diesen Kurse könnte wie folgt aussehen:</p>
+<p>Das <em>R</em>-Projekt für diesen Kurse könnte wie folgt
+aussehen:</p>
 <pre class="bash"><code>├── 00-session-kick-off
 │   ├── 01-daten
 │   ├── 02-code
@@ -400,10 +403,11 @@ Pfad-Komponenten der Datei. Z.B.</p>
 library(here)
 
 # Lade Datei
-us_macro &lt;- read.table(here(&quot;00-session-kick-off&quot;, &quot;01-daten&quot;, &quot;us_macro_quarterly_merged.csv&quot;),
+us_macro &lt;- read.table(here(&quot;01-session-01-01-einfuehrung&quot;, &quot;01-daten&quot;, &quot;us_macro_quarterly_merged.csv&quot;),
                        header = TRUE,
                        sep = &quot;;&quot;
 )</code></pre>
+</div>
 </div>
 
 
