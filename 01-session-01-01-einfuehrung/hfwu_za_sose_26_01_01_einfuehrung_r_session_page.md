@@ -220,24 +220,30 @@ plot(GDP,
      lwd = 2,
      ylab = "Billionen 2009 USD",
      xlab = "Datum",
-     main = "Reales US-BIP")
+     main = "Reales US-BIP in Billionen 2009 USD")
 ```
 
-<img src="./03-ergebnisse/us_gdp_grafik-1.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/us_gdp-1.svg" alt="Reales US-BIP in Billionen 2009 USD"  />
+<p class="caption">Reales US-BIP in Billionen 2009 USD</p>
+</div>
 
-Darstellung der Wachstumsrate.
+Darstellung der jährlichen Wachstumsrate.
 
 
 ``` r
 plot(GDPGrowth,
      col = "steelblue",
      lwd = 2,
-     ylab = "Logarithmus",
+     ylab = "Jährliche Wachstumsrate",
      xlab = "Datum",
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-<img src="./03-ergebnisse/us_gdp_wachstum_grafik-1.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/us_gdp_wachstumsrate-1.svg" alt="Wachstumsrate des realen US-BIP"  />
+<p class="caption">Wachstumsrate des realen US-BIP</p>
+</div>
 
 ---
 

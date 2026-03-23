@@ -178,22 +178,22 @@ GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
 
 Darstellung des realen US-BIP.
 
-```{r us_gdp_grafik}
+```{r us_gdp, fig.cap="Reales US-BIP in Billionen 2009 USD"}
 plot(GDP,
      col = "steelblue",
      lwd = 2,
      ylab = "Billionen 2009 USD",
      xlab = "Datum",
-     main = "Reales US-BIP")
+     main = "Reales US-BIP in Billionen 2009 USD")
 ```
 
-Darstellung der Wachstumsrate.
+Darstellung der jährlichen Wachstumsrate.
 
-```{r us_gdp_wachstum_grafik}
+```{r us_gdp_wachstumsrate, fig.cap="Wachstumsrate des realen US-BIP"}
 plot(GDPGrowth,
      col = "steelblue",
      lwd = 2,
-     ylab = "Logarithmus",
+     ylab = "Jährliche Wachstumsrate",
      xlab = "Datum",
      main = "Wachstumsrate des realen US-BIP")
 ```

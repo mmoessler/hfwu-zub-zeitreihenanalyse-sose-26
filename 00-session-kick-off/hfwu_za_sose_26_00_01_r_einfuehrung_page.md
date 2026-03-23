@@ -585,7 +585,13 @@ summary(x)
 boxplot(x); hist(x); stem(x)            
 ```
 
-<img src="./03-ergebnisse/simulation-1.svg" style="display: block; margin: auto;" /><img src="./03-ergebnisse/simulation-2.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/simulation-1.svg" alt="Simulierte Daten"  />
+<p class="caption">Simulierte Daten</p>
+</div><div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/simulation-2.svg" alt="Simulierte Daten"  />
+<p class="caption">Simulierte Daten</p>
+</div>
 
 ```
 ## 
@@ -788,8 +794,8 @@ set.seed(1999)
 ```
 
 ```
-##  [1]  0.7217868  0.5075593 -0.0768911  1.3607217 -0.1214286  1.1468035 -0.7126184
-##  [8] -0.5109490  0.3886331  0.9251048
+##  [1]  0.7217868  0.5075593 -0.0768911  1.3607217 -0.1214286  1.1468035 -0.7126184 -0.5109490
+##  [9]  0.3886331  0.9251048
 ```
 
 ``` r
@@ -822,7 +828,10 @@ plot(x, y)
 abline(fit)             
 ```
 
-<img src="./03-ergebnisse/regression-1.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/regression-1.svg" alt="Beobachtungen und geschätzte Regressionsgerade"  />
+<p class="caption">Beobachtungen und geschätzte Regressionsgerade</p>
+</div>
 
 
 ``` r
@@ -841,10 +850,10 @@ fitted(fit)
 ```
 
 ```
-##            1            2            3            4            5            6 
-##  0.592949606  0.240309304  0.808211365  0.930316045  0.318809880  0.495535464 
-##            7            8            9           10 
-##  0.006184128 -0.285001160 -0.267459264  0.788866713
+##            1            2            3            4            5            6            7 
+##  0.592949606  0.240309304  0.808211365  0.930316045  0.318809880  0.495535464  0.006184128 
+##            8            9           10 
+## -0.285001160 -0.267459264  0.788866713
 ```
 
 ``` r
@@ -945,7 +954,10 @@ par(mfrow = c(1,1))
 plot(speech)
 ```
 
-<img src="./03-ergebnisse/speech-1.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/speech-1.svg" alt="Eine Zeitreihe in einem Plot"  />
+<p class="caption">Eine Zeitreihe in einem Plot</p>
+</div>
 
 ---
 
@@ -956,23 +968,34 @@ plot(speech)
 plot.ts(cbind(soi, rec))
 ```
 
-<img src="./03-ergebnisse/plots-1.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/plots-1.svg" alt="Mehrere Zeitreihen in mehreren Plots"  />
+<p class="caption">Mehrere Zeitreihen in mehreren Plots</p>
+</div>
 
 ``` r
-par(mfrow = c(2,1))
+par(mfrow = c(1,2))
 plot(soi, ylab='', xlab='', main='Southern Oscillation Index')
 plot(rec, ylab='', xlab='', main='Rekrutierung')
 ```
 
-<img src="./03-ergebnisse/plots-2.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/plots-2.svg" alt="Mehrere Zeitreihen in mehreren Plots"  />
+<p class="caption">Mehrere Zeitreihen in mehreren Plots</p>
+</div>
 
 
 ``` r
+par(mfrow = c(1,1))
+
 ts.plot(cmort, tempr, part, col=1:3)
 legend('topright', legend=c('M','T','P'), lty=1, col=1:3)
 ```
 
-<img src="./03-ergebnisse/ts_plot-1.svg" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/ts_plot-1.svg" alt="Mehrere Zeitreihen in einem Plot"  />
+<p class="caption">Mehrere Zeitreihen in einem Plot</p>
+</div>
 
 ---
 

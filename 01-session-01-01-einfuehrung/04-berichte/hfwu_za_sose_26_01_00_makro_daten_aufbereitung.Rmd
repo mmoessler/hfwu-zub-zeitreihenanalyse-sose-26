@@ -81,13 +81,13 @@ GDP <- us_macro_ts[,4]
 GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
 ```
 
-Darstellung der Wachstumsrate.
+Darstellung der jährlichen Wachstumsrate.
 
-```{r gdp_wachstum_grafik}
+```{r us_gdp_wachstumsrate, fig.cap="Wachstumsrate des realen US-BIP"}
 plot(GDPGrowth,
      col = "steelblue",
      lwd = 2,
-     ylab = "Logarithmus",
+     ylab = "Jährliche Wachstumsrate",
      xlab = "Datum",
      main = "Wachstumsrate des realen US-BIP")
 ```
