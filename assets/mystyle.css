@@ -19,12 +19,16 @@ body {
 }
 
 p {
-    font-size: large;
+  font-size: large;
 }
 
 a {
   color: var(--link-color);
   font-size: large;
+}
+
+h1 h2 h3 {
+  margin-bottom: 1rem;
 }
 
 /* 🌙 Dark mode overrides */
@@ -137,9 +141,5 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.img {
   margin-bottom: 1rem;
 }

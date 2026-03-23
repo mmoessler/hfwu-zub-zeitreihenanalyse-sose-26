@@ -8,6 +8,13 @@ editor_options:
 
 # Vorbereitung Makrodaten
 
+Dieses Dokument beschreibt die Vorbereitung der Makrodaten.
+
+- [Setup](#setup)
+- [Rohdaten](#rohdaten)
+- [Vorbereitung](#vorbereitung)
+- [Darstellung der Daten](#darstellung-der-daten)
+
 ---
 
 ## Setup

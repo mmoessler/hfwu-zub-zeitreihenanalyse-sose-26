@@ -8,6 +8,8 @@ editor_options:
 
 # Kurze Einführung in die Verwendung von *R*-Markdown-Dateien
 
+Dieses Dokument bietet eine kurze Einführung in die Verwendung von *R*-Markdown-Dateien.
+
 ---
 
 ## Kursstruktur

@@ -10,6 +10,27 @@ editor_options:
 
 Dieses Dokument bietet eine kurze Einführung in die Statistiksoftware *R*.
 
+- [Setup](#setup)
+- [Grundlagen](#grundlagen)
+  - [Einfache Berechnungen](#einfache-berechnungen)
+  - [Zuweisung und Objekte](#zuweisung-und-objekte)
+  - [Daten](#daten)
+  - [Packete, Funktionen, bedingte Anweisungen und Schleifen](#packete-funktionen-bedingte-anweisungen-und-schleifen)
+    - [Packete](#packete)
+    - [Funktionen](#funktionen)
+    - [Bedingte Anweistungen](#bedingte-anweistungen)
+    - [Schleifen](#schleifen)
+  - [Base R vs. Tidyverse](#base-r-vs-tidyverse)
+  - [Einfache Simulationen](#einfache-simulationen)
+- [Einführung in Zeitreihen](#einführung-in-zeitreihen)
+  - [Zeitreihenobjekt](#zeitreihenobjekt)
+  - [Verzögerung und Differenzen](#verzögerung-und-differenzen)
+  - [Regressionen](#regressionen)
+- [Grafiken](#grafiken)
+  - [Einzelne Zeitreihe plotten](#einzelne-zeitreihe-plotten)
+  - [Mehrere Zeitreihen plotten](#mehrere-zeitreihen-plotten)
+  - [Plots exportieren](#plots-exportieren)
+
 ---
 
 ## Setup

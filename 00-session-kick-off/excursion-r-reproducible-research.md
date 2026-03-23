@@ -150,7 +150,7 @@ Think of *R* Markdown as an *R* script that automatically produces a report.
 - Knitting starts a NEW *R* session.
 - Everything must run from top to bottom without relying on your Console.
 
-For more information - in particular how to knit `.pdf` files - see: [Rendering Process](./260216-rendering-process.html)
+For more information - in particular how to knit `.pdf` files - see: [Rendering Process](./00-session-kick-off.html?page=rendering-process)
 
 ---
 
