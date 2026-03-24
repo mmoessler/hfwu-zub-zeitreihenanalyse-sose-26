@@ -33,7 +33,7 @@ Der Kurs ist in mehrere Sessions unterteilt. Jede Session besteht aus:
 ### Kapitel 1) Einführung in die Zeitreihenregression und -prognose
 
 * [Session 1: Einführung in Zeitreihendaten und Serielle Korrelation](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/01-session-01-01-einfuehrung/01-session-einfuehrung.html?page=index)
-* Session 2: Stationarität und Prognosen
+* [Session 2: Stationarität und Mean Squared Forecast Error (MSFE)](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/02-session-01-02-stationaritaet-msfe/02-session-stationaritaet-msfe.html?page=index)
 * Session 3: Autoregression und das Autoregressive (AR) Modell
 * Session 4: Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
 * Session 5: Einschätzung von Prognosen und Prognoseintervalle
