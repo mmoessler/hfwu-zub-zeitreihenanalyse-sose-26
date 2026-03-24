@@ -69,3 +69,8 @@ Der Kurs ist in mehrere Sessions unterteilt. Jede Session besteht aus:
 
 Bei Fragen oder Anregungen schreiben Sie gerne eine E-Mail an:
 📩 [markus.moessler@lb.hfwu.de](mailto:markus.moessler@lb.hfwu.de)
+
+---
+
+## GitHub
+
