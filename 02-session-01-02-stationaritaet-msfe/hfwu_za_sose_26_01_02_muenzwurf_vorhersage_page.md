@@ -1,0 +1,165 @@
+---
+output: html_document
+---
+
+---
+
+# Vorhersage von Münzwürfen: Unbedingter vs. Bedingter Mittelwert
+
+Dieses Dokument illustriert den Unterschied zwischen der Verwendung des **unbedingten Mittelwerts** und des **bedingten Mittelwerts** als optimale Prognosen unter einer **quadratischen Verlustfunktion** (Mean Squared Error, MSE) für zwei Arten von Münzwurf-Daten:
+
+- **Unkorrelierte** (IID) Münzwürfe  
+- **Korrelierte** Münzwürfe, modelliert als Markov-Prozess erster Ordnung  
+
+---
+
+## Setup
+
+
+``` r
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Verwende "seed" für die Reproduzierbarkeit
+set.seed(123)
+```
+
+---
+
+## Daten-generierender Prozess (DGP)
+
+### Unkorrelierte Münzwürfe
+
+Jeder Wurf ist unabhängig und fair:
+
+$$
+Y_t \sim \text{Bernoulli}(0.5)
+$$
+
+### Korrelierte Münzwürfe
+
+Ein Markov-Prozess, bei dem jeder Wurf vom vorherigen abhängt:
+
+$$
+P(Y_t = Y_{t-1}) = p_{stay}, \\
+P(Y_t \neq Y_{t-1}) = 1 - p_{stay}
+$$
+
+Übergangsmatrix:
+
+$$
+\mathbf{P} =
+\begin{bmatrix}
+p_{stay} & 1 - p_{stay} \\
+1 - p_{stay} & p_{stay}
+\end{bmatrix}
+$$
+
+Stationäre Verteilung: \( \pi = (0.5, 0.5) \)  
+Autokorrelation erster Ordnung: \( \rho_1 = 2p_{stay} - 1 \)
+
+---
+
+## Simulation der Münzwürfe
+
+
+``` r
+n <- 1000
+
+# Unkorrelierte Würfe
+fair_flips <- rbinom(n, 1, 0.5)
+
+# Korrelierte Würfe
+correlated_flips <- numeric(n)
+correlated_flips[1] <- rbinom(1, 1, 0.5)
+p_stay <- 0.8
+
+for (i in 2:n) {
+  correlated_flips[i] <- ifelse(runif(1) < p_stay, correlated_flips[i-1], 1 - correlated_flips[i-1])
+}
+```
+
+---
+
+## Prognose mit unbedingtem und bedingtem Mittelwert
+
+
+``` r
+compute_mse <- function(flips) {
+  mu_uncond <- mean(flips[-length(flips)])
+  forecast_uncond <- rep(mu_uncond, length(flips) - 1)
+  forecast_cond <- flips[-length(flips)]
+  actual <- flips[-1]
+
+  mse_uncond <- mean((actual - forecast_uncond)^2)
+  mse_cond <- mean((actual - forecast_cond)^2)
+
+  return(c(mse_uncond = mse_uncond, mse_cond = mse_cond))
+}
+
+mse_fair <- compute_mse(fair_flips)
+mse_corr <- compute_mse(correlated_flips)
+```
+
+---
+
+## Ergebnisse
+
+
+``` r
+mse_fair
+```
+
+```
+## mse_uncond   mse_cond 
+##  0.2499577  0.4884885
+```
+
+``` r
+mse_corr
+```
+
+```
+## mse_uncond   mse_cond 
+##  0.2496581  0.1971972
+```
+
+**Interpretation**:
+
+- Für **unkorrelierte** Würfe: Bedingte und unbedingte Prognosen liefern ähnliche Ergebnisse.  
+- Für **korrelierte** Würfe: Der **bedingte Mittelwert** (Nutzung der vergangenen Information) erzielt einen geringeren MSE, da Autokorrelation vorliegt.  
+
+---
+
+## Visualisierung
+
+
+``` r
+library(ggplot2)
+df <- data.frame(
+  Scenario = rep(c("Unkorreliert", "Korreliert"), each = 2),
+  Method = rep(c("Unbedingt", "Bedingt"), 2),
+  MSE = c(mse_fair, mse_corr)
+)
+
+ggplot(df, aes(x = Method, y = MSE, fill = Scenario)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Vergleich der Prognosegüte (MSE)",
+       y = "Mittlerer quadratischer Fehler") +
+  theme_minimal()
+```
+
+<img src="./03-ergebnisse/plot-1.svg" alt="" style="display: block; margin: auto;" />
