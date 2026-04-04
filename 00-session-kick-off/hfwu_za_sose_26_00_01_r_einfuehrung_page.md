@@ -1,6 +1,8 @@
 ---
-output: html_document
-editor_options: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
   chunk_output_type: console
 ---
 
@@ -9,27 +11,6 @@ editor_options:
 # Kurze Einführung in *R*
 
 Dieses Dokument bietet eine kurze Einführung in die Statistiksoftware *R*.
-
-- [Setup](#setup)
-- [Grundlagen](#grundlagen)
-  - [Einfache Berechnungen](#einfache-berechnungen)
-  - [Zuweisung und Objekte](#zuweisung-und-objekte)
-  - [Daten](#daten)
-  - [Packete, Funktionen, bedingte Anweisungen und Schleifen](#packete-funktionen-bedingte-anweisungen-und-schleifen)
-    - [Packete](#packete)
-    - [Funktionen](#funktionen)
-    - [Bedingte Anweistungen](#bedingte-anweistungen)
-    - [Schleifen](#schleifen)
-  - [Base R vs. Tidyverse](#base-r-vs-tidyverse)
-  - [Einfache Simulationen](#einfache-simulationen)
-- [Einführung in Zeitreihen](#einführung-in-zeitreihen)
-  - [Zeitreihenobjekt](#zeitreihenobjekt)
-  - [Verzögerung und Differenzen](#verzögerung-und-differenzen)
-  - [Regressionen](#regressionen)
-- [Grafiken](#grafiken)
-  - [Einzelne Zeitreihe plotten](#einzelne-zeitreihe-plotten)
-  - [Mehrere Zeitreihen plotten](#mehrere-zeitreihen-plotten)
-  - [Plots exportieren](#plots-exportieren)
 
 ---
 
@@ -806,8 +787,7 @@ set.seed(1999)
 ```
 
 ```
-##  [1]  0.73267249 -0.03782971  1.20300914  1.46980203  0.13369030  0.51982725 -0.54938203
-##  [8] -1.18560796 -1.14727975  1.16074200
+##  [1]  0.73267249 -0.03782971  1.20300914  1.46980203  0.13369030  0.51982725 -0.54938203 -1.18560796 -1.14727975  1.16074200
 ```
 
 ``` r
@@ -815,8 +795,7 @@ set.seed(1999)
 ```
 
 ```
-##  [1]  0.7217868  0.5075593 -0.0768911  1.3607217 -0.1214286  1.1468035 -0.7126184 -0.5109490
-##  [9]  0.3886331  0.9251048
+##  [1]  0.7217868  0.5075593 -0.0768911  1.3607217 -0.1214286  1.1468035 -0.7126184 -0.5109490  0.3886331  0.9251048
 ```
 
 ``` r
@@ -860,10 +839,8 @@ resid(fit)
 ```
 
 ```
-##          1          2          3          4          5          6          7          8 
-##  0.1288372  0.2672500 -0.8851025  0.4304056 -0.4402385  0.6512681 -0.7188025 -0.2259478 
-##          9         10 
-##  0.6560924  0.1362381
+##          1          2          3          4          5          6          7          8          9         10 
+##  0.1288372  0.2672500 -0.8851025  0.4304056 -0.4402385  0.6512681 -0.7188025 -0.2259478  0.6560924  0.1362381
 ```
 
 ``` r
@@ -871,10 +848,10 @@ fitted(fit)
 ```
 
 ```
-##            1            2            3            4            5            6            7 
-##  0.592949606  0.240309304  0.808211365  0.930316045  0.318809880  0.495535464  0.006184128 
-##            8            9           10 
-## -0.285001160 -0.267459264  0.788866713
+##            1            2            3            4            5            6            7            8            9 
+##  0.592949606  0.240309304  0.808211365  0.930316045  0.318809880  0.495535464  0.006184128 -0.285001160 -0.267459264 
+##           10 
+##  0.788866713
 ```
 
 ``` r

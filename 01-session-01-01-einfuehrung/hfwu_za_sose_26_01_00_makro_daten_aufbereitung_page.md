@@ -10,11 +10,6 @@ editor_options:
 
 Dieses Dokument beschreibt die Vorbereitung der Makrodaten.
 
-- [Setup](#setup)
-- [Rohdaten](#rohdaten)
-- [Vorbereitung](#vorbereitung)
-- [Darstellung der Daten](#darstellung-der-daten)
-
 ---
 
 ## Setup
@@ -89,14 +84,19 @@ Berechnung der annualisierten Wachstumsrate.
 
 ``` r
 GDP <- us_macro_ts[,4]
-GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
+GDPGR <- 400 * log(GDP/lag(GDP, -1))
+```
+
+```
+## Error in `lag()`:
+## ! `x` must be a vector, not a <ts>, do you want `stats::lag()`?
 ```
 
 Darstellung der jährlichen Wachstumsrate.
 
 
 ``` r
-plot(GDPGrowth,
+plot(GDPGR,
      col = "steelblue",
      lwd = 2,
      ylab = "Jährliche Wachstumsrate",
@@ -104,7 +104,7 @@ plot(GDPGrowth,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/us_gdp_wachstumsrate-1.svg" alt="Wachstumsrate des realen US-BIP"  />
-<p class="caption">Wachstumsrate des realen US-BIP</p>
-</div>
+```
+## Error:
+## ! object 'GDPGR' not found
+```

@@ -10,11 +10,6 @@ editor_options:
 
 Dieses Dokument bietet eine kurze Einführung in die Verwendung von *R*-Markdown-Dateien.
 
-- [Kursstruktur](#kursstruktur)
-- [Arbeitsverzeichnis richtig setzen](#arbeitsverzeichnis-richtig-setzen)
-- [Einstellungen für saubere Ausgaben](#einstellungen-für-saubere-ausgaben)
-- [Zugriff auf Dateien im Projektverzeichnis](#zugriff-auf-dateien-im-projektverzeichnis)
-
 ---
 
 ## Kursstruktur

@@ -173,7 +173,7 @@ Berechnung der annualisierten Wachstumsrate.
 
 ```{r}
 GDP <- us_macro_ts[,"GDPC1"]
-GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
+GDPGR <- 400 * log(GDP/lag(GDP, -1))
 ```
 
 Darstellung des realen US-BIP.
@@ -190,7 +190,7 @@ plot(GDP,
 Darstellung der jährlichen Wachstumsrate.
 
 ```{r us_gdp_wachstumsrate, fig.cap="Wachstumsrate des realen US-BIP"}
-plot(GDPGrowth,
+plot(GDPGR,
      col = "steelblue",
      lwd = 2,
      ylab = "Jährliche Wachstumsrate",
@@ -221,11 +221,11 @@ Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transform
 Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korrelation nennt man *Autokorrelation* oder *serielle Korrelation*.
 
 ```{r}
-acf(GDPGrowth, lag.max = 10, plot = F)
+acf(GDPGR, lag.max = 10, plot = F)
 ```
 
 ```{r us_gdp_wachstum_acf_grafik}
-acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
+acf(GDPGR, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
 
 ---

@@ -10,20 +10,6 @@ editor_options:
 
 Dieses Dokument enthält den Praxis-Teil von Kapitel 1.1) Einführung in Zeitreihendaten und Serielle Korrelation. 
 
-- [Setup](#setup)
-- [Verwendung von Regressionsmodellen zur Prognose](#verwendung-von-regressionsmodellen-zur-prognose)
-  - [Frage 1](#frage-1)
-  - [Frage 2](#frage-2)
-  - [Frage 3](#frage-3)
-  - [Frage 4](#frage-4)
-- [Reales US-BIP](#reales-us-bip)
-  - [Frage 5](#frage-5)
-- [Autokorrelation](#autokorrelation)
-  - [Frage 6](#frage-6)
-- [Weitere Beispiele wirtschaftlicher Zeitreihen](#weitere-beispiele-wirtschaftlicher-zeitreihen)
-  - [Frage 7](#frage-7)
-  - [Frage 8](#frage-8)
-
 ---
 
 ## Setup
@@ -222,7 +208,12 @@ Berechnung der annualisierten Wachstumsrate.
 
 ``` r
 GDP <- us_macro_ts[,"GDPC1"]
-GDPGrowth <- 400 * log(GDP/lag(GDP, -1))
+GDPGR <- 400 * log(GDP/lag(GDP, -1))
+```
+
+```
+## Error in `lag()`:
+## ! `x` must be a vector, not a <ts>, do you want `stats::lag()`?
 ```
 
 Darstellung des realen US-BIP.
@@ -246,7 +237,7 @@ Darstellung der jährlichen Wachstumsrate.
 
 
 ``` r
-plot(GDPGrowth,
+plot(GDPGR,
      col = "steelblue",
      lwd = 2,
      ylab = "Jährliche Wachstumsrate",
@@ -254,10 +245,10 @@ plot(GDPGrowth,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="./03-ergebnisse/us_gdp_wachstumsrate-1.svg" alt="Wachstumsrate des realen US-BIP"  />
-<p class="caption">Wachstumsrate des realen US-BIP</p>
-</div>
+```
+## Error:
+## ! object 'GDPGR' not found
+```
 
 ---
 
@@ -283,23 +274,23 @@ Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korr
 
 
 ``` r
-acf(GDPGrowth, lag.max = 10, plot = F)
+acf(GDPGR, lag.max = 10, plot = F)
 ```
 
 ```
-## 
-## Autocorrelations of series 'GDPGrowth', by lag
-## 
-##   0.00   0.25   0.50   0.75   1.00   1.25   1.50   1.75   2.00   2.25   2.50 
-##  1.000  0.332  0.205  0.080  0.041 -0.065  0.007 -0.039 -0.069  0.040  0.062
+## Error:
+## ! object 'GDPGR' not found
 ```
 
 
 ``` r
-acf(GDPGrowth, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
+acf(GDPGR, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
 
-<img src="./03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" style="display: block; margin: auto;" />
+```
+## Error:
+## ! object 'GDPGR' not found
+```
 
 ---
 
@@ -358,7 +349,7 @@ plot(JPIndProd, col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum"
 plot(NYSEIndexRet, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
 ```
 
-<img src="./03-ergebnisse/weitere_zeitreihen_grafik-1.svg" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/weitere_zeitreihen_grafik-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 
@@ -399,7 +390,7 @@ par(mfrow = c(1, 1))
 acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen Returns des NYSE Composite Index")
 ```
 
-<img src="./03-ergebnisse/nyse_re_acf_grafik-1.svg" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/nyse_re_acf_grafik-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 
