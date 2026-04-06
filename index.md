@@ -35,6 +35,7 @@ Der Kurs ist in mehrere Sessions unterteilt. Jede Session besteht aus:
 * [Session 1: Einführung in Zeitreihendaten und Serielle Korrelation](./01-session-01-01-einfuehrung/01-session-einfuehrung.html?page=index)
 * [Session 2: Stationarität und Mean Squared Forecast Error (MSFE)](./02-session-01-02-stationaritaet-msfe/02-session-stationaritaet-msfe.html?page=index)
 * [Session 3: Autoregression und das Autoregressive (AR) Modell](./03-session-01-03-ar-modelle/03-session-ar-modelle.html?page=index)
+* [Session 4) Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell](./04-session-01-04-adl-modelle/04-session-adl-modelle.html?page=index)
 * Session 4: Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
 * Session 5: Einschätzung von Prognosen und Prognoseintervalle
 * Session 6: Modellspezifikation

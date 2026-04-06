@@ -1,0 +1,365 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# Session 4) Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
+
+Dieses Dokument enthält den Praxis-Teil von Session 4) Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell. 
+
+---
+
+## Setup
+
+```{r}
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+```
+
+---
+
+## Datenaufbereitung
+
+Einlesen der Daten.
+
+```{r}
+us_macro <- read.table(here("04-session-01-04-adl-modelle", "01-daten", "us_macro_quarterly_merged.csv"),
+                       header = TRUE,
+                       sep = ";"
+)
+```
+
+Umwandlung in ein `ts` Object.
+
+```{r}
+us_macro_ts <- ts(
+  us_macro,
+  frequency = 4,
+  start = c(1950, 1),
+  end = c(2026, 1)
+)
+
+us_macro_ts <- window(us_macro_ts,
+                      start = c(1955, 1),
+                      end = c(2017, 4)
+)
+```
+
+Berechnung der annualisierten Wachstumsrate.
+
+```{r}
+GDP <- us_macro_ts[,"GDPC1"]
+GDPGR <- 400 * log(GDP/lag(GDP, -1))
+```
+
+Berechnung der Zinsspanne.
+
+```{r}
+TSpread <- us_macro_ts[,"GS10"] - us_macro_ts[,"TB3MS"]
+```
+
+Anbindung der annualisierten Wachstumsrate an `us_macro_ts`.
+
+```{r}
+# Anbindung
+us_macro_ts <- cbind(us_macro_ts, GDPGR, TSpread)
+
+colnames(us_macro_ts) <- sub(".*\\.", "", colnames(us_macro_ts))
+```
+
+Darstellung der BIP Wachstumsrate und der Zinsspanne.
+
+```{r us_bip_zins_daten}
+# Darstellung der BIP und Zinsspanne
+par(mfrow = c(1,2))
+plot(log(na.omit(us_macro_ts[,'GDPGR'])),
+     col = "steelblue",
+     lwd = 2,
+     ylab = "Wachstumsrate",
+     xlab = "Zeit",
+     main = "Reales vierteljährliches US-BIP")
+plot(na.omit(us_macro_ts[,'TSpread']),
+     col = "steelblue",
+     lwd = 2,
+     ylab = "Zinsspanne",
+     xlab = "Zeit",
+     main = "Zinsspanne (Term Spread)")
+```
+
+---
+
+### Frage 1
+
+Diskutieren Sie kurz die Eigenschaften der Zinsspanne in Bezug auf "Stationarität" und in Bezug auf die Wachstumsrate des BIP.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## ADL(2,1) Modell: Schätzung
+
+Schätzung eines ADL(2,1) Modells für 1962-Q1 - 2017-Q3
+
+```{r}
+# Schätzung ADL(2,1) Model: 1962-Q1 - 2017-Q3
+adl_0201_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+                   
+summary(adl_0201_dynlm)
+```
+
+Tests der Koeffizienten:
+
+```{r}
+# Tests
+ct_adl_0201_dynlm <- coeftest(adl_0201_dynlm, vcov=vcovHC(adl_0201_dynlm, type="HC0"))
+ct_adl_0201_dynlm
+```
+
+---
+
+### Frage 2
+
+Was können wir von dem Ergebnis der Schätzung lernen?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 3
+
+Was können wir von dem Ergebnis der Tests der Koeffizienten lernen?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## ADL(2,1) Modell Prognose
+
+Verwendung des geschätzten ADL(2,1)-Modells zur Prognose.
+
+```{r}
+# Daten für die Prognose 
+X1 <- matrix(
+  rev(window(us_macro_ts,start=c(2017,2),end=c(2017,3))[,c("TSpread", "GDPGR")])[-4],
+  ncol=1
+  )
+XX <- round(rbind(1, X1),3)
+# ADL(2,1) Koeffizienten
+bet <- round(matrix(adl_0201_dynlm$coefficients,nrow=1),3)
+# Prgnose für 2017 Q4
+prog_erg <- bet %*% XX
+prog_erg
+
+# Tatsächlicher beobachteter Wert
+tats_wert <- window(us_macro_ts[, "GDPGR"], start = c(2017, 4), end = c(2017, 4))
+tats_wert
+
+# Prognosefehler
+prog_fehler <- tats_wert - prog_erg
+prog_fehler
+```
+
+---
+
+### Frage 4
+
+Um welche Art von Prognose handelt es sich hier? Welche Schritte umfasst die Prognose basierend auf einem ADL(2,1) Modell? Wie würden Sie die Prognose bewerten?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## ADL(2,2) Modell: Schätzung
+
+Schätzung eines ADL(2,2) Modells für 1962-Q1 - 2017-Q3
+
+```{r}
+# Schätzung ADL(2,2) Model: 1962-Q1 - 2017-Q3
+adl_0202_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+                   
+summary(adl_0202_dynlm)
+```
+
+Tests der Koeffizienten:
+
+```{r}
+# Tests
+ct_adl_0202_dynlm <- coeftest(adl_0202_dynlm, vcov=vcovHC(adl_0202_dynlm, type="HC0"))
+ct_adl_0202_dynlm
+```
+
+---
+
+### Frage 5
+
+Was können wir von dem Ergebnis der Schätzung lernen?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 6
+
+Was können wir von dem Ergebnis der Tests der Koeffizienten lernen?
+
+```{r}
+# install library (once)
+#install.packages("car")
+# load library (every session)
+library(car)
+# f-test based on heteroskedasticity-robust standard errors
+lin.hyp <- linearHypothesis(adl_0202_dynlm, c("L(TSpread, 1)=0",
+                                      "L(TSpread, 2)=0"), white.adjust = "hc1")
+lin.hyp
+```
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## ADL(2,2) Modell Prognose
+
+Verwendung des geschätzten ADL(2,2)-Modells zur Prognose.
+
+```{r}
+# Daten für die Prognose 
+X1 <- matrix(rev(
+  window(us_macro_ts,start=c(2017,2),end=c(2017,3))[,c("TSpread", "GDPGR")]
+  ),ncol=1)
+XX <- round(rbind(1, X1),3)
+# ADL(2,2) Koeffizienten
+bet <- round(matrix(adl_0202_dynlm$coefficients,nrow=1),3)
+# Prgnose für 2017 Q4
+prog_erg <- bet %*% XX
+prog_erg
+
+# Tatsächlicher beobachteter Wert
+tats_wert <- window(us_macro_ts[, "GDPGR"], start = c(2017, 4), end = c(2017, 4))
+tats_wert
+
+# Prognosefehler
+prog_fehler <- tats_wert - prog_erg
+prog_fehler
+```
+
+---
+
+### Frage 7
+
+Um welche Art von Prognose handelt es sich hier? Welche Schritte umfasst die Prognose basierend auf einem ADL(2,2) Modell? Wie würden Sie die Prognose bewerten?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 8
+
+Vergleichen Sie die Prognosen basierend auf dem ADL(2,2) mit dem ADL(2,2) und dem AR(1) und AR(2) Modell.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 9
+
+Diskutieren Sie die Kleinste-Quadrate-Annahmen für Prognosen mit mehreren Prädiktoren
+
+...
+
+...
+
+...
+
+...
+
+...
