@@ -91,7 +91,7 @@ iid_flips <- rbinom(n, 1, 0.8)
 
 ## Visualisierung der simulierten Münzwürfe
 
-```{r plot_series}
+```{r plot_series_loss}
 df_series <- data.frame(
   t = 1:n,
   value = iid_flips,
@@ -222,7 +222,7 @@ results_long
 
 ## Visualisierung der Prognosegüte
 
-```{r plot_loss_comparison}
+```{r plot_loss_comparison_loss}
 ggplot(results_long, aes(x = Forecast, y = Error, fill = Loss)) +
   geom_col(position = "dodge") +
   labs(

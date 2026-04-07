@@ -142,7 +142,7 @@ for (i in 2:n) {
 
 ## Visualisierung der simulierten Münzwürfe
 
-```{r plot_series}
+```{r plot_series_art}
 df_series <- rbind(
   data.frame(t = 1:n, value = iid_flips, series = "IID (Bernoulli 0.5)"),
   data.frame(t = 1:n, value = correlated_flips, series = "Markov (korreliert)")
@@ -235,7 +235,7 @@ Damit nutzt der bedingte Mittelwert zusätzliche Information aus der Vergangenhe
 
 ## Visualisierung der MSE-Werte
 
-```{r plot_mse}
+```{r plot_mse_art}
 df_mse <- data.frame(
   Scenario = rep(c("Unkorreliert", "Korreliert"), each = 2),
   Method = rep(c("Unbedingt", "Bedingt"), 2),

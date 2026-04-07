@@ -111,7 +111,7 @@ ggplot(df_series, aes(x = t, y = value)) +
   theme_minimal()
 ```
 
-<img src="./03-ergebnisse/plot_series-1.svg" alt="" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/plot_series_loss-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 
@@ -257,7 +257,7 @@ ggplot(results_long, aes(x = Forecast, y = Error, fill = Loss)) +
   theme_minimal()
 ```
 
-<img src="./03-ergebnisse/plot_loss_comparison-1.svg" alt="" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/plot_loss_comparison_loss-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 

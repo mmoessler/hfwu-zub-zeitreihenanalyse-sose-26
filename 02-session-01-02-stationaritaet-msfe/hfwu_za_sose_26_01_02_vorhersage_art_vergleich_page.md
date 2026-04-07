@@ -162,7 +162,7 @@ ggplot(df_series, aes(x = t, y = value)) +
   theme_minimal()
 ```
 
-<img src="./03-ergebnisse/plot_series-1.svg" alt="" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/plot_series_art-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 
@@ -276,7 +276,7 @@ ggplot(df_mse, aes(x = Method, y = MSE, fill = Scenario)) +
   theme_minimal()
 ```
 
-<img src="./03-ergebnisse/plot_mse-1.svg" alt="" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/plot_mse_art-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 
