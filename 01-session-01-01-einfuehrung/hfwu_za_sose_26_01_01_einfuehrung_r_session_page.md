@@ -47,17 +47,8 @@ library(readxl)
 
 Was ist der Unterschied zwischen der Schätzung von Modellen zur Analyse von kausalen Effekten und zur Prognose?
 
-- Kausaler Zusammenhang: 
-  - Labot:
-    - Kontrolliertes Experiment
-    - Kontrolliere alle weiteren Einflussfakroten
-  - Beobachtungen:
-    - "Statistische Kontrolle" von weiteren Einflussfaktoren (z.B. Sonneneinstrahlung,...)
-    - Weitere Faktoren messen und in das Regressionsmodell aufnhehmen
-- Prognose
-  - Ziel: Zukünftige Werte so gut wie möglich zu pronostizieren
-  - Regenschirm und Regen: Regenschrirm ist gut für die Vorhersage aber kein kausaler Grund für Regen!
-    
+...
+
 ...
 
 ...
@@ -260,12 +251,8 @@ plot(GDPGR,
 
 Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transformation zur Wachstumsrate sinnvoll?
 
-- Log-Level: Deterministischen Trend
-  - "Einfache" Statistiken sind nicht sinnvoll (siehe Mittelwert)
-- Wachstum: Kein Trend
-  . "Einfache" Statistiken sind sinnvoll
-- Siehe Stationarität später
-  
+...
+
 ...
 
 ...
@@ -306,8 +293,7 @@ acf(GDPGR, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 
 Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
 
-- Die ersten zwei Lags sind signifiant positiv
-- => Die vergangenen Werte beinhlaten relevante Informationen für zukünfitge Werte
+...
 
 ...
 
@@ -407,8 +393,7 @@ acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen 
 
 Beschreiben Sie die Eigenschaften des New York Stock Exchange Composite Index genauer.
 
-- Vergangene Veränderungen scheinen keinen Informationsgehahlt für zukünftige Veränderungen zu haben.
-- => Effizienzmarkthypothese
+...
 
 ...
 
