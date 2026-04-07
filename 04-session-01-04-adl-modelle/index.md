@@ -20,5 +20,4 @@
 
 ## 💻 Praxis
 
-- [*R*-Session: ADL-Modelle](./04-session-adl-modelle.html?page=hfwu_za_sose_26_01_04_adl_modelle_r_session_page)
-
+- [*R*-Session: ADL-Modelle](./index.html?page=hfwu_za_sose_26_01_04_adl_modelle_r_session_page)

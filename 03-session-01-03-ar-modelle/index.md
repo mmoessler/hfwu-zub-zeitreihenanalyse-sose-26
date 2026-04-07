@@ -20,5 +20,4 @@
 
 ## 💻 Praxis
 
-- [*R*-Session: AR-Modelle](./03-session-ar-modelle.html?page=hfwu_za_sose_26_01_03_ar_modelle_r_session_page)
-
+- [*R*-Session: AR-Modelle](./index.html?page=hfwu_za_sose_26_01_03_ar_modelle_r_session_page)

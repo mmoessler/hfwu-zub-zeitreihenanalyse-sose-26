@@ -32,15 +32,15 @@ Der Kurs ist in mehrere Sessions unterteilt. Jede Session besteht aus:
 
 ### Kapitel 1) Einführung in die Zeitreihenregression und -prognose
 
-* [Session 1: Einführung in Zeitreihendaten und Serielle Korrelation](./01-session-01-01-einfuehrung/01-session-einfuehrung.html?page=index)
-* [Session 2: Stationarität und Mean Squared Forecast Error (MSFE)](./02-session-01-02-stationaritaet-msfe/02-session-stationaritaet-msfe.html?page=index)
-* [Session 3: Autoregression und das Autoregressive (AR) Modell](./03-session-01-03-ar-modelle/03-session-ar-modelle.html?page=index)
-* [Session 4) Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell](./04-session-01-04-adl-modelle/04-session-adl-modelle.html?page=index)
-* Session 4: Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
-* Session 5: Einschätzung von Prognosen und Prognoseintervalle
-* Session 6: Modellspezifikation
-* Session 7: Nicht-Stationarität I: Trends
-* Session 8: Nicht-Stationarität II: Strukturbrüche
+* [Session 1: Einführung in Zeitreihendaten und Serielle Korrelation](./01-session-01-01-einfuehrung/index.html?page=index)
+* [Session 2: Stationarität und Mean Squared Forecast Error (MSFE)](./02-session-01-02-stationaritaet-msfe/index.html?page=index)
+* [Session 3: Autoregression und das Autoregressive (AR) Modell](./03-session-01-03-ar-modelle/index.html?page=index)
+* [Session 4: Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell](./04-session-01-04-adl-modelle/index.html?page=index)
+* Session 5: Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
+* Session 6: Einschätzung von Prognosen und Prognoseintervalle
+* Session 7: Modellspezifikation
+* Session 8: Nicht-Stationarität I: Trends
+* Session 9: Nicht-Stationarität II: Strukturbrüche
 
 ---
 
@@ -60,9 +60,9 @@ Der Kurs ist in mehrere Sessions unterteilt. Jede Session besteht aus:
 
 ## ➕ Zusätzliches Material
 
-* [Einführung in *R*](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/00-session-kick-off.html?page=hfwu_za_sose_26_00_01_r_einfuehrung_page)
-* [Einführung in *R Markdown*](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/00-session-kick-off.html?page=hfwu_za_sose_26_00_02_rmd_einfuehrung_page)
-* [Exkurs: Reproducible Research mit *R*](https://mmoessler.github.io/hfwu-zub-zeitreihenanalyse-sose-26/00-session-kick-off/00-session-kick-off.html?page=excursion-r-reproducible-research)
+* [Einführung in *R*](./00-session-kick-off/index.html?page=hfwu_za_sose_26_00_01_r_einfuehrung_page)
+* [Einführung in *R Markdown*](./00-session-kick-off/index.html?page=hfwu_za_sose_26_00_02_rmd_einfuehrung_page)
+* [Exkurs: Reproducible Research mit *R*](./00-session-kick-off/index.html?page=excursion-r-reproducible-research)
 
 ---
 
