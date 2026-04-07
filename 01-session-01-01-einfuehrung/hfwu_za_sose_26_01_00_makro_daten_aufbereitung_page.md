@@ -87,11 +87,6 @@ GDP <- us_macro_ts[,4]
 GDPGR <- 400 * log(GDP/lag(GDP, -1))
 ```
 
-```
-## Error in `lag()`:
-## ! `x` must be a vector, not a <ts>, do you want `stats::lag()`?
-```
-
 Darstellung der jährlichen Wachstumsrate.
 
 
@@ -104,7 +99,7 @@ plot(GDPGR,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-```
-## Error:
-## ! object 'GDPGR' not found
-```
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/us_gdp_wachstumsrate-1.svg" alt="Wachstumsrate des realen US-BIP"  />
+<p class="caption">Wachstumsrate des realen US-BIP</p>
+</div>

@@ -47,8 +47,17 @@ library(readxl)
 
 Was ist der Unterschied zwischen der Schätzung von Modellen zur Analyse von kausalen Effekten und zur Prognose?
 
-...
-
+- Kausaler Zusammenhang: 
+  - Labot:
+    - Kontrolliertes Experiment
+    - Kontrolliere alle weiteren Einflussfakroten
+  - Beobachtungen:
+    - "Statistische Kontrolle" von weiteren Einflussfaktoren (z.B. Sonneneinstrahlung,...)
+    - Weitere Faktoren messen und in das Regressionsmodell aufnhehmen
+- Prognose
+  - Ziel: Zukünftige Werte so gut wie möglich zu pronostizieren
+  - Regenschirm und Regen: Regenschrirm ist gut für die Vorhersage aber kein kausaler Grund für Regen!
+    
 ...
 
 ...
@@ -211,11 +220,6 @@ GDP <- us_macro_ts[,"GDPC1"]
 GDPGR <- 400 * log(GDP/lag(GDP, -1))
 ```
 
-```
-## Error in `lag()`:
-## ! `x` must be a vector, not a <ts>, do you want `stats::lag()`?
-```
-
 Darstellung des realen US-BIP.
 
 
@@ -245,10 +249,10 @@ plot(GDPGR,
      main = "Wachstumsrate des realen US-BIP")
 ```
 
-```
-## Error:
-## ! object 'GDPGR' not found
-```
+<div class="figure" style="text-align: center">
+<img src="./03-ergebnisse/us_gdp_wachstumsrate-1.svg" alt="Wachstumsrate des realen US-BIP"  />
+<p class="caption">Wachstumsrate des realen US-BIP</p>
+</div>
 
 ---
 
@@ -256,8 +260,12 @@ plot(GDPGR,
 
 Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transformation zur Wachstumsrate sinnvoll?
 
-...
-
+- Log-Level: Deterministischen Trend
+  - "Einfache" Statistiken sind nicht sinnvoll (siehe Mittelwert)
+- Wachstum: Kein Trend
+  . "Einfache" Statistiken sind sinnvoll
+- Siehe Stationarität später
+  
 ...
 
 ...
@@ -278,8 +286,11 @@ acf(GDPGR, lag.max = 10, plot = F)
 ```
 
 ```
-## Error:
-## ! object 'GDPGR' not found
+## 
+## Autocorrelations of series 'GDPGR', by lag
+## 
+##   0.00   0.25   0.50   0.75   1.00   1.25   1.50   1.75   2.00   2.25   2.50 
+##  1.000  0.332  0.205  0.080  0.041 -0.065  0.007 -0.039 -0.069  0.040  0.062
 ```
 
 
@@ -287,10 +298,7 @@ acf(GDPGR, lag.max = 10, plot = F)
 acf(GDPGR, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 ```
 
-```
-## Error:
-## ! object 'GDPGR' not found
-```
+<img src="./03-ergebnisse/us_gdp_wachstum_acf_grafik-1.svg" alt="" style="display: block; margin: auto;" />
 
 ---
 
@@ -298,7 +306,8 @@ acf(GDPGR, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
 
 Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
 
-...
+- Die ersten zwei Lags sind signifiant positiv
+- => Die vergangenen Werte beinhlaten relevante Informationen für zukünfitge Werte
 
 ...
 
@@ -398,7 +407,8 @@ acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen 
 
 Beschreiben Sie die Eigenschaften des New York Stock Exchange Composite Index genauer.
 
-...
+- Vergangene Veränderungen scheinen keinen Informationsgehahlt für zukünftige Veränderungen zu haben.
+- => Effizienzmarkthypothese
 
 ...
 
