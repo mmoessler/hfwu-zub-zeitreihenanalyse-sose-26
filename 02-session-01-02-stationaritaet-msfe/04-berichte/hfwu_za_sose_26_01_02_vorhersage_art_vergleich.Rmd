@@ -1,0 +1,307 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Vorhersage von Münzwürfen: Unbedingter vs. Bedingter Mittelwert
+
+Dieses Dokument illustriert den Unterschied zwischen der Verwendung des **unbedingten Mittelwerts** und des **bedingten Mittelwerts** als optimale Prognosen unter einer **quadratischen Verlustfunktion** (Mean Squared Error, MSE) für zwei Arten von binären Daten:
+
+- **Unkorrelierte** Münzwürfe (IID Bernoulli)
+- **Korrelierte** Münzwürfe, modelliert als Markov-Prozess erster Ordnung
+
+Ziel ist zu zeigen:
+
+- Bei **IID-Daten** ist der bedingte Mittelwert praktisch identisch mit dem unbedingten Mittelwert.
+- Bei **korrelierten Daten** enthält die Vergangenheit Information über die Zukunft, sodass der bedingte Mittelwert eine bessere Prognose liefert.
+
+---
+
+## Setup
+
+```{r setup, message=FALSE, warning=FALSE}
+library(here)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.cap = "",
+  fig.height = 5,
+  fig.width = 8
+)
+
+rm(list = ls())
+
+set.seed(123)
+```
+
+---
+
+## Daten-generierender Prozess (DGP)
+
+### 1. Unkorrelierte Münzwürfe
+
+Im unkorrelierten Fall betrachten wir unabhängige Bernoulli-Zufallsvariablen mit
+
+$$
+Y_t \sim \text{Bernoulli}(0.5)
+$$
+
+Damit gilt:
+
+$$
+E(Y_t) = 0.5
+\qquad \text{und} \qquad
+E(Y_t \mid Y_{t-1}) = E(Y_t) = 0.5
+$$
+
+Da die Würfe unabhängig sind, liefert die Information über den letzten Wurf keinen zusätzlichen Prognosewert.
+
+### 2. Korrelierte Münzwürfe (Markov-Prozess)
+
+Im korrelierten Fall wird jeder Wurf als Markov-Prozess erster Ordnung modelliert:
+
+$$
+P(Y_t = Y_{t-1}) = p_{stay},
+\qquad
+P(Y_t \neq Y_{t-1}) = 1 - p_{stay}
+$$
+
+Mit der Übergangsmatrix
+
+$$
+\mathbf{P} =
+\begin{bmatrix}
+p_{stay} & 1 - p_{stay} \\
+1 - p_{stay} & p_{stay}
+\end{bmatrix}
+$$
+
+Für diese symmetrische Übergangsmatrix ist die stationäre Verteilung
+
+$$
+\pi = (0.5, 0.5)
+$$
+
+und die Autokorrelation erster Ordnung lautet
+
+$$
+\rho_1 = 2p_{stay} - 1
+$$
+
+Für \(p_{stay} = 0.8\) ergibt sich daher
+
+$$
+\rho_1 = 0.6
+$$
+
+Der bedingte Mittelwert hängt in diesem Fall vom letzten beobachteten Wurf ab:
+
+$$
+E(Y_t \mid Y_{t-1} = 1) = p_{stay} = 0.8
+$$
+
+$$
+E(Y_t \mid Y_{t-1} = 0) = 1 - p_{stay} = 0.2
+$$
+
+Damit ist der bedingte Mittelwert nicht konstant und sollte unter MSE eine bessere Prognose liefern als der unbedingte Mittelwert.
+
+---
+
+## Simulation
+
+```{r simulate}
+n <- 1000
+p_stay <- 0.8
+
+# Unkorrelierte Würfe: IID Bernoulli(0.5)
+iid_flips <- rbinom(n, 1, 0.5)
+
+# Korrelierte Würfe: Markov-Prozess mit stationärem Mittelwert 0.5
+correlated_flips <- numeric(n)
+correlated_flips[1] <- rbinom(1, 1, 0.5)
+
+for (i in 2:n) {
+  correlated_flips[i] <- ifelse(
+    runif(1) < p_stay,
+    correlated_flips[i - 1],
+    1 - correlated_flips[i - 1]
+  )
+}
+```
+
+---
+
+## Visualisierung der simulierten Münzwürfe
+
+```{r plot_series}
+df_series <- rbind(
+  data.frame(t = 1:n, value = iid_flips, series = "IID (Bernoulli 0.5)"),
+  data.frame(t = 1:n, value = correlated_flips, series = "Markov (korreliert)")
+)
+
+ggplot(df_series, aes(x = t, y = value)) +
+  geom_step() +
+  facet_wrap(~ series, ncol = 1) +
+  labs(
+    title = "Simulierte Münzwurf-Serien",
+    x = "Zeit",
+    y = "Wurf (0 oder 1)"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## Prognosefunktion
+
+Unter quadratischer Verlustfunktion ist
+
+- der **unbedingte Mittelwert** \(E(Y_t)\) die optimale Prognose ohne Zusatzinformation,
+- der **bedingte Mittelwert** \(E(Y_t \mid Y_{t-1})\) die optimale Prognose mit Information über den letzten Wurf.
+
+Im Folgenden werden beide Größen aus den simulierten Daten geschätzt.
+
+```{r forecasting}
+compute_mse_est <- function(flips) {
+  n <- length(flips)
+
+  lag_y  <- flips[-n]
+  lead_y <- flips[-1]
+
+  # Unbedingter Mittelwert
+  mu_uncond <- mean(lag_y)
+  forecast_uncond <- rep(mu_uncond, n - 1)
+
+  # Bedingter Mittelwert
+  p11 <- mean(lead_y[lag_y == 1])  # E(Y_t | Y_{t-1} = 1)
+  p01 <- mean(lead_y[lag_y == 0])  # E(Y_t | Y_{t-1} = 0)
+
+  forecast_cond <- ifelse(lag_y == 1, p11, p01)
+
+  # Prognosegüte
+  mse_uncond <- mean((lead_y - forecast_uncond)^2)
+  mse_cond   <- mean((lead_y - forecast_cond)^2)
+
+  c(
+    mse_uncond = mse_uncond,
+    mse_cond   = mse_cond,
+    mu_uncond  = mu_uncond,
+    p11        = p11,
+    p01        = p01
+  )
+}
+
+results_iid  <- compute_mse_est(iid_flips)
+results_corr <- compute_mse_est(correlated_flips)
+```
+
+---
+
+## Ergebnisse
+
+```{r results}
+results_iid
+results_corr
+```
+
+### Interpretation
+
+Für die IID-Daten sollte gelten:
+
+- \(\mu_{uncond} \approx 0.5\)
+- \(p11 \approx 0.5\)
+- \(p01 \approx 0.5\)
+
+Damit sind bedingter und unbedingter Mittelwert nahezu gleich, und die MSE-Werte sollten sehr ähnlich sein.
+
+Für die korrelierten Daten erwarten wir:
+
+- \(\mu_{uncond} \approx 0.5\)
+- \(p11 > 0.5\)
+- \(p01 < 0.5\)
+
+Damit nutzt der bedingte Mittelwert zusätzliche Information aus der Vergangenheit und sollte einen niedrigeren MSE erreichen.
+
+---
+
+## Visualisierung der MSE-Werte
+
+```{r plot_mse}
+df_mse <- data.frame(
+  Scenario = rep(c("Unkorreliert", "Korreliert"), each = 2),
+  Method = rep(c("Unbedingt", "Bedingt"), 2),
+  MSE = c(
+    results_iid["mse_uncond"], results_iid["mse_cond"],
+    results_corr["mse_uncond"], results_corr["mse_cond"]
+  )
+)
+
+ggplot(df_mse, aes(x = Method, y = MSE, fill = Scenario)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Vergleich der Prognosegüte (MSE)",
+    x = "Prognosemethode",
+    y = "Mittlerer quadratischer Fehler"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## Zusätzliche Gegenüberstellung der geschätzten Mittelwerte
+
+```{r estimated_means}
+df_params <- data.frame(
+  Scenario = c("Unkorreliert", "Korreliert"),
+  Unbedingter_Mittelwert = c(results_iid["mu_uncond"], results_corr["mu_uncond"]),
+  Bedingt_nach_1 = c(results_iid["p11"], results_corr["p11"]),
+  Bedingt_nach_0 = c(results_iid["p01"], results_corr["p01"])
+)
+
+df_params
+```
+
+Diese Tabelle macht die Intuition besonders klar:
+
+- Im **unkorrelierten** Fall sind alle geschätzten Mittelwerte fast gleich.
+- Im **korrelierten** Fall unterscheiden sich die beiden bedingten Mittelwerte deutlich:
+  - nach einer **1** ist die nächste **1** wahrscheinlicher,
+  - nach einer **0** ist die nächste **1** unwahrscheinlicher.
+
+---
+
+## Fazit
+
+Die Simulation bestätigt die Theorie:
+
+- Bei **IID-Daten** bringt Konditionierung keinen nennenswerten Vorteil, weil die Vergangenheit keine Information über die Zukunft enthält.
+- Bei **korrelierten Daten** verbessert der **bedingte Mittelwert** die Prognose unter quadratischer Verlustfunktion, weil der letzte Wurf Information über den nächsten Wurf enthält.
+
+Wichtig ist dabei:
+
+- Der bedingte Mittelwert ist **nicht** einfach der zuletzt beobachtete Wert.
+- Für binäre Daten ist der bedingte Mittelwert eine **bedingte Wahrscheinlichkeit**.
+
+---
+
+## Hinweis
+
+Die hier gezeigte Auswertung ist eine **in-sample Illustration**:
+
+Die Größen \(p11\) und \(p01\) werden aus der gesamten simulierten Reihe geschätzt und anschließend innerhalb derselben Stichprobe bewertet.
+
+Für eine echte Prognoseübung könnte man stattdessen ein
+
+- Trainings-/Test-Sample oder
+- rollierendes Forecasting-Schema
+
+verwenden.

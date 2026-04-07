@@ -1,23 +1,26 @@
 ---
-title: "Prognosen und Verlustfunktionen: Bedingter Mittelwert vs. Median"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
----
+# Prognosen und Verlustfunktionen: Mittelwert vs. Median
 
-# Prognosen und Verlustfunktionen: Bedingter Mittelwert vs. Median
+Dieses Dokument illustriert, wie die **Wahl der Verlustfunktion** bestimmt, welche Prognose optimal ist. Wir vergleichen zwei Prognosekonzepte für **unkorrelierte Bernoulli-Daten**:
 
-Dieses Dokument zeigt, wie die **Wahl der Verlustfunktion** bestimmt, welche Prognose optimal (Oracle-Prognose) ist.
+- den **Mittelwert**, der unter **quadratischem Verlust** optimal ist,
+- den **Median**, der unter **absolutem Verlust** optimal ist.
 
-Wir vergleichen:
+Für binäre Daten lässt sich der Unterschied besonders klar zeigen, weil
 
-- **Bedingter Mittelwert** - optimal unter **quadratischem Verlust** (MSE)
-- **Bedingter Median** - optimal unter **absolutem Verlust** (MAE)
+- der **Mittelwert** als **Wahrscheinlichkeitsprognose** interpretiert werden kann,
+- der **Median** einer **Punkt- bzw. Klassifikationsprognose** entspricht.
 
-für zwei Arten von Münzwürfen:
+Ziel ist zu zeigen:
 
-- **Unkorrelierte** (IID) Würfe
-- **Korrelierte** Würfe (Markov-Prozess)
+- Unter **MSE** ist der Mittelwert optimal.
+- Unter **MAE** ist der Median optimal.
+- Die Verlustfunktion entscheidet also, was als „beste“ Prognose gilt.
 
 ---
 
@@ -25,25 +28,55 @@ für zwei Arten von Münzwürfen:
 
 
 ``` r
-# Lade here Paket
 library(here)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
 
-# Optionen Rendering
 knitr::opts_knit$set(root.dir = here())
-knitr::opts_chunk$set(echo = TRUE,
-                      message = FALSE,
-                      warning = FALSE,
-                      fig.align = "center",
-                      fig.cap = "",
-                      fig.height = 5,
-                      fig.width = 8)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.cap = "",
+  fig.height = 5,
+  fig.width = 8
+)
 
-# Säubere Umgebung
-rm(list=ls())
+rm(list = ls())
 
-# Verwende "seed" für die Reproduzierbarkeit
 set.seed(123)
 ```
+
+---
+
+## Daten-generierender Prozess (DGP)
+
+Wir betrachten unkorrelierte Münzwürfe mit
+
+$$
+Y_t \sim \text{Bernoulli}(0.8)
+$$
+
+Das bedeutet:
+
+- mit Wahrscheinlichkeit \(0.8\) ist \(Y_t = 1\),
+- mit Wahrscheinlichkeit \(0.2\) ist \(Y_t = 0\).
+
+Daraus folgen unmittelbar:
+
+- **Mittelwert**:
+  $$
+  E(Y_t) = 0.8
+  $$
+- **Median**:
+  $$
+  \text{Median}(Y_t) = 1
+  $$
+  denn \(P(Y_t \le 1) = 1\) und \(P(Y_t \ge 1) = 0.8 \ge 0.5\).
+
+Für eine Bernoulli-Verteilung mit Parameter \(p > 0.5\) ist der Median also gleich \(1\).
 
 ---
 
@@ -53,121 +86,247 @@ set.seed(123)
 ``` r
 n <- 1000
 
-# Unkorrelierte Würfe
-fair_flips <- rbinom(n, 1, 0.5)
-
-# Korrelierte Würfe
-correlated_flips <- numeric(n)
-correlated_flips[1] <- rbinom(1, 1, 0.5)
-p_stay <- 0.8
-
-for (i in 2:n) {
-  correlated_flips[i] <- ifelse(runif(1) < p_stay, correlated_flips[i-1], 1 - correlated_flips[i-1])
-}
+iid_flips <- rbinom(n, 1, 0.8)
 ```
 
 ---
 
-## Prognosefunktionen
+## Visualisierung der simulierten Münzwürfe
 
 
 ``` r
-compute_forecast_errors <- function(flips) {
-  y_actual <- flips[-1]
-  y_lagged <- flips[-length(flips)]
+df_series <- data.frame(
+  t = 1:n,
+  value = iid_flips,
+  series = "IID (Bernoulli 0.8)"
+)
 
-  # Bedingter Mittelwert (empirisch geschätzt)
-  prob_1_given_1 <- mean(y_actual[y_lagged == 1])
-  prob_1_given_0 <- mean(y_actual[y_lagged == 0])
+ggplot(df_series, aes(x = t, y = value)) +
+  geom_step() +
+  labs(
+    title = "Simulierte IID-Münzwürfe",
+    x = "Zeit",
+    y = "Wurf (0 oder 1)"
+  ) +
+  theme_minimal()
+```
 
-  cond_mean_forecast <- ifelse(y_lagged == 1, prob_1_given_1, prob_1_given_0)
-  cond_median_forecast <- ifelse(cond_mean_forecast >= 0.5, 1, 0)
+<img src="./03-ergebnisse/plot_series-1.svg" alt="" style="display: block; margin: auto;" />
 
-  # Unbedingte Varianten
-  prob_1_uncond <- mean(y_lagged)
-  uncond_mean_forecast <- rep(prob_1_uncond, length(y_actual))
-  uncond_median_forecast <- ifelse(prob_1_uncond >= 0.5, 1, 0)
+---
 
+## Theorie: Welche Prognose ist unter welcher Verlustfunktion optimal?
+
+### 1. Quadratischer Verlust
+
+Unter quadratischem Verlust
+
+$$
+L(y, f) = (y - f)^2
+$$
+
+ist die optimale Prognose die **bedingte Erwartung**. Im unbedingten Fall also der **Mittelwert**:
+
+$$
+f^*_{\text{MSE}} = E(Y_t)
+$$
+
+Für unsere Bernoulli-Daten ist das:
+
+$$
+f^*_{\text{MSE}} = 0.8
+$$
+
+### 2. Absoluter Verlust
+
+Unter absolutem Verlust
+
+$$
+L(y, f) = |y - f|
+$$
+
+ist die optimale Prognose ein **Median** der Verteilung:
+
+$$
+f^*_{\text{MAE}} = \text{Median}(Y_t)
+$$
+
+Für unsere Bernoulli-Daten mit \(p=0.8\) ist das:
+
+$$
+f^*_{\text{MAE}} = 1
+$$
+
+Damit unterscheiden sich die beiden optimalen Prognosen:
+
+- **MSE-optimal**: prognostiziere \(0.8\)
+- **MAE-optimal**: prognostiziere \(1\)
+
+---
+
+## Prognosefunktionen und Vergleich von MSE / MAE
+
+Wir vergleichen zwei **unbedingte** Prognosen:
+
+1. **Mittelwertsprognose**: konstante Prognose gleich dem geschätzten Mittelwert
+2. **Medianprognose**: konstante Prognose gleich dem geschätzten Median
+
+
+``` r
+compute_mse_mae_est <- function(flips) {
+  n <- length(flips)
+
+  # Zielvariable (hier bewusst als one-step-ahead-Auswertung geschrieben)
+  lag_y <- flips[-n]
+  act_y <- flips[-1]
+
+  # Unbedingte Prognosen
+  p_hat <- mean(lag_y)
+  mean_forecast <- rep(p_hat, n - 1)
+
+  median_hat <- ifelse(p_hat >= 0.5, 1, 0)
+  median_forecast <- rep(median_hat, n - 1)
+
+  # Verlustfunktionen
   mse <- function(a, f) mean((a - f)^2)
   mae <- function(a, f) mean(abs(a - f))
 
   data.frame(
-    Forecast = c("Uncond_Mean", "Cond_Mean", "Uncond_Median", "Cond_Median"),
-    MSE = c(mse(y_actual, uncond_mean_forecast),
-            mse(y_actual, cond_mean_forecast),
-            mse(y_actual, uncond_median_forecast),
-            mse(y_actual, cond_median_forecast)),
-    MAE = c(mae(y_actual, uncond_mean_forecast),
-            mae(y_actual, cond_mean_forecast),
-            mae(y_actual, uncond_median_forecast),
-            mae(y_actual, cond_median_forecast))
+    Forecast = c("Mittelwert", "Median"),
+    Forecast_Value = c(p_hat, median_hat),
+    MSE = c(
+      mse(act_y, mean_forecast),
+      mse(act_y, median_forecast)
+    ),
+    MAE = c(
+      mae(act_y, mean_forecast),
+      mae(act_y, median_forecast)
+    )
   )
 }
 
-errors_fair <- compute_forecast_errors(fair_flips)
-errors_corr <- compute_forecast_errors(correlated_flips)
+results <- compute_mse_mae_est(iid_flips)
+results
+```
 
-errors_fair$Scenario <- "Unkorreliert"
-errors_corr$Scenario <- "Korrelierte"
-library(dplyr)
-results <- bind_rows(errors_fair, errors_corr)
+```
+##     Forecast Forecast_Value       MSE       MAE
+## 1 Mittelwert      0.8018018 0.1589157 0.3178313
+## 2     Median      1.0000000 0.1981982 0.1981982
 ```
 
 ---
 
-## Ergebnisse
+## Ergebnisse in langem Format
 
 
 ``` r
-library(tidyr)
-results_long <- pivot_longer(results, cols = c(MSE, MAE), names_to = "Loss", values_to = "Error")
+results_long <- pivot_longer(
+  results,
+  cols = c(MSE, MAE),
+  names_to = "Loss",
+  values_to = "Error"
+)
 
 results_long
 ```
 
 ```
-## # A tibble: 16 × 4
-##    Forecast      Scenario     Loss  Error
-##    <chr>         <chr>        <chr> <dbl>
-##  1 Uncond_Mean   Unkorreliert MSE   0.250
-##  2 Uncond_Mean   Unkorreliert MAE   0.500
-##  3 Cond_Mean     Unkorreliert MSE   0.250
-##  4 Cond_Mean     Unkorreliert MAE   0.500
-##  5 Uncond_Median Unkorreliert MSE   0.493
-##  6 Uncond_Median Unkorreliert MAE   0.493
-##  7 Cond_Median   Unkorreliert MSE   0.488
-##  8 Cond_Median   Unkorreliert MAE   0.488
-##  9 Uncond_Mean   Korrelierte  MSE   0.250
-## 10 Uncond_Mean   Korrelierte  MAE   0.499
-## 11 Cond_Mean     Korrelierte  MSE   0.158
-## 12 Cond_Mean     Korrelierte  MAE   0.317
-## 13 Uncond_Median Korrelierte  MSE   0.481
-## 14 Uncond_Median Korrelierte  MAE   0.481
-## 15 Cond_Median   Korrelierte  MSE   0.197
-## 16 Cond_Median   Korrelierte  MAE   0.197
+## # A tibble: 4 × 4
+##   Forecast   Forecast_Value Loss  Error
+##   <chr>               <dbl> <chr> <dbl>
+## 1 Mittelwert          0.802 MSE   0.159
+## 2 Mittelwert          0.802 MAE   0.318
+## 3 Median              1     MSE   0.198
+## 4 Median              1     MAE   0.198
 ```
 
 ---
 
-## Visualisierung
+## Visualisierung der Prognosegüte
 
 
 ``` r
-library(ggplot2)
 ggplot(results_long, aes(x = Forecast, y = Error, fill = Loss)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  facet_wrap(~Scenario) +
-  labs(title = "Prognosegüte unter verschiedenen Verlustfunktionen",
-       y = "Fehler", x = "Prognosetyp") +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Prognosegüte unter verschiedenen Verlustfunktionen",
+    x = "Prognosetyp",
+    y = "Fehler"
+  ) +
   theme_minimal()
 ```
 
-<img src="./03-ergebnisse/plot-1.svg" alt="" style="display: block; margin: auto;" />
+<img src="./03-ergebnisse/plot_loss_comparison-1.svg" alt="" style="display: block; margin: auto;" />
+
+---
+
+## Direkter Vergleich der Prognosewerte
+
+
+``` r
+df_forecasts <- data.frame(
+  Type = c("Wahrer Mittelwert", "Geschätzter Mittelwert", "Geschätzter Median"),
+  Value = c(
+    0.8,
+    results$Forecast_Value[results$Forecast == "Mittelwert"],
+    results$Forecast_Value[results$Forecast == "Median"]
+  )
+)
+
+ggplot(df_forecasts, aes(x = Type, y = Value)) +
+  geom_col() +
+  labs(
+    title = "Vergleich der Prognosewerte",
+    x = "",
+    y = "Prognosewert"
+  ) +
+  theme_minimal()
+```
+
+<img src="./03-ergebnisse/plot_forecasts-1.svg" alt="" style="display: block; margin: auto;" />
+
+---
+
+## Interpretation
+
+Die Simulation illustriert genau die theoretische Aussage:
+
+- Die **Mittelwertsprognose** ist unter **MSE** optimal, weil der quadratische Verlust durch die Erwartung minimiert wird.
+- Die **Medianprognose** ist unter **MAE** optimal, weil der absolute Verlust durch einen Median minimiert wird.
+
+Für Bernoulli-Daten mit \(p = 0.8\) bedeutet das:
+
+- Die Mittelwertsprognose ist eine **weiche Wahrscheinlichkeitsprognose** von ungefähr \(0.8\).
+- Die Medianprognose ist eine **harte Prognose** von \(1\).
+
+Das ist der Kernunterschied:
+
+- **Mittelwert** = probabilistische Prognose
+- **Median** = robuste Punktprognose unter absolutem Verlust
 
 ---
 
 ## Fazit
 
-- Der **bedingte Mittelwert** minimiert den **MSE** (quadratischer Verlust).
-- Der **bedingte Median** minimiert den **MAE** (absoluter Verlust).
-- Die Wahl der **Verlustfunktion bestimmt, was eine gute Prognose ist**.
+Die Wahl der Verlustfunktion bestimmt, welche Prognose optimal ist:
+
+- Unter **quadratischem Verlust (MSE)** ist der **Mittelwert** optimal.
+- Unter **absolutem Verlust (MAE)** ist der **Median** optimal.
+
+Für die simulierten IID-Bernoulli-Daten mit \(p=0.8\) folgt daher:
+
+- **MSE-optimal**: prognostiziere ungefähr \(0.8\)
+- **MAE-optimal**: prognostiziere \(1\)
+
+Damit zeigt das Beispiel anschaulich, dass „die beste Prognose“ immer nur **relativ zur gewählten Verlustfunktion** definiert ist.
+
+---
+
+## Hinweis
+
+Da die Daten IID sind, unterscheiden sich bedingte und unbedingte Prognosen hier nicht.  
+Der Fokus dieses Dokuments liegt ausschließlich auf dem Zusammenhang zwischen:
+
+- **Mittelwert und MSE**
+- **Median und MAE**

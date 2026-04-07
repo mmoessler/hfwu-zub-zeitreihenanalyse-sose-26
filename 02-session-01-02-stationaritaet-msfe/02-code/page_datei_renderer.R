@@ -9,8 +9,8 @@ knitr::opts_chunk$set(
 )
 
 knit(
-  input  = here("02-session-01-02-stationaritaet-msfe", "04-berichte", "hfwu_za_sose_26_01_02_muenzwurf_vorhersage.Rmd"),
-  output = here("02-session-01-02-stationaritaet-msfe", "hfwu_za_sose_26_01_02_muenzwurf_vorhersage_page.md")
+  input  = here("02-session-01-02-stationaritaet-msfe", "04-berichte", "hfwu_za_sose_26_01_02_vorhersage_art_vergleich.Rmd"),
+  output = here("02-session-01-02-stationaritaet-msfe", "hfwu_za_sose_26_01_02_vorhersage_art_vergleich_page.md")
 )
 
 knit(

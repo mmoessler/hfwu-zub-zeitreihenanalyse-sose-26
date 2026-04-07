@@ -50,6 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       container.innerHTML = md.render(markdown);
 
+      if (window.renderMathInElement) {
+        renderMathInElement(container, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '\\[', right: '\\]', display: true },
+
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false }            
+          ],
+          throwOnError: false
+        });
+      }      
+
       document.querySelectorAll('pre code.language-mermaid').forEach(code => {
         const pre = code.parentElement;
         const wrapper = document.createElement('div');
