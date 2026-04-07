@@ -6,9 +6,9 @@ editor_options:
 
 ---
 
-# Kapitel 1.1) Einführung in Zeitreihendaten und Serielle Korrelation
+# Praxist-Teil Session 1:<br>Einführung in die Zeitreihenregression und -prognose
 
-Dieses Dokument enthält den Praxis-Teil von Kapitel 1.1) Einführung in Zeitreihendaten und Serielle Korrelation. 
+Dieses Dokument enthält den Praxis-Teil von Session 1: Einführung in die Zeitreihenregression und -prognose.
 
 ---
 

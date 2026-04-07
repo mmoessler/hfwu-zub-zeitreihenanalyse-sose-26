@@ -327,7 +327,7 @@ Wichtig ist dabei:
 
 Die hier gezeigte Auswertung ist eine **in-sample Illustration**:
 
-Die Größen \(p11\) und \(p01\) werden aus der gesamten simulierten Reihe geschätzt und anschließend innerhalb derselben Stichprobe bewertet.
+Die Größen $p11$ und $p01$ werden aus der gesamten simulierten Reihe geschätzt und anschließend innerhalb derselben Stichprobe bewertet.
 
 Für eine echte Prognoseübung könnte man stattdessen ein
 

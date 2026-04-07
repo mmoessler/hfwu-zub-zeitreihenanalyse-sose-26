@@ -61,8 +61,8 @@ $$
 
 Das bedeutet:
 
-- mit Wahrscheinlichkeit \(0.8\) ist \(Y_t = 1\),
-- mit Wahrscheinlichkeit \(0.2\) ist \(Y_t = 0\).
+- mit Wahrscheinlichkeit $0.8$ ist $Y_t = 1$,
+- mit Wahrscheinlichkeit $0.2$ ist $Y_t = 0$.
 
 Daraus folgen unmittelbar:
 
@@ -74,9 +74,9 @@ Daraus folgen unmittelbar:
   $$
   \text{Median}(Y_t) = 1
   $$
-  denn \(P(Y_t \le 1) = 1\) und \(P(Y_t \ge 1) = 0.8 \ge 0.5\).
+  denn $P(Y_t \le 1) = 1$ und $P(Y_t \ge 1) = 0.8 \ge 0.5$.
 
-Für eine Bernoulli-Verteilung mit Parameter \(p > 0.5\) ist der Median also gleich \(1\).
+Für eine Bernoulli-Verteilung mit Parameter $p > 0.5$ ist der Median also gleich $1$.
 
 ---
 
@@ -151,7 +151,7 @@ $$
 f^*_{\text{MAE}} = \text{Median}(Y_t)
 $$
 
-Für unsere Bernoulli-Daten mit \(p=0.8\) ist das:
+Für unsere Bernoulli-Daten mit $p=0.8$ ist das:
 
 $$
 f^*_{\text{MAE}} = 1
@@ -159,8 +159,8 @@ $$
 
 Damit unterscheiden sich die beiden optimalen Prognosen:
 
-- **MSE-optimal**: prognostiziere \(0.8\)
-- **MAE-optimal**: prognostiziere \(1\)
+- **MSE-optimal**: prognostiziere $0.8$
+- **MAE-optimal**: prognostiziere $1$
 
 ---
 
@@ -295,10 +295,10 @@ Die Simulation illustriert genau die theoretische Aussage:
 - Die **Mittelwertsprognose** ist unter **MSE** optimal, weil der quadratische Verlust durch die Erwartung minimiert wird.
 - Die **Medianprognose** ist unter **MAE** optimal, weil der absolute Verlust durch einen Median minimiert wird.
 
-Für Bernoulli-Daten mit \(p = 0.8\) bedeutet das:
+Für Bernoulli-Daten mit $p = 0.8$ bedeutet das:
 
-- Die Mittelwertsprognose ist eine **weiche Wahrscheinlichkeitsprognose** von ungefähr \(0.8\).
-- Die Medianprognose ist eine **harte Prognose** von \(1\).
+- Die Mittelwertsprognose ist eine **weiche Wahrscheinlichkeitsprognose** von ungefähr $0.8$.
+- Die Medianprognose ist eine **harte Prognose** von $1$.
 
 Das ist der Kernunterschied:
 
@@ -314,10 +314,10 @@ Die Wahl der Verlustfunktion bestimmt, welche Prognose optimal ist:
 - Unter **quadratischem Verlust (MSE)** ist der **Mittelwert** optimal.
 - Unter **absolutem Verlust (MAE)** ist der **Median** optimal.
 
-Für die simulierten IID-Bernoulli-Daten mit \(p=0.8\) folgt daher:
+Für die simulierten IID-Bernoulli-Daten mit $p=0.8$ folgt daher:
 
-- **MSE-optimal**: prognostiziere ungefähr \(0.8\)
-- **MAE-optimal**: prognostiziere \(1\)
+- **MSE-optimal**: prognostiziere ungefähr $0.8$
+- **MAE-optimal**: prognostiziere $1$
 
 Damit zeigt das Beispiel anschaulich, dass „die beste Prognose“ immer nur **relativ zur gewählten Verlustfunktion** definiert ist.
 

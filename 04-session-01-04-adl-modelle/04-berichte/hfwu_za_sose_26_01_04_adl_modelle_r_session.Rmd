@@ -6,9 +6,9 @@ editor_options:
 
 ---
 
-# Session 4) Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
+# Praxist-Teil Session 4:<br>Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell
 
-Dieses Dokument enthält den Praxis-Teil von Session 4) Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell. 
+Dieses Dokument enthält den Praxis-Teil von Session 4: Zusätzlichen Prädiktoren und das Autoregressive Distributed Lag (ADL) Modell. 
 
 ---
 

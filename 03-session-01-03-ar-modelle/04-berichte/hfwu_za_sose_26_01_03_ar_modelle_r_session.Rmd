@@ -6,9 +6,9 @@ editor_options:
 
 ---
 
-# Session 3) Autoregression und das Autoregressive (AR) Modell
+# Praxist-Teil Session 3:<br>Autoregression und das Autoregressive (AR) Modell
 
-Dieses Dokument enthält den Praxis-Teil von Session 3) Autoregression und das Autoregressive (AR) Modell. 
+Dieses Dokument enthält den Praxis-Teil von Session 3: Autoregression und das Autoregressive (AR) Modell. 
 
 ---
 
