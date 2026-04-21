@@ -1,0 +1,328 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# Praxist-Teil Session 1:<br>Einführung in die Zeitreihenregression und -prognose
+
+Dieses Dokument enthält den Praxis-Teil von Session 1: Einführung in die Zeitreihenregression und -prognose.
+
+---
+
+## Setup
+
+```{r, message=FALSE, warning=FALSE}
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Packete
+library(AER)
+library(readxl)
+```
+
+---
+
+## Verwendung von Regressionsmodellen zur Prognose
+
+---
+
+### Frage 1
+
+Was ist der Unterschied zwischen der Schätzung von Modellen zur Analyse von kausalen Effekten und zur Prognose?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+Nehmen Sie ein einfaches Beispiel zur Schätzung des kausalen Effekts des Schüler-Lehrer-Verhältnisses auf Testergebnisse unter Verwendung eines einfachen Regressionsmodellsn aus dem Textbuch S&W 2020. Verwenden Sie `help("CASchools")`, für mehr Informationen über den Datensatz.
+
+```{r}
+data(CASchools)   
+CASchools$STR <- CASchools$students/CASchools$teachers       
+CASchools$score <- (CASchools$read + CASchools$math)/2
+
+mod <- lm(score ~ STR, data = CASchools)
+
+coeftest(mod, vcov. = vcovHC, type = "HC1")
+```
+
+---
+
+### Frage 2
+
+Hat die Schätzung des Koeffizienten für das Schüler-Lehrer-Verhältnis eine kausale Interpretation?
+
+Hinweis: Die Einbeziehung des Anteils der englischsprachigen Schüler ergibt folgenden geschätzten Effekt des Schüler-Lehrer-Verhältnisses:
+
+```{r}
+mult_mod <- lm(score ~ STR + english, data = CASchools)
+
+coeftest(mult_mod, vcov. = vcovHC, type = "HC1")
+```
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+Bei der Entscheidung, auf welche Schule ihr Kind gehen soll, könnte es für eine Mutter dennoch sinnvoll sein, `mod` zur Prognose der Testergebnisse in Schulbezirken zu verwenden, für die keine öffentlichen Daten zu den Ergebnissen verfügbar sind.
+
+---
+
+### Frage 3
+
+Ist das einfache Regressionsmodell nützlich zur Prognose von Testergebnissen in Schulbezirken ohne öffentliche Daten zu Testergebnissen?
+
+Beispiel: Angenommen, die durchschnittliche Klasse in einem Bezirk hat $25$ Schüler.
+
+```{r}
+predict(mod, newdata = data.frame("STR" = 25))
+```
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 4
+
+Welche zusätzlichen Informationen könnten in einem Zeitreihenkontext zur Prognose von Testergebnissen genutzt werden?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## Reales US-BIP
+
+Das BIP wird als der Gesamtwert aller in einem bestimmten Zeitraum produzierten Waren und Dienstleistungen definiert. Der Datensatz `us_macro_quarterly.xlsx` enthält vierteljährliche Daten zum realen BIP der USA (d.h. inflationsbereinigt) von 1947 bis 2004.
+
+Ein guter Ausgangspunkt ist die grafische Darstellung der Daten.
+
+Einlesen der Daten.
+
+```{r}
+us_macro <- read.table(here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
+                       header = TRUE,
+                       sep = ";"
+)
+```
+
+Umwandlung in ein `ts` Object.
+
+```{r}
+us_macro_ts <- ts(
+  us_macro,
+  frequency = 4,
+  start = c(1950, 1),
+  end = c(2026, 1)
+)
+
+us_macro_ts <- window(us_macro_ts,
+                      start = c(1955, 1),
+                      end = c(2017, 4)
+)
+```
+
+Berechnung der annualisierten Wachstumsrate.
+
+```{r}
+GDP <- us_macro_ts[,"GDPC1"]
+GDPGR <- 400 * log(GDP/lag(GDP, -1))
+```
+
+Darstellung des realen US-BIP.
+
+```{r us_gdp, fig.cap="Reales US-BIP in Billionen 2009 USD"}
+plot(GDP,
+     col = "steelblue",
+     lwd = 2,
+     ylab = "Billionen 2009 USD",
+     xlab = "Datum",
+     main = "Reales US-BIP in Billionen 2009 USD")
+```
+
+Darstellung der jährlichen Wachstumsrate.
+
+```{r us_gdp_wachstumsrate, fig.cap="Wachstumsrate des realen US-BIP"}
+plot(GDPGR,
+     col = "steelblue",
+     lwd = 2,
+     ylab = "Jährliche Wachstumsrate",
+     xlab = "Datum",
+     main = "Wachstumsrate des realen US-BIP")
+```
+
+---
+
+### Frage 5
+
+Welche Eigenschaften weisen die BIP-Zeitreihendaten auf? Warum ist die Transformation zur Wachstumsrate sinnvoll?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## Autokorrelation
+
+Beobachtungen einer Zeitreihe sind typischerweise korreliert. Diese Art von Korrelation nennt man *Autokorrelation* oder *serielle Korrelation*.
+
+```{r}
+acf(GDPGR, lag.max = 10, plot = F)
+```
+
+```{r us_gdp_wachstum_acf_grafik}
+acf(GDPGR, , main = "Stichprobenautokorrelation der US BIP Wachstumsrate")
+```
+
+---
+
+### Frage 6
+
+Welche Schlussfolgerungen lassen sich aus den Ergebnissen ziehen?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## Weitere Beispiele wirtschaftlicher Zeitreihen
+
+Makro Zeitreihen
+
+```{r}
+us_macro_ts <- window(us_macro_ts,
+                      start = c(1960, 1),
+                      end = c(2013, 4)
+)
+
+GDP <- us_macro_ts[,"GDPC1"]
+USUnemp <- us_macro_ts[,"UNRATE"]
+DollarPoundFX <- us_macro_ts[,"EXUSUK"]
+JPIndProd <- us_macro_ts[,"JAPAN_IP"]
+```
+
+Finanzmarkt Zeitreihe
+
+```{r}
+# Daily NYSE Composite Index
+data("NYSESW")
+
+# Berechne Returns
+NYSEIndexRet <- 100 * diff(log(NYSESW))
+```
+
+Darstellung
+
+```{r weitere_zeitreihen_grafik}
+par(mfrow = c(2, 2))
+plot(USUnemp, col = "steelblue", lwd = 2, ylab = "Prozent", xlab = "Datum", main = "US-Arbeitslosenquote", cex.main = 0.8)
+plot(DollarPoundFX, col = "steelblue", lwd = 2, ylab = "Dollar pro Pfund", xlab = "Datum", main = "US-Dollar / Britisches Pfund Wechselkurs", cex.main = 0.8)
+plot(JPIndProd, col = "steelblue", lwd = 2, ylab = "Logarithmus", xlab = "Datum", main = "Japanische Industrieproduktion", cex.main = 0.8)
+plot(NYSEIndexRet, col = "steelblue", lwd = 2, ylab = "Prozent pro Tag", xlab = "Datum", main = "New York Stock Exchange Composite Index", cex.main = 0.8)
+```
+
+---
+
+### Frage 7
+
+Beschreiben und vergleichen Sie die Eigenschaften dieser verschiedenen wirtschaftlichen Zeitreihen.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+Zur genaueren Analyse der täglichen Veränderungen des New York Stock Exchange Composite Index berechnen wir die Stichprobenautokorrelationen.
+
+```{r}
+acf(as.numeric(NYSEIndexRet), plot = F, lag.max = 10)
+```
+
+```{r nyse_re_acf_grafik}
+par(mfrow = c(1, 1))
+acf(as.numeric(NYSEIndexRet), main = "Stichprobenautokorrelation des täglichen Returns des NYSE Composite Index")
+```
+
+---
+
+### Frage 8
+
+Beschreiben Sie die Eigenschaften des New York Stock Exchange Composite Index genauer.
+
+...
+
+...
+
+...
+
+...
+
+...
