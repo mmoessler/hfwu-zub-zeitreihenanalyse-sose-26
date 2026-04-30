@@ -1,0 +1,240 @@
+---
+output:
+  html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# Praxist-Teil Session 6:<br>Schätzung der Lag-Länge anhand von Informationskriterien
+
+Dieses Dokument enthält den Praxis-Teil von Session 6: Schätzung der Lag-Länge anhand von Informationskriterien.
+
+---
+
+# Gliederung
+
+- [Vorbereitung der Daten](#vorbereitung-der-daten)
+- [Modell Schätzung](#modell-schätzung)
+  - [Frage 1](#frage-1)
+- [Lag-Länge Analyse](#lag-länge-analyse)
+  - [Frage 2](#frage-2)
+
+---
+
+# Setup
+
+
+``` r
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+```
+
+---
+
+## Vorbereitung der Daten
+
+
+``` r
+#  "01-daten/us_macro_quarterly_merged.csv" -> "us_macro_ts" (data.frame)
+source(here("06-session-01-06-schaetzung-lag-laenge-ik", "02-code", "daten_vorbereitung_skript.R"))
+```
+
+---
+
+## Modell Schätzung
+
+Schätzung von unterschiedlichen AR und ADL Modellen für 1962-Q1 - 2017-Q3
+
+
+``` r
+# Schätzung AR(0) Model: 1962-Q1 - 2017-Q3
+ar_00_dynlm <- dynlm(GDPGR ~ 1,
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(1) Model: 1962-Q1 - 2017-Q3
+ar_01_dynlm <- dynlm(GDPGR ~ L(GDPGR,1),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(2) Model: 1962-Q1 - 2017-Q3
+ar_02_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(3) Model: 1962-Q1 - 2017-Q3
+ar_03_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(GDPGR,3),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(4) Model: 1962-Q1 - 2017-Q3
+ar_04_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(GDPGR,3) + L(GDPGR,4),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(5) Model: 1962-Q1 - 2017-Q3
+ar_05_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(GDPGR,3) + L(GDPGR,4) + L(GDPGR,5),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(6) Model: 1962-Q1 - 2017-Q3
+ar_06_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(GDPGR,3) + L(GDPGR,4) + L(GDPGR,5)
+                     + L(GDPGR,6),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung ADL(2,1) Model: 1962-Q1 - 2017-Q3
+adl_0201_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung ADL(2,2) Model: 1962-Q1 - 2017-Q3
+adl_0202_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+```
+
+---
+
+### Frage 1
+
+Anhand welcher Verfahren kann die Lag-Länge von AR und ADL Modellen bestimmt werden? Was muss bei der Verwendung von klassischen Anpassungsmaßen wie z.B. $R^2$ beachtet werden?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## Lag-Länge Analyse
+
+**Schritt 1) Vorbereitung Funktionen zur Analse**
+
+
+``` r
+lag_len_crit_fun <- function(model) {
+  
+  if (c("lm") %in% class(model)) {
+    R2 <- summary(model)$r.squared
+    p <- length(model$coef)-1
+  } else if (c("summary.lm") %in% class(model)) {
+    R2 <- model$r.squared
+    p <- nrow(model$coef)-1
+  }
+  
+  ssr <- sum(model$residuals^2)
+  t <- length(model$residuals)
+  ssr.t <- ssr/t
+  log.ssr.t <- log(ssr.t)
+  
+  p1.ln.t.t <- (p+1)*log(t)/t
+  
+  BIC <- log(ssr/t) + (p+1) * log(t)/t
+  AIC <- log(ssr/t) + (p+1) * 2/t
+  
+  ret.lis <- list(p = p, t = t,
+                  ssr = round(ssr,4),
+                  ssr.t = round(ssr.t,4),
+                  log.ssr.t = round(log.ssr.t,4),
+                  p1.ln.t.t = round(p1.ln.t.t,4),
+                  R2 = round(R2,4),
+                  BIC = round(BIC,4),
+                  AIC = round(AIC,4))
+  
+  return(ret.lis)
+  
+}
+```
+
+**Schritt 2) Analyse**
+
+
+``` r
+# Call function for information criteria
+ar_00_crit <- lag_len_crit_fun(ar_00_dynlm)
+ar_01_crit <- lag_len_crit_fun(ar_01_dynlm)
+ar_02_crit <- lag_len_crit_fun(ar_02_dynlm)
+ar_03_crit <- lag_len_crit_fun(ar_03_dynlm)
+ar_04_crit <- lag_len_crit_fun(ar_04_dynlm)
+ar_05_crit <- lag_len_crit_fun(ar_05_dynlm)
+ar_06_crit <- lag_len_crit_fun(ar_06_dynlm)
+adl_0201_crit <- lag_len_crit_fun(adl_0201_dynlm)
+adl_0202_crit <- lag_len_crit_fun(adl_0202_dynlm)
+```
+
+**Schritt 3) Ergebnis**
+
+
+``` r
+# Collect results
+res.mat <- rbind(
+  cbind(ar_00_crit$p,ar_00_crit$ssr,ar_00_crit$ssr.t,ar_00_crit$log.ssr.t,ar_00_crit$p1.ln.t.t,ar_00_crit$BIC,ar_00_crit$AIC,ar_00_crit$R2),
+  cbind(ar_01_crit$p,ar_01_crit$ssr,ar_01_crit$ssr.t,ar_01_crit$log.ssr.t,ar_01_crit$p1.ln.t.t,ar_01_crit$BIC,ar_01_crit$AIC,ar_01_crit$R2),
+  cbind(ar_02_crit$p,ar_02_crit$ssr,ar_02_crit$ssr.t,ar_02_crit$log.ssr.t,ar_02_crit$p1.ln.t.t,ar_02_crit$BIC,ar_02_crit$AIC,ar_02_crit$R2),
+  cbind(ar_03_crit$p,ar_03_crit$ssr,ar_03_crit$ssr.t,ar_03_crit$log.ssr.t,ar_03_crit$p1.ln.t.t,ar_03_crit$BIC,ar_03_crit$AIC,ar_03_crit$R2),
+  cbind(ar_04_crit$p,ar_04_crit$ssr,ar_04_crit$ssr.t,ar_04_crit$log.ssr.t,ar_04_crit$p1.ln.t.t,ar_04_crit$BIC,ar_04_crit$AIC,ar_04_crit$R2),
+  cbind(ar_05_crit$p,ar_05_crit$ssr,ar_05_crit$ssr.t,ar_05_crit$log.ssr.t,ar_05_crit$p1.ln.t.t,ar_05_crit$BIC,ar_05_crit$AIC,ar_05_crit$R2),
+  cbind(ar_06_crit$p,ar_06_crit$ssr,ar_06_crit$ssr.t,ar_06_crit$log.ssr.t,ar_06_crit$p1.ln.t.t,ar_06_crit$BIC,ar_06_crit$AIC,ar_06_crit$R2),
+  cbind(adl_0201_crit$p,adl_0201_crit$ssr,adl_0201_crit$ssr.t,adl_0201_crit$log.ssr.t,adl_0201_crit$p1.ln.t.t,adl_0201_crit$BIC,adl_0201_crit$AIC,adl_0201_crit$R2),
+  cbind(adl_0202_crit$p,adl_0202_crit$ssr,adl_0202_crit$ssr.t,adl_0202_crit$log.ssr.t,adl_0202_crit$p1.ln.t.t,adl_0202_crit$BIC,adl_0202_crit$AIC,adl_0202_crit$R2))
+rownames(res.mat) <- c("AR(0)", "AR(1)", "AR(2)", "AR(3)", "AR(4)", "AR(5)", "AR(6)", "ADL(2,1)", "ADL(2,2)")
+colnames(res.mat) <- c("p","SSR(p)","SSR(p)/T","ln(SSR(p)/T)","(p+1)ln(T)/T","BIC(p)","AIC(p)","R2")
+# Show results
+res.mat
+```
+
+```
+##          p   SSR(p) SSR(p)/T ln(SSR(p)/T) (p+1)ln(T)/T BIC(p) AIC(p)     R2
+## AR(0)    0 2336.436  10.4773       2.3492       0.0242 2.3735 2.3582 0.0000
+## AR(1)    1 2062.058   9.2469       2.2243       0.0485 2.2728 2.2422 0.1174
+## AR(2)    2 1996.840   8.9544       2.1921       0.0727 2.2649 2.2191 0.1453
+## AR(3)    3 1996.835   8.9544       2.1921       0.0970 2.2891 2.2280 0.1453
+## AR(4)    4 1989.159   8.9200       2.1883       0.1212 2.3095 2.2331 0.1486
+## AR(5)    5 1959.715   8.7880       2.1734       0.1455 2.3189 2.2272 0.1612
+## AR(6)    6 1957.732   8.7791       2.1724       0.1697 2.3421 2.2352 0.1621
+## ADL(2,1) 3 1939.929   8.6992       2.1632       0.0970 2.2602 2.1991 0.1697
+## ADL(2,2) 4 1916.779   8.5954       2.1512       0.1212 2.2725 2.1961 0.1796
+```
+
+---
+
+### Frage 2
+
+Dikutieren Sie das Ergebnis der Lag-Längen Analyse oben. Welches Modell würden Sie anhand der Ergebnisse verwenden?
+
+...
+
+...
+
+...
+
+...
+
+...

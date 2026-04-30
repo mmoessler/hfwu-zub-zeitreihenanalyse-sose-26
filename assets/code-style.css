@@ -1,0 +1,122 @@
+
+.code-block {
+  position: relative;
+  border: 1px solid #dee2e6;
+  border-radius: 0.3rem;
+  padding: 1rem;
+  font-family: monospace;
+  margin-bottom: 1rem;
+  background: #f8f9fa; /* keep your gray */
+}
+
+pre[class*="language-"] {
+  background: transparent !important; /* remove Prism’s white */
+  margin: 0;
+  padding: 0;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Style plain/text code blocks that Prism doesn't highlight */
+pre.language-text,
+pre.language-plain,
+pre[data-lang="text"],
+pre[data-lang="none"],
+pre[data-lang="plain"] {
+  background: #f8f9fa !important;        /* match your .code-block */
+  border: 1px solid #dee2e6;
+  border-radius: 0.3rem;
+  padding: 1rem;
+  font-family: monospace;
+  margin-bottom: 1rem;
+  color: #212529;             /* normal readable text color */
+  overflow-x: auto;
+}
+
+
+
+
+
+/* DARK MODE */
+
+/* 🌙 Dark mode overrides */
+body.dark-mode .code-block {
+  background: #1e1e1e;              /* dark neutral background */
+  border-color: #444;               /* softer dark border */
+  color: #e0e0e0;                   /* light text for plain code */
+}
+
+body.dark-mode pre[class*="language-"] {
+  background: transparent !important; /* let .code-block background show through */
+  color: #e0e0e0;                     /* fallback if Prism doesn’t set color */
+}
+
+body.dark-mode .copy-btn {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+body.dark-mode .copy-btn:hover {
+  background-color: #444;
+}
+
+/* Dark mode for plain text blocks */
+body.dark-mode pre.language-text,
+body.dark-mode pre.language-plain,
+body.dark-mode pre[data-lang="text"],
+body.dark-mode pre[data-lang="plain"] {
+  background: #1e1e1e !important;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+
+
+
+
+/* 🧩 Fix Prism text styling in dark mode */
+body.dark-mode code[class*="language-"],
+body.dark-mode pre[class*="language-"] {
+  color: #e0e0e0 !important;        /* readable default text color */
+  text-shadow: none !important;     /* remove white shadow */
+  background: transparent !important;
+}
+
+/* optional: brighten comments, keywords, etc., if Prism theme is light */
+body.dark-mode .token.comment,
+body.dark-mode .token.prolog,
+body.dark-mode .token.doctype,
+body.dark-mode .token.cdata {
+  color: #6a9955 !important;        /* subtle greenish for comments */
+}
+
+body.dark-mode .token.keyword {
+  color: #569cd6 !important;        /* blue tone for keywords */
+}
+
+body.dark-mode .token.string {
+  color: #ce9178 !important;        /* warm tone for strings */
+}
+
+body.dark-mode .token.function {
+  color: #dcdcaa !important;        /* soft yellow for functions */
+}
+
+
+
+
+
+/* 🩶 Fix Prism entity/operator background for dark mode */
+body.dark-mode .token.entity,
+body.dark-mode .token.operator,
+body.dark-mode .token.url {
+  color: #d4d4d4 !important;       /* neutral bright gray for visibility */
+  background: transparent !important; /* remove white overlay */
+}

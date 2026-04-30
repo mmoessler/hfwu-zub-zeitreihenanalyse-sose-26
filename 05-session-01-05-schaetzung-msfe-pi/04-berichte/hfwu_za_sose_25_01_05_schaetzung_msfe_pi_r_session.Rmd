@@ -1,0 +1,624 @@
+---
+output:
+  html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# Praxist-Teil Session 5:<br>Schätzung des MSFE und der Vorhersageintervalle
+
+Dieses Dokument enthält den Praxis-Teil von Session 5: Schätzung des MSFE und der Vorhersageintervalle.
+
+---
+
+## Setup
+
+```{r}
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+
+# Lade helper functions
+source(here("05-session-01-05-schaetzung-msfe-pi", "02-code", "poos_funktion.R"))
+```
+
+---
+
+## Vorbereitung der Daten
+
+```{r}
+#  "01-daten/us_macro_quarterly_merged.csv" -> "us_macro_ts" (data.frame)
+source(here("05-session-01-05-schaetzung-msfe-pi", "02-code", "daten_vorbereitung_skript.R"))
+```
+
+## Modell Schätzung
+
+Schätzung eines AR(1), AR(2), ADL(2,1) und ADL(2,2) Modells für 1962-Q1 - 2017-Q3
+
+```{r}
+# Schätzung AR(1) Model: 1962-Q1 - 2017-Q3
+ar_01_dynlm <- dynlm(GDPGR ~ L(GDPGR,1),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung AR(2) Model: 1962-Q1 - 2017-Q3
+ar_02_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung ADL(2,1) Model: 1962-Q1 - 2017-Q3
+adl_0201_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+
+# Schätzung ADL(2,2) Model: 1962-Q1 - 2017-Q3
+adl_0202_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+                        data = us_macro_ts,
+                        start = c(1962, 1), end = c(2017, 3))
+```
+
+## Schätzung MSFE basierend auf SER
+
+MSFE basierend auf standard error of the regression (SER):
+
+```{r}
+# AR(1)-Modell
+(ar_01_rmsfe_ser <- summary(ar_01_dynlm)$sigma)
+
+# AR(2)-Modell
+(ar_02_rmsfe_ser <- summary(ar_02_dynlm)$sigma)
+
+# ADL(2,1)-Modell
+(adl_0201_rmsfe_ser <- summary(adl_0201_dynlm)$sigma)
+
+# ADL(2,2)-Modell
+(adl_0202_rmsfe_ser <- summary(adl_0202_dynlm)$sigma)
+```
+
+---
+
+### Frage 1
+
+Diskutieren kurz die Eigenschaften des SER als Schätzer für den MSFE. Welches Modell ist das beste basierend auf diesem Ansatz?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+----
+
+## Schätzung MSFE basierend auf FPE
+
+MSFE basierend auf final prediction error (FPE):
+
+```{r}
+# AR(1)-Modell
+(ar_01_rmsfe_fpe <- sqrt(
+  (nrow(ar_01_dynlm$model) + 
+    length(ar_01_dynlm$coefficients)) / (nrow(ar_01_dynlm$model) - length(ar_01_dynlm$coefficients)) * 
+    sum(ar_01_dynlm$residuals^2) / nrow(ar_01_dynlm$model))
+  )
+
+# AR(2)-Modell
+(ar_02_rmsfe_fpe <- sqrt(
+  (nrow(ar_02_dynlm$model) + 
+    length(ar_02_dynlm$coefficients)) / (nrow(ar_02_dynlm$model) - length(ar_02_dynlm$coefficients)) * 
+    sum(ar_02_dynlm$residuals^2) / nrow(ar_02_dynlm$model))
+  )
+
+# ADL(2,1)-Modell
+(adl_0201_rmsfe_fpe <- sqrt(
+  (nrow(adl_0201_dynlm$model) + 
+    length(adl_0201_dynlm$coefficients)) / (nrow(adl_0201_dynlm$model) - length(adl_0201_dynlm$coefficients)) * 
+    sum(adl_0201_dynlm$residuals^2) / nrow(adl_0201_dynlm$model))
+  )
+
+# ADL(2,2)-Modell
+(adl_0202_rmsfe_fpe <- sqrt(
+  (nrow(adl_0202_dynlm$model) + 
+    length(adl_0202_dynlm$coefficients)) / (nrow(adl_0202_dynlm$model) - length(adl_0202_dynlm$coefficients)) *
+    sum(adl_0202_dynlm$residuals^2) / nrow(adl_0202_dynlm$model))
+)
+```
+
+---
+
+### Frage 2
+
+Diskutieren kurz die Eigenschaften des FPE als Schätzer für den MSFE. Welches Modell ist das beste basierend auf diesem Ansatz?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+----
+
+## Schätzung MSFE basierend auf POOS Prognosen
+
+Basierend auf pseudo out-of-sample (POOS) Prognosen
+
+**Schritt 1) Vorbereitung Funktionen zur Berechnung**
+
+```{r}
+# R helper function data preparation 1
+lag_fun <- function(x, lag) {
+  
+  if (lag >= 1) {
+    c(rep(NA, lag), x[-seq(length(x), length(x)-lag+1)])
+  } else {
+    c(x[-seq(1, -lag)], rep(NA, -lag))
+  }
+  
+}
+
+# Function for poos for observed variables and unobserved factor models
+POOS_function <- function(date.df, data.01, data.02, h, fre,
+                               all.per.sta, all.per.end,
+                               est.per.sta, est.per.end,
+                               pre.per.sta, pre.per.end,
+                               print = FALSE, log.file = NULL) {
+  
+  # 1) Prepare data ----
+  
+  # variable names
+  data.01.nam <- colnames(data.01)
+  data.02.nam <- colnames(data.02)
+  
+  # collect all data
+  data <- cbind(data.01, data.02)
+  tmp <- c(data.01.nam, data.02.nam)
+  ii <- which(colnames(data) %in% tmp)
+  data <- data[,ii]
+    
+  # 2) Prepare periods and POOS-analysis-index-s (see S&W, 2020, p. 575) ----
+  
+  # complete period
+  all.per <- seq.Date(from = all.per.sta, to = all.per.end, by = fre)
+  # estimation period
+  est.per <- seq.Date(from = est.per.sta, to = est.per.end, by = fre)
+  # prediction period
+  pre.per <- seq.Date(from = pre.per.sta, to = pre.per.end, by = fre)
+  
+  # starting index for estimation/prediction
+  est.sta <- which(all.per %in% est.per.sta)
+  pre.sta <- which(all.per %in% pre.per.sta)
+  
+  # starting index for s
+  s.ii.00 <- which(all.per %in% pre.per.sta)
+  s.ii.00.h <- s.ii.00 - h
+  
+  # ending index of s
+  s.ii.TT <- which(all.per %in% pre.per.end)
+  s.ii.TT.h <- s.ii.TT - h
+  
+  s.ii.seq.h <- seq(s.ii.00.h, s.ii.TT.h)
+  
+  pre.sta <- pre.sta - 1
+  
+  # 3) POOS-analysis ----
+  
+  y.hat <- matrix(NA, nrow = length(s.ii.seq.h))
+  y.act <- matrix(NA, nrow = length(s.ii.seq.h))
+  u.til <- matrix(NA, nrow = length(s.ii.seq.h))
+  
+  for (tt in 1:length(s.ii.seq.h)) {
+    
+    # moving POOS-analysis-index-s
+    s.ii <- s.ii.seq.h[tt]
+    
+    # extract data for estimation
+    est.dat.tmp <- data[which(date.df$date %in% seq.Date(
+      from = all.per[est.sta], to = all.per[s.ii], by = fre)),]
+    
+    # construct formula
+    formula <- as.formula(paste(paste0(data.01.nam, " ~ "),
+                                paste(data.02.nam, collapse = " + "), " - 1"))
+    
+    # estimate model
+    coef.tmp <- lm(formula = formula, data = est.dat.tmp)$coefficients
+    
+    # extract data for prediction Y
+    y.pre.dat.tmp <- data[which(date.df$date == all.per[pre.sta + tt]), data.01.nam]
+    y.act[tt] <- as.numeric(y.pre.dat.tmp)
+    
+    # extract data for prediction X
+    X.pre.dat.tmp <- data[which(date.df$date == all.per[pre.sta + tt]), data.02.nam]
+    
+    # predict y
+    y.hat[tt] <- as.numeric(matrix(coef.tmp, nrow = 1)) %*% as.numeric(matrix(X.pre.dat.tmp, ncol = 1))
+    # evaluate prediction
+    u.til[tt] <- y.act[tt] - y.hat[tt]
+    
+    if (print == TRUE) {
+      if (!is.null(log.file)) {
+        sink(log.file, append = TRUE)
+      }
+      
+      # print for diagnostics
+      cat("--------------------------------------------------", "\n")
+      cat(paste0("Step ", tt, " from ", length(s.ii.seq.h), "\n"))
+      cat(paste0("   Estimation: From ", as.Date(all.per[est.sta]), " to ", 
+                 as.Date(all.per[s.ii]), "\n"))
+      cat(paste0("   Prediction: For ", as.Date(all.per[pre.sta + tt]), "\n"))
+      
+      cat(paste0("  Y: ", y.pre.dat.tmp, "\n"))
+      cat(paste0("  b: ", coef.tmp, "\n"))
+      cat(paste0("  b (name): ", names(coef.tmp), "\n"))
+      cat(paste0("  X: ", X.pre.dat.tmp, "\n"))
+      cat(paste0("  Y (hat): ", y.hat[tt], "\n"))
+      cat(paste0("  u (til): ", u.til[tt], "\n"))
+      
+      if (!is.null(log.file)) {
+        sink()  # return output to console
+      }
+    }    
+    
+  }
+  
+  # 4) POOS-analysis-results ----
+  
+  MSFE.POOS <- 1/length(u.til[-seq(1,h),]) * sum(u.til[-seq(1,h),]^2)
+  
+  RMSFE.POOS <- sqrt(MSFE.POOS)
+  
+  # returns
+  ret.lis <- list(MSFE.POOS = MSFE.POOS,
+                  RMSFE.POOS = RMSFE.POOS,
+                  data = data,
+                  y.act = y.act,
+                  y.hat = y.hat,
+                  u.til = u.til)
+  
+  return(ret.lis)
+  
+}
+```
+
+**Schritt 2) Vorbereitung Daten**
+
+```{r}
+# Preparations
+data.all.ts <- us_macro_ts
+
+# extract time period of interest
+data.all.ts <- window(data.all.ts, start = c(1959, 3), end = c(2017, 4))
+# corresponding date
+date <- seq.Date(from = as.Date("1959-07-01"), to = as.Date("2017-10-01"), by = "quarter")
+
+# dates data frame (date column is important!)
+date.df <- data.frame(date = date,
+                      year = format(date, "%Y"),
+                      quarter = quarters(date),
+                      month = format(date, "%m"),
+                      day = format(date, "%d"))
+
+# target variable (data frame)
+GDP <- as.numeric(data.all.ts[,4])
+h <- 1
+
+data.01 <- data.frame(GDPGR_h = (400/h) * (log(GDP / lag_fun(GDP, h))))
+
+# other inputs
+h <- 1
+fre <- "quarter"
+all.per.sta <- as.Date("1962-01-01") # 1962-Q1 -> 2017-Q3
+all.per.end <- as.Date("2017-10-01")
+est.per.sta <- as.Date("1962-01-01") # 1962-Q1 -> 2006-Q4
+est.per.end <- as.Date("2006-10-01") 
+pre.per.sta <- as.Date("2006-10-01") # 2006-Q4 -> 2017-Q3
+pre.per.end <- as.Date("2017-10-01")
+print <- TRUE
+```
+
+**Schritt 3.1) Berechnung: AR(1)-Modell**
+
+```{r}
+# observed predictors (variables) (data frame)
+data.02 <- data.frame(GDPGR_h_l1 = lag_fun(log(GDP / lag_fun(GDP, 1)), h),
+                      CONST = 1)
+
+log.file <- here("05-session-01-05-schaetzung-msfe-pi", "03-ergebnisse", "ar_01_poos_diagnosen.txt")
+
+AR1.POOS.h1 <- POOS_function(date.df = date.df, data.01 = data.01, data.02 = data.02,
+                             h = 1, fre = "quarter",
+                             all.per.sta = all.per.sta, all.per.end = all.per.end,
+                             est.per.sta = est.per.sta, est.per.end = est.per.end,
+                             pre.per.sta = pre.per.sta, pre.per.end = pre.per.end,
+                             print = TRUE, log.file = log.file)
+(ar_01_rmsfe_poos <- AR1.POOS.h1$RMSFE.POOS)
+```
+
+**Schritt 3.2) Berechnung: AR(2)-Modell**
+
+```{r}
+# observed predictors (variables) (data frame)
+data.02 <- data.frame(GDPGR_h_l1 = lag_fun(log(GDP / lag_fun(GDP, 1)), h),
+                      GDPGR_h_l2 = lag_fun(log(GDP / lag_fun(GDP, 1)), h + 1),
+                      CONST = 1)
+
+log.file <- here("05-session-01-05-schaetzung-msfe-pi", "03-ergebnisse", "ar_02_poos_diagnosen.txt")
+
+AR2.POOS.h1 <- POOS_function(date.df = date.df, data.01 = data.01, data.02 = data.02,
+                             h = 1, fre = "quarter",
+                             all.per.sta = all.per.sta, all.per.end = all.per.end,
+                             est.per.sta = est.per.sta, est.per.end = est.per.end,
+                             pre.per.sta = pre.per.sta, pre.per.end = pre.per.end,
+                             print = TRUE, log.file = log.file)
+(ar_02_rmsfe_poos <- AR2.POOS.h1$RMSFE.POOS)
+```
+
+**Schritt 3.3) Berechnung: ADL(2,1)-Modell**
+
+```{r}
+# additional variable (data frame)
+TSpread <- as.numeric(data.all.ts[,20])
+
+# observed predictors (variables) (data frame)
+data.02 <- data.frame(GDPGR_h_l1 = lag_fun(log(GDP / lag_fun(GDP, 1)), h),
+                      GDPGR_h_l2 = lag_fun(log(GDP / lag_fun(GDP, 1)), h + 1),
+                      TSpread_h_l1 = lag_fun(TSpread, h),
+                      CONST = 1)
+
+log.file <- here("05-session-01-05-schaetzung-msfe-pi", "03-ergebnisse", "adl_0201_poos_diagnosen.txt")
+
+ADL0201.POOS.h1 <- POOS_function(date.df = date.df, data.01 = data.01, data.02 = data.02,
+                                 h = 1, fre = "quarter",
+                                 all.per.sta = all.per.sta, all.per.end = all.per.end,
+                                 est.per.sta = est.per.sta, est.per.end = est.per.end,
+                                 pre.per.sta = pre.per.sta, pre.per.end = pre.per.end,
+                                 print = TRUE, log.file = log.file)
+(adl_0201_rmsfe_poos <- ADL0201.POOS.h1$RMSFE.POOS)
+```
+
+**Schritt 3.3) Berechnung: ADL(2,2)-Modell**
+
+```{r}
+# additional variable (data frame)
+TSpread <- as.numeric(data.all.ts[,20])
+
+# observed predictors (variables) (data frame)
+data.02 <- data.frame(GDPGR_h_l1 = lag_fun(log(GDP / lag_fun(GDP, 1)), h),
+                      GDPGR_h_l2 = lag_fun(log(GDP / lag_fun(GDP, 1)), h + 1),
+                      TSpread_h_l1 = lag_fun(TSpread, h),
+                      TSpread_h_l2 = lag_fun(TSpread, h + 1),
+                      CONST = 1)
+
+log.file <- here("05-session-01-05-schaetzung-msfe-pi", "03-ergebnisse", "adl_0202_poos_diagnosen.txt")
+
+ADL0202.POOS.h1 <- POOS_function(date.df = date.df, data.01 = data.01, data.02 = data.02,
+                                 h = 1, fre = "quarter",
+                                 all.per.sta = all.per.sta, all.per.end = all.per.end,
+                                 est.per.sta = est.per.sta, est.per.end = est.per.end,
+                                 pre.per.sta = pre.per.sta, pre.per.end = pre.per.end,
+                                 print = TRUE, log.file = log.file)
+(adl_0202_rmsfe_poos <- ADL0202.POOS.h1$RMSFE.POOS)
+```
+
+---
+
+### Frage 3
+
+Versuchen Sie nachzuvollziehen was in der Funktion `POOS_function` passiert. Sehen sich dafür auch die log Dateien, z.B. `05-ergebnisse/ar_01_poos_diagnosen.txt` an.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 4
+
+Diskutieren kurz die Eigenschaften des POOS als Schätzer für den MSFE. Welches Modell ist das beste basierend auf diesem Ansatz?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+----
+
+**Vergleich der Ergebnisse:**
+
+```{r}
+# Ergebnisse ----
+res <- cbind(
+  rbind(ar_01_rmsfe_ser, ar_02_rmsfe_ser, adl_0201_rmsfe_ser, adl_0202_rmsfe_ser),
+  rbind(ar_01_rmsfe_fpe, ar_02_rmsfe_fpe, adl_0201_rmsfe_fpe, adl_0202_rmsfe_fpe),
+  rbind(ar_01_rmsfe_poos, ar_02_rmsfe_poos, adl_0201_rmsfe_poos, adl_0202_rmsfe_poos)
+  )
+
+colnames(res) <- c("MSFE_SER", "MSFE_FPE", "MSFE_POOS")
+rownames(res) <- c("AR(1)", "AR(2)", "ADL(2,1)", "ADL(2,2)")
+
+res
+```
+
+### Frage 5
+
+Vergleichen Sie die Schätzergebnisse für den MSFE. Welches Modell ist das beste?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## Prognose Interval
+
+**Berechnung: AR(1)-Modell**
+
+```{r}
+# Daten für die Prognose 
+X1 <- matrix(rev(window(us_macro_ts,start=c(2017,3),end=c(2017,3))[,"GDPGR"]),ncol=1)
+XX <- rbind(1, X1)
+# AR(1) Koeffizienten
+bet <- matrix(ar_01_dynlm$coefficients,nrow=1)
+# Prgnose für 2017 Q4
+prog_erg <- bet %*% XX
+prog_erg
+
+# Prognoseintervall für 2017 Q4
+prog_int_unt <- prog_erg - 1.96 * AR1.POOS.h1$RMSFE.POOS
+prog_int_obe <- prog_erg + 1.96 * AR1.POOS.h1$RMSFE.POOS
+prog_int <- c(prog_int_unt, prog_int_obe)
+prog_int
+
+# Tatsächlicher beobachteter Wert
+tats_wert <- window(us_macro_ts[, "GDPGR"], start = c(2017, 4), end = c(2017, 4))
+tats_wert
+```
+
+**Berechnung: AR(2)-Modell**
+
+```{r}
+# Daten für die Prognose 
+X1 <- matrix(rev(window(us_macro_ts,start=c(2017,2),end=c(2017,3))[,"GDPGR"]),ncol=1)
+XX <- rbind(1, X1)
+# AR(2) Koeffizienten
+bet <- matrix(ar_02_dynlm$coefficients,nrow=1)
+# Prgnose für 2017 Q4
+prog_erg <- bet %*% XX
+prog_erg
+
+# Prognoseintervall für 2017 Q4
+prog_int_unt <- prog_erg - 1.96 * AR2.POOS.h1$RMSFE.POOS
+prog_int_obe <- prog_erg + 1.96 * AR2.POOS.h1$RMSFE.POOS
+prog_int <- c(prog_int_unt, prog_int_obe)
+prog_int
+
+# Tatsächlicher beobachteter Wert
+tats_wert <- window(us_macro_ts[, "GDPGR"], start = c(2017, 4), end = c(2017, 4))
+tats_wert
+```
+
+**Berechnung: ADL(2,1)-Modell**
+
+```{r}
+# Daten für die Prognose 
+X1 <- matrix(
+  rev(window(us_macro_ts,start=c(2017,2),end=c(2017,3))[,c("TSpread", "GDPGR")])[-4],
+  ncol=1
+  )
+XX <- round(rbind(1, X1),3)
+# ADL(2,1) Koeffizienten
+bet <- round(matrix(adl_0201_dynlm$coefficients,nrow=1),3)
+# Prgnose für 2017 Q4
+prog_erg <- bet %*% XX
+prog_erg
+
+# Prognoseintervall für 2017 Q4
+prog_int_unt <- prog_erg - 1.96 * ADL0201.POOS.h1$RMSFE.POOS
+prog_int_obe <- prog_erg + 1.96 * ADL0201.POOS.h1$RMSFE.POOS
+prog_int <- c(prog_int_unt, prog_int_obe)
+prog_int
+
+# Tatsächlicher beobachteter Wert
+tats_wert <- window(us_macro_ts[, "GDPGR"], start = c(2017, 4), end = c(2017, 4))
+tats_wert
+```
+
+**Berechnung: ADL(2,2)-Modell**
+
+```{r}
+# Daten für die Prognose 
+X1 <- matrix(rev(
+  window(us_macro_ts,start=c(2017,2),end=c(2017,3))[,c("TSpread", "GDPGR")]
+  ),ncol=1)
+XX <- round(rbind(1, X1),3)
+# ADL(2,2) Koeffizienten
+bet <- round(matrix(adl_0202_dynlm$coefficients,nrow=1),3)
+# Prgnose für 2017 Q4
+prog_erg <- bet %*% XX
+prog_erg
+
+# Prognoseintervall für 2017 Q4
+prog_int_unt <- prog_erg - 1.96 * ADL0202.POOS.h1$RMSFE.POOS
+prog_int_obe <- prog_erg + 1.96 * ADL0202.POOS.h1$RMSFE.POOS
+prog_int <- c(prog_int_unt, prog_int_obe)
+prog_int
+
+# Tatsächlicher beobachteter Wert
+tats_wert <- window(us_macro_ts[, "GDPGR"], start = c(2017, 4), end = c(2017, 4))
+tats_wert
+```
+
+---
+
+### Frage 6
+
+Was ist die Motivation hinter der Berechnung von Prognoseintervallen generell? Welche Annahmen stecken hinter der Berechnung der Prognoseintervalle auf diese Art und Weise?
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+### Frage 7
+
+Vergleichen Sie die Prognoseintervalle zwischen den Modell. Auf welchen Schätzer der MSFE basieren diese Prognoseintervalle?
+
+...
+
+...
+
+...
+
+...
+
+...
