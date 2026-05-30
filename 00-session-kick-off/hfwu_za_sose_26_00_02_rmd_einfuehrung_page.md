@@ -1,0 +1,69 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+---
+
+# Kurze Einführung in die Verwendung von *R*-Markdown-Dateien
+
+Dieses Dokument bietet eine kurze Einführung in die Verwendung von *R*-Markdown-Dateien.
+
+---
+
+## Kursstruktur
+
+Das *R*-Projekt für diesen Kurse könnte wie folgt aussehen:
+
+```bash
+├── 00-session-kick-off
+│   ├── 01-daten
+│   ├── 02-code
+│   ├── 03-ergebnisse
+│   └── 04-berichte
+├── 01-session-01-01-einfuehrung
+│   ├── 01-daten
+│   ├── 02-code
+│   ├── 03-ergebnisse
+│   ├── 04-berichte
+│   └── 04-berichte
+├── ...
+└── hfwu-zub-zeitreihenanalyse-sose-26.Rproj
+```
+
+Die Datei `hfwu-zub-zeitreihenanalyse-sose-26-01.Rproj` definiert den Kursordner als Arbeitsverzeichnis. Das ist besonders hilfreich beim Umgang mit relativen Pfaden.
+
+---
+
+## Arbeitsverzeichnis richtig setzen
+
+Standardmäßig verwendet RMarkdown das Verzeichnis der `.Rmd`-Datei als Referenzpfad. Das kann zu Problemen führen, wenn du auf Daten aus einem anderen Projektordner zugreifen möchtest. Um stattdessen das Projektverzeichnis zu nutzen, füge folgenden Code ganz oben in deine `.Rmd`-Datei ein:
+
+
+
+---
+
+## Einstellungen für saubere Ausgaben
+
+Um beim Rendern störende Konsolenausgaben oder Warnungen zu vermeiden, kannst du diese globalen Chunk-Optionen setzen:
+
+
+
+---
+
+## Zugriff auf Dateien im Projektverzeichnis
+
+Wenn du in einem Codeblock auf Dateien im Projektverzeichnis zugreifen möchtest, verwende `here()` mit dem Pfad-Komponenten der Datei. Z.B.
+
+
+``` r
+# Lade here Paket
+library(here)
+
+# Lade Datei
+us_macro <- read.table(here("01-session-01-01-einfuehrung", "01-daten", "us_macro_quarterly_merged.csv"),
+                       header = TRUE,
+                       sep = ";"
+)
+```

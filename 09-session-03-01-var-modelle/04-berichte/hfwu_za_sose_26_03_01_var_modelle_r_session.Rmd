@@ -1,0 +1,188 @@
+---
+output:
+  html_document
+editor_options:
+  chunk_output_type: console
+---
+
+---
+
+# Praxist-Teil Session 9:<br>VAR-Modelle
+
+Dieses Dokument enthält den Praxis-Teil von Session 9: VAR-Modelle.
+
+---
+
+# Setup
+
+```{r}
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+library(AER)
+library(vars)
+
+```
+
+---
+
+## Vorbereitung der Daten
+
+```{r}
+
+#  "01-daten/us_macro_quarterly_merged.csv" -> "us_macro_ts" (data.frame)
+source(here("09-session-03-01-var-modelle", "02-code", "daten_vorbereitung_skript.R"))
+
+```
+
+---
+
+## Schätzung der Parameter von VAR-Modellen
+
+Hinweis: Die Analse im Buch und in den Folien basiert auf den Zeitraum 1981-Q1--2017-Q3
+
+```{r}
+# Bereite Variablen vor (wähle 1980-Q3 als Start da 1980-Q3 & 1980-Q4 durch zwei Lags "verloren" gehen)
+us_macro_ts_win <- window(us_macro_ts, start = c(1980, 3), end = c(2017, 3))
+y <- us_macro_ts_win[,c("GDPGR", "TSpread")]
+
+# Schätze VAR(2)-Modell via vars-Paket
+var_res <- VAR(y, p = 2, type = "const")
+
+# Ergebnis
+var_res
+```
+
+### Frage 1
+
+Interpretieren Sie das Ergebnis der Schätzung der Parameter.
+
+...
+
+...
+
+...
+
+...
+
+...
+    
+---
+
+**Vergleich Ergebnis Schätzung der ADL-Modelle**
+
+```{r}
+# Schätzung ADL(2,2) Model für GDPGR: 1981-Q1 - 2017-Q3
+gdpgr_adl_0202_dynlm <- dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+                        data = us_macro_ts,
+                        start = c(1981, 1), end = c(2017, 3))
+                   
+coeftest(gdpgr_adl_0202_dynlm, vcov=vcovHC(gdpgr_adl_0202_dynlm, type="HC0"))
+
+# Schätzung ADL(2,2) Model für GDPGR: 1981-Q1 - 2017-Q3
+tspread_adl_0202_dynlm <- dynlm(TSpread ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+                        data = us_macro_ts,
+                        start = c(1981, 1), end = c(2017, 3))
+
+coeftest(tspread_adl_0202_dynlm, vcov=vcovHC(tspread_adl_0202_dynlm, type="HC0"))
+```
+
+### Frage 2
+
+Vergleichen Sie das Ergebnis der Schätzung des VAR-Modells und des ADL-Modells.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+
+
+## Bestimmung der Lag-Länge von VAR-Modellen
+
+```{r}
+var_sel_res <- VARselect(y, lag.max = 10, type = "const")
+
+var_sel_res
+```
+
+### Frage 3
+
+Interpretieren Sie das Ergebnis der Bestimmung der Lag-Länge.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+## Test der Vorhersagbarkeit
+
+```{r}
+# GDPGR -> TSpread
+gdpgr_pred <- causality(var_res, cause = "GDPGR", vcov.=vcovHC(var_res, type = "HC0"))
+gdpgr_pred$Granger
+
+# TSpread -> GDPGR
+tspread_pred <- causality(var_res, cause = "TSpread", vcov.=vcovHC(var_res, type = "HC0"))
+tspread_pred$Granger
+```
+
+### Frage 4
+
+Interpretieren Sie das Ergebnis der Bestimmung der Tests.
+
+...
+
+...
+
+...
+
+...
+
+...
+
+---
+
+**Vergleich Ergebnis via `linearHypothesis` Funktion**
+
+```{r}
+# GDPGR -> TSpread
+linearHypothesis(tspread_adl_0202_dynlm, c("L(GDPGR, 1)=0",
+                                           "L(GDPGR, 2)=0"), white.adjust = "hc0")
+
+# TSpread -> GDPGR
+linearHypothesis(gdpgr_adl_0202_dynlm, c("L(TSpread, 1)=0",
+                                         "L(TSpread, 2)=0"), white.adjust = "hc0")
+```

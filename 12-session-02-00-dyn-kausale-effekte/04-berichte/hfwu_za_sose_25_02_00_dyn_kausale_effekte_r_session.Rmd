@@ -1,0 +1,300 @@
+---
+title: "Kapitel 2) Schätzung von dynamischen kausalen Effekten"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+# Setup
+
+```{r}
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+```{r}
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+library(urca)
+library(AER)
+library(scales)
+```
+
+# Kapitel 2) Schätzung von dynamischen kausalen Effekten
+
+## Datenaufbereitung
+
+```{r}
+# Lade den Datensatz für gefrorenen Orangensaft
+data("FrozenJuice", package = "AER")  # stelle sicher, dass die Daten richtig geladen sind
+
+# Konvertiere den Data Frame in ein Zeitreihenobjekt
+FrozenJuice_ts <- ts(FrozenJuice, start = c(1950, 1), frequency = 12)
+
+# Berechne den Preisindex für gefrorenen konzentrierten Saft
+FOJCPI <- FrozenJuice_ts[, "price"] / FrozenJuice_ts[, "ppi"]
+
+# Berechne die prozentuale Veränderung des Log-Preisindexes (ungefähr % Veränderung)
+FOJC_pctc <- 100 * diff(log(FOJCPI))
+
+# Extrahiere die fdd-Serie
+FDD <- FrozenJuice_ts[, "fdd"]
+
+# Plotte den Preisindex für Orangensaft
+plot(FOJCPI,
+     col = "steelblue",
+     lwd = 2,
+     xlab = "Datum",
+     ylab = "Preisindex",
+     main = "Gefrorener konzentrierter Orangensaft")
+
+# Plotte die prozentualen Preisänderungen
+plot(FOJC_pctc,
+     col = "steelblue", 
+     lwd = 2,
+     xlab = "Datum",
+     ylab = "Prozent",
+     cex.main=0.8,
+     main = "Monatliche Änderungen des Preises für gefrorenen konzentrierten Orangensaft")
+
+# Plotte die gefriergrad-Tage
+plot(FDD,
+     col = "steelblue", 
+     lwd = 2,
+     xlab = "Datum",
+     ylab = "Gefriergrad-Tage",
+     cex.main=0.8,
+     main = "Monatliche Gefriergrad-Tage in Orlando, FL")
+```
+
+### Frage 1
+
+Welcher Zusammenhang könnte zwischen der Anzahl der Gefriergrad-Tage und Monatliche Änderungen des Preises für gefrorenen konzentrierten Orangensaft bestehen?
+
+* Die Anzahl der Frosttage beinflusst das Angebot von Orangensaftkonzentrat und somit dem Preis.
+* Wir würden einen positiven Zusammenhang erwarten. D.h. wenn die Anzahl der Forsttage hoch ist steigt der Preis.
+* Vs. Querschnittsanalyse: Nicht nur der "zeitgleiche Effekt" sondern auch der "verzögerte Effekt" ist relevant.
+* => Informationsvorteil vs. Querschnitt!
+
+Zeitreihenkontext:
+
+* Zeilen: Zeitperioden
+* Spalten: Frosttagen Orlando und Preis
+
+z.B. Querschnitt
+
+* Zeilen: Gemeinden von Orlando die Orangen anbauen
+* Spalaten: Frosttage (pro Gemeinde) und Preis (pro Gemeinde)
+
+
+```{r}
+# Einfache Regression der prozentualen Veränderungen auf die Gefriergradtage
+orange_SR <- dynlm(FOJC_pctc ~ FDD)
+coeftest(orange_SR, vcov. = vcovHAC) # Standardfehler mit HC und HAC
+
+# Standadfehler mit HC nur
+coeftest(orange_SR, vcov. = vcovHC)
+
+# Standardfehler ohne HC ond HAC
+coeftest(orange_SR, vcov. = NULL)
+```
+
+### Frage 2
+
+Interpretieren Sie die Spezifikation und die Schlussfolgerungen aus dem geschätzten Regressionsmodell.
+
+* Spezifikation Preisänderung auf Anzahl Frosttage (nur "zeitgleich")
+* Vewendung von HAC robusten Standardfehlern!
+* Signifikanter "zeitgleicher" Effekt von Anzahl Frosttage auf Preisänderung
+
+Annahmen?
+
+* Stationarität! Hier Verwendung von Preisänderungen! (da Preiseniveau wahrscheinlich nicht stationär!)
+* Annahme Exogenität: u_t ist nicht korreliert mit gegenwärtigen und vergangenen Frosttagen (einfache Exogenität)
+* Technische Annahmen
+  * Keine großen Ausreißer
+  * Keine Multikollinearität
+  
+Aber:
+
+* Kein Analyse von verzögerten Preisanpassungen möglich!
+* Lösung: Distributed Lag Model
+
+```{r}
+# Distributed lag modell mit 6 Verzögerungen der Gefriergradtage 
+orange_DLM <- dynlm(FOJC_pctc ~ FDD + L(FDD, 1:6))
+coeftest(orange_DLM, vcov. = vcovHAC)
+```
+
+### Frage 3
+
+Interpretieren Sie die Spezifikation und die Schulssfolgerungen aus dem geschätzten Regressionsmodell.
+
+* Regression von Preisveränderung auf gegenwärtige und vergangen Frosttage
+* Analyse von verzögerten Effekten möglich
+* Gegenwärtige Effekt: Effekt ein Frosttag: 0.47% Preisänderung
+* Dynamischen Effekt:
+  * Effekt Frosttage im Vormonat: 0.15% Preisänderung
+  * Effekt Frosttage im Vorvormonat: 0.06% Preisänderung
+
+## Dynamische Multiplikatoren und kumulative dynamische Multiplikatoren
+
+```{r}
+# Berechnung der kumulativen Multiplikatoren
+cum_mult <- cumsum(orange_DLM$coefficients[-1])
+
+# Einträge umbenennen
+names(cum_mult) <- paste(0:6, sep = "-", "period CDM")
+cum_mult
+```
+
+### Frage 4
+
+Welcher Effekt wurde hier berechnet? Interpretieren Sie das Ergebnis.
+
+* Kumulierten dynamischen Effekte von der Anzahl der Frosttage auf den Preis
+* z.B. der kumulierte Effekt für h=3 (über drei Perioden) ist 0.67
+* Was fehlt? (Problem)
+  * Bewertung der Schätzunsicherheit mittels Standardfehler!
+* Lösung
+  * Transformation des Regressionsmodells
+  * Regression der Preisänderung auf die Veränderung der Anzahl der Frosttage
+  * Siehe Folie 24!
+  
+```{r}
+# Schätzung der kumulativen dynamischen Multiplikatoren anhand modifizierter Regression
+cum_mult_reg <-dynlm(FOJC_pctc ~ d(FDD) + d(L(FDD,1:5)) + L(FDD,6))
+coef(cum_mult_reg)[-1]
+
+coeftest(cum_mult_reg, vcov. = vcovHAC(cum_mult_reg))
+```
+
+### Frage 5
+
+Was wurde durch das Regressionsmodell geschätzt? Interpretieren Sie das Ergebnis.
+
+* Das Regressionsmodell schätzt die kumulierten dynamischen Effekte
+* Siehe Folie 25 für die Interpretation der Koeffizienten
+* Basierend auf dieser Regression kann auch eine Analyse der Schätzunsicherheit vorgenommen werden
+* Wir sehen z.B. das die Standardfehler mit h größer werden!
+
+```{r}
+# Zusammenfassung der Koeffizienten mit Angabe der HAC-Standardfehler zu erhalten
+coeftest(cum_mult_reg, vcov. = vcovHAC)
+```
+
+### Frage 6 
+
+Was wurde hier berechnet? Interpretieren Sie das Ergebnis.
+
+Sie zweiter Teil Antwort 5
+
+* Basierend auf dieser Regression kann auch eine Analyse der Schätzunsicherheit vorgenommen werden
+* Wir sehen z.B. das die Standardfehler mit h größer werden!
+
+## HAC Standardfehler
+
+```{r}
+# Simuliere Zeitreihe mit seriell korrelierten Fehlern
+set.seed(1)
+
+N <- 100
+
+eps <- arima.sim(n = N, model = list(ma = 0.5))
+X <- runif(N, 1, 10)
+Y <- 0.5 * X + eps
+
+# OLS-Schätzug
+lm_res <- lm(Y ~ X)
+
+# Berechne die OLS-Restfehler
+coeftest(lm_res)
+```
+
+### Frage 7
+
+Was wird mit der Simulationsanalyse simuliert? Interpretieren Sie das Schätzergebnis basierend auf der Simulationsanalyse
+
+* Hier wird Regressionmodell mit autokorrelierten Feherlertermen simuliert.
+* D.h. die normalen Standardfehler basiernd auf `coeftest(lm_res)` sind nicht korrekt!
+
+```{r}
+# Funktion, die rho tilde mit Basis R berechnet
+acf_c <- function(x, j) {
+  # Erstelle die verzögerte Version von x durch Indizierung
+  lagged_x <- c(rep(NA, j), x[1:(length(x) - j)])
+  
+  # Berechne rho tilde
+  result <- t(x[-c(1:j)]) %*% na.omit(lagged_x) / (t(x) %*% x)
+  
+  return(result)
+}
+
+# Berechne die OLS-Restfehler
+res <- lm(Y ~ X)$res
+
+# Berechne v
+v <- (X - mean(X)) * res
+
+# Berechne robuste Schätzung der Varianz von beta_1
+var_beta_hat <- 1/N * (1/(N-2) * sum((X - mean(X))^2 * res^2) ) / 
+  (1/N * sum((X - mean(X))^2))^2
+
+# Faustregel für den Trunkierungsparameter
+m <- floor(0.75 * N^(1/3))
+
+# Berechne den Korrekturfaktor
+f_hat_T <- 1 + 2 * sum(
+  (m - 1:(m-1))/m * sapply(1:(m - 1), function(i) acf_c(x = v, j = i))
+) 
+
+# Berechne die Newey-West HAC-Schätzung des Standardfehlers
+sqrt(var_beta_hat * f_hat_T)
+```
+
+### Frage 8
+
+Beschreiben Sie die Berechnung von robusten Standardfehlern oben.
+
+* Die Berechnung oben reflektiert die Konstrukction der robusten Standardfheler basierend auf Newey-West (per Hand)
+* Siehe Folen!
+* Der Standarfehler für beta_1 ist 0.040 (vs. 0.039 siehe coeftest oben)
+* Der HAC robuste Standarfehler ist größer als der normale
+* Dies ist der Fall da die Fehler positive korreliet sind in der Simulation!
+
+```{r}
+# Verwende NeweyWest():
+NW_VCOV <- NeweyWest(lm(Y ~ X), 
+                     lag = m - 1, prewhite = F, 
+                     adjust = T)
+
+# Berechne den Standardfehler
+sqrt(diag(NW_VCOV))[2]
+
+# Basierend auf coeftest mit vcov = NW_VCOV Spezifikation
+coeftest(lm_res, vcov = NW_VCOV) # BASIEREND AUF NEWEY WEST
+
+coeftest(lm_res, vcov. = vcovHAC) # ALTERNATIVE BASIEREND AUF ANDREWS...
+```
+
+### Frage 9
+
+Was wird oben berechnet? Vergleichen Sie das Ergebnis mit dem Ergebnis mit dem Ergebnis aus der vorherigen Frage.
+
+* Mit der built-in Function `NeweyWest` können die robusten standardfehler auch direkt berechnet werden.
+* Die Ergebnisse sind die gleichen wir oben.
+* Alternative HAC sind, z.B. `coeftest(lm_res, vcov. = vcovHAC)`
+
