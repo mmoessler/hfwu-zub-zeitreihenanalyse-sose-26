@@ -1,0 +1,85 @@
+---
+output:
+  html_document
+editor_options:
+  chunk_output_type: console
+---
+
+---
+
+# Praxist-Teil Session 10:<br>Mehrperioden Prognosen
+
+Dieses Dokument enthält den Praxis-Teil von Session 10: Mehrperioden Prognosen.
+
+---
+
+# Setup
+
+```{r}
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+library(AER)
+library(vars)
+
+```
+
+---
+
+## Vorbereitung der Daten
+
+```{r}
+
+#  "01-daten/us_macro_quarterly_merged.csv" -> "us_macro_ts" (data.frame)
+source(here("10-session-03-02-mehrperioden-prognosen", "02-code", "daten_vorbereitung_skript.R"))
+
+```
+
+---
+
+## xyz
+
+```{r}
+# R helper function data preparation 1
+lag_fun <- function(x, lag) {
+  
+  if (lag >= 1) {
+    c(rep(NA, lag), x[-seq(length(x), length(x)-lag+1)])
+  } else {
+    c(x[-seq(1, -lag)], rep(NA, -lag))
+  }
+  
+}
+```
+
+```{r}
+# target variable (data frame)
+GDP <- as.numeric(us_macro_ts[,"GDPC1"])
+
+data.01 <- data.frame(GDPGR_h01 = (400/1) * (log(GDP / lag_fun(GDP, lag = 1))),
+                      GDPGR_h04 = (400/4) * (log(GDP / lag_fun(GDP, lag = 4))),
+                      GDPGR_h08 = (400/8) * (log(GDP / lag_fun(GDP, lag = 8))),
+                      )
+
+
+```
+
+

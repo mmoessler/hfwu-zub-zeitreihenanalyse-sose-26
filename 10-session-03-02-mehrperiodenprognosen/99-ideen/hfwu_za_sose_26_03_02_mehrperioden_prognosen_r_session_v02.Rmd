@@ -1,0 +1,250 @@
+---
+output:
+  html_document
+editor_options:
+  chunk_output_type: console
+---
+
+---
+
+# Praxist-Teil Session 10:<br>Mehrperiodenprognosen
+
+Dieses Dokument enthält den Praxis-Teil von Session 10: Mehrperiodenprognosen.
+
+---
+
+# Setup
+
+```{r}
+# Lade here Paket
+library(here)
+
+# Optionen Rendering
+knitr::opts_knit$set(root.dir = here())
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.cap = "",
+                      fig.height = 5,
+                      fig.width = 8)
+
+# Säubere Umgebung
+rm(list=ls())
+
+# Lade Pakete
+library(zoo)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+library(AER)
+library(vars)
+
+```
+
+---
+
+## Vorbereitung der Daten
+
+```{r}
+
+#  "01-daten/us_macro_quarterly_merged.csv" -> "us_macro_ts" (data.frame)
+source(here("10-session-03-02-mehrperiodenprognosen", "02-code", "daten_vorbereitung_skript.R"))
+
+```
+
+---
+
+## Iterative Mehrperiodenprognosen
+
+**Schätzung: AR(2)-Modell**
+
+*Hinweis: Die Prognose basierend auf dem AR(2)-Modell im Buch und in den Folien basiert auf den Zeitraum 1962-Q1--2017-Q3.*
+
+```{r}
+# Bereite Variablen vor (wähle 1962-Q1 als Start)
+us.macro.ts.win <- window(us_macro_ts, start = c(1962, 1), end = c(2017, 3))
+y <- us.macro.ts.win[,c("GDPGR")]
+
+# Schätze AR(2)-Modell arima Funktion
+ar.res <- arima(y, order = c(2, 0, 0), include.mean = TRUE)
+
+# Ergebnis
+ar.res
+```
+
+**Prognose: AR(2)-Modell**
+
+```{r}
+# Verwendung der predict Methode
+predict(ar.res, n.ahead = 10)
+```
+
+### Frage 1
+
+Um welche "Art" von Prognose handelt es sich bei der Prognose oben? Welche Methoden zur Erstellung derartiger Prognosen haben wir besprochen? Interpretieren Sie das Ergebnis der Prognose.
+
+...
+
+...
+
+...
+
+...
+
+...
+    
+---
+
+**Schätzung: VAR(2)-Modell**
+
+*Hinweis: Die Prognose basierend auf dem AR(2)-Modell im Buch und in den Folien basiert auf den Zeitraum 1981-Q1--2017-Q3.*
+
+```{r}
+# Bereite Variablen vor (wähle 1980-Q3 als Start da 1980-Q3 & 1980-Q4 durch zwei Lags "verloren" gehen)
+us.macro.ts.win <- window(us_macro_ts, start = c(1980, 3), end = c(2017, 3))
+y <- us.macro.ts.win[,c("GDPGR", "TSpread")]
+
+# Schätze VAR(2)-Modell via vars-Paket
+var.res <- VAR(y, p = 2, type = "const")
+
+# Ergebnis
+var.res
+```
+
+**Prognose: VAR(2)-Modell**
+
+```{r}
+# Verwendung der predict Methode
+predict(var.res, n.ahead = 10)
+```
+
+### Frage 2
+
+Interpretieren Sie das Ergebnis der Prognose.
+
+...
+
+...
+
+...
+
+...
+
+...
+    
+---
+
+## Direkte Mehrperiodenprognosen
+
+**Schätzung: VAR(2)-Modell**
+
+```{r}
+# Hilfsregresion über den gesamten Zeithorizont um die komplette "Modelldaten" zu bekommen
+tmp <-  dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+              data = us_macro_ts,
+              start = c(1959, 3), end = c(2017, 4))
+
+data.mod.01 <- ts(cbind(tmp$model[,1], 1 , tmp$model[,-1]),
+                  frequency = 4, start = c(1960, 1), end = c(2017, 4))
+
+# Regression für die direkte Prognose
+adl.dynlm.tmp <- dynlm(GDPGR ~ L(GDPGR,2) + L(GDPGR,3) + L(TSpread,2) + L(TSpread,3),
+                       data = us_macro_ts,
+                       start = c(1981,1), end = c(2017, 3))
+```
+
+**Prognose: VAR(2)-Modell**
+
+```{r}
+# Koeffizienten Prognoseregression
+bet.tmp <- matrix(coefficients(adl.dynlm.tmp), nrow = 1)
+# Werte unabhängige Variablen
+dat.tmp <- matrix(window(data.mod.01[,-1], start = c(2017, 4), end = c(2017, 4)), ncol = 1)
+# Prognose
+y.hat <- bet.tmp %*% dat.tmp
+y.hat
+```
+
+**Evaluierung: VAR(2)-Modell**
+
+```{r}
+# Tatsächlicher Wert
+y.act <- matrix(window(data.mod.01[,1], start = c(2017, 4), end = c(2017, 4)), ncol = 1)
+# Prognosefehler
+u.tmp <- y.act -  y.hat
+u.tmp
+```
+
+### Frage 3
+
+Um welche "Art" von Prognose handelt es sich bei der Prognose oben? Interpretieren Sie das Ergebnis der Prognose.
+
+...
+
+...
+
+...
+
+...
+
+...
+    
+---
+
+**Schätzung: AR(2)-Modell**
+
+*Hinweis: Die Prognose basierend auf dem AR(2)-Modell im Buch und in den Folien basiert auf den Zeitraum 1962-Q1--2017-Q3.*
+
+```{r}
+# Hilfsregresion über den gesamten Zeithorizont um die komplette "Modelldaten" zu bekommen
+tmp <-  dynlm(GDPGR ~ L(GDPGR,1) + L(GDPGR,2) + L(TSpread,1) + L(TSpread,2),
+              data = us_macro_ts,
+              start = c(1959, 3), end = c(2017, 4))
+
+data.mod.01 <- ts(cbind(tmp$model[,1], 1 , tmp$model[,-1]),
+                  frequency = 4, start = c(1960, 1), end = c(2017, 4))
+
+# Regression für die direkte Prognose
+adl.dynlm.tmp <- dynlm(GDPGR ~ L(GDPGR,2) + L(GDPGR,3),
+                       data = us_macro_ts,
+                       start = c(1981,1), end = c(2017, 3))
+```
+
+**Prognose: VAR(2)-Modell**
+
+```{r}
+# Koeffizienten Prognoseregression
+bet.tmp <- matrix(coefficients(adl.dynlm.tmp), nrow = 1)
+# Werte unabhängige Variablen
+dat.tmp <- matrix(window(data.mod.01[,-1], start = c(2017, 4), end = c(2017, 4)), ncol = 1)
+# Prognose
+y.hat <- bet.tmp %*% dat.tmp
+y.hat
+```
+
+**Evaluierung: VAR(2)-Modell**
+
+```{r}
+# Tatsächlicher Wert
+y.act <- matrix(window(data.mod.01[,1], start = c(2017, 4), end = c(2017, 4)), ncol = 1)
+# Prognosefehler
+u.tmp <- y.act -  y.hat
+u.tmp
+```
+
+### Frage 3
+
+Um welche "Art" von Prognose handelt es sich bei der Prognose oben? Interpretieren Sie das Ergebnis der Prognose.
+
+...
+
+...
+
+...
+
+...
+
+...
+    
+---

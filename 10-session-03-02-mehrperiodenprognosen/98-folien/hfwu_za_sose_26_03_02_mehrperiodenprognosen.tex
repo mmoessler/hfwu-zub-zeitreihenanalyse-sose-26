@@ -1,0 +1,844 @@
+\documentclass[10pt,aspectratio=169]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+%................................................................................
+%	MINIMAL METROPOLIS EXAMPLE
+
+% \usetheme[progressbar=frametitle]{metropolis}
+\usetheme{metropolis}
+
+% exclude section page
+\AtBeginSection{}
+
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+%................................................................................
+%	ADDITIONAL PACKAGES
+
+\usepackage{hyperref}
+% https://www.overleaf.com/learn/latex/How_to_Write_a_Thesis_in_LaTeX_(Part_3)%3A_Figures%2C_Subfigures_and_Tables
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{unicode-math}
+% https://tex.stackexchange.com/questions/26637/how-do-you-get-mathbb1-to-work-characteristic-function-of-a-set
+\usepackage{graphicx} % for scalebox
+\usepackage{comment} % see: https://tex.stackexchange.com/questions/17816/commenting-out-large-sections
+
+\usepackage{transparent}
+\newenvironment{transparentenv}[1]{\begingroup\transparent{#1}}{\endgroup}
+
+\usepackage{multirow}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+% See: https://tex.stackexchange.com/questions/42726/align-but-show-one-equation-number-at-the-end
+
+
+% See: https://tex.stackexchange.com/questions/12703/how-to-create-fixed-width-table-columns-with-text-raggedright-centered-raggedlef
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+%................................................................................
+%	GENERAL COLORS
+
+% https://www.uni-hohenheim.de/en/corporatecolors
+
+% HfWU colors
+\definecolor{hfwuBlue}{RGB}{0, 48, 94}
+\colorlet{hfwuBlueTransparent}{hfwuBlue!15} % 15% transparent version
+
+% Uhoh colors
+\definecolor{uhohBlue}{RGB}{0, 65, 120}
+\definecolor{uhohSky}{RGB}{110, 170, 195}
+\definecolor{uhohBerry}{RGB}{115, 30, 90}
+\definecolor{uhohSand}{RGB}{195, 165, 50}
+\definecolor{uhohApple}{RGB}{175, 200, 10}
+\definecolor{uhohPine}{RGB}{75, 120, 45}
+\definecolor{uhohAnthracite}{RGB}{82, 82, 80}
+\definecolor{uhohLightGray}{RGB}{235, 242, 245}
+\definecolor{white}{RGB}{255, 255, 255}
+\definecolor{black}{RGB}{0, 0, 0}
+% Additional colors
+\definecolor{red_defined}{RGB}{153, 0, 0}
+\definecolor{blue_defined}{RGB}{153, 0, 153}
+\definecolor{green_defined}{RGB}{0, 153, 0}
+\definecolor{orange_defined}{RGB}{153, 153, 153}
+
+%..............................
+% GENERAL COLOR TEMPLATE
+
+% https://tex.stackexchange.com/questions/360307/beamer-change-header-background-color
+
+% \setbeamercolor{frametitle}{bg=uhohBlue, fg=white}
+\setbeamercolor{frametitle}{bg=hfwuBlue, fg=white}
+\setbeamercolor{normal text}{bg=white, fg=black}
+
+%................................................................................
+%	GRAPHICS
+
+% % graphic path
+% \graphicspath{{/home/rstudio/workspace/graphics}}
+
+%................................................................................
+%	TITLE PAGE
+
+\setbeamertemplate{title page}{
+  % Top part color box
+  \begin{beamercolorbox}[sep=8pt, center, wd=\paperwidth, ht=0.5\paperheight]{title page top}
+    \begin{beamercolorbox}[wd=0.9\paperwidth, sep=12pt, left]{top box}
+        {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+        \vskip0.2cm
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+    \end{beamercolorbox}
+  \end{beamercolorbox}
+  % Bottom part color box
+  \begin{beamercolorbox}[sep=8pt, center, wd=\paperwidth, ht=0.5\paperheight]{title page bottom}
+    \begin{beamercolorbox}[wd=0.9\paperwidth, sep=12pt, left]{bottom box}
+       \hbox{%
+        \hspace*{1em} % Add padding on the left
+        \begin{minipage}[c]{0.50\textwidth} % Adjusted width for title and subtitle
+          {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
+          \vskip0.2cm
+          {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}
+          \vskip0.8cm % Adjusted spacing
+          {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+        \end{minipage}%
+        \hspace*{0.5em} % Add controlled spacing between text and key visual
+        \begin{minipage}[c]{0.40\textwidth} % Adjusted width for key visual
+          % \includegraphics[height=3cm]{KeyVisual_NEGATIV.pdf}
+          \includegraphics[height=3cm]{HfWU_Logo_p_rgb.pdf}
+        \end{minipage}%
+      }
+    \end{beamercolorbox}
+  \end{beamercolorbox}
+}
+
+% Colors for title page
+\setbeamercolor{title page top}{bg=white}
+% \setbeamercolor{top box}{bg=uhohBlue}
+\setbeamercolor{top box}{bg=hfwuBlue}
+\setbeamercolor{title page bottom}{bg=white}
+% \setbeamercolor{bottom box}{bg=uhohLightGray}
+\setbeamercolor{bottom box}{bg=hfwuBlueTransparent}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{subtitle}{fg=white}
+\setbeamercolor{author}{fg=black}
+\setbeamercolor{institute}{fg=black}
+\setbeamercolor{date}{fg=black}
+
+%................................................................................
+%	FONT SIZE OF FRAME TITLE SUBTITLES
+
+% Change the font size of \frametitle
+\setbeamerfont{frametitle}{size=\Large}
+% Change the font size of \framesubtitle
+\setbeamerfont{framesubtitle}{size=\normalsize}
+
+%................................................................................
+%	EMPHASIZED TEXT
+
+% Redefine \emph to use this color
+% \setbeamercolor{emph}{fg=uhohBlue}
+\setbeamercolor{emph}{fg=uhohBlue}
+\renewcommand{\emph}[1]{{\usebeamercolor[fg]{emph}#1}}
+
+%................................................................................
+%	NOTES
+
+% See: https://gist.github.com/andrejbauer/ac361549ac2186be0cdb
+% \usepackage{pgfpages}
+\setbeameroption{hide notes} % Only slides
+% \setbeameroption{show only notes} % Only notes
+% \setbeameroption{show notes on second screen=right} % Both
+% \setbeameroption{show notes}
+
+%................................................................................
+%	DEFINITIONS,....
+% ... ??? ...
+\usepackage{xcolor}
+\usepackage{amsthm}
+
+\newtheorem{mydefinition}{Definition}
+\newtheorem{myassumption}{Assumption}
+\newtheorem{mylemma}{Lemma}
+
+%................................................................................
+%	ALERT BLOCKS,...
+
+\setbeamercolor{block title alerted}{fg=white, bg=hfwuBlue}
+\setbeamercolor{block body alerted}{fg=black, bg=hfwuBlueTransparent}
+\setbeamercolor{block alerted}{fg=black, bg=hfwuBlueTransparent}
+
+% Override default bullet colors inside alert blocks
+\setbeamercolor{item projected}{fg=black}
+\setbeamercolor{item}{fg=black}
+
+
+
+%................................................................................
+%	TITLE
+
+\title[ZA-ZUB-HfWU]{Zeitreihenanalyse}
+\subtitle{
+    \large{Kapitel 3) Weitere Themen zur Zeitreihenregression} \\
+    \small{Kapitel 3.2) Mehrperiodenprognosen}
+}
+
+\date{Sommer 2026}
+\author{
+Markus M\"o\ss{}ler \\
+\textit{\fontsize{6pt}{7.2pt}\selectfont markus.moessler@lb.hfwu.de}
+}
+\institute[HfWU]
+{
+Hochschule for Wirtschaft und Umwelt (HfWU) \\
+Zukunftsökonomie (B.Sc.)
+}
+
+
+
+%................................................................................
+%	REFERENCES
+
+% % \usepackage[longnamesfirst, round]{natbib} % Citation (see LaTex Template Tuebingen)
+% \usepackage[round]{natbib} % Citation (see LaTex Template Tuebingen)
+% \setcitestyle{maxcitenames=1} % name only first author (according to chatgpt)
+% % See: https://texblog.org/2013/08/20/rknitr-automatic-bibliography-generation-with-biblatex-in-rstudio/
+
+% \usepackage[backend=bibtex]{biblatex} % this does not work somehow!
+
+
+%................................................................................
+
+% \bibliographystyle{plainnat} % legt den Stil fuer das Inhaltsverzeichnis fest
+
+\usepackage[style=authoryear,backend=biber]{biblatex}
+\addbibresource{references.bib} % or your correct path
+
+% graphic path
+\graphicspath{{/home/rstudio/workspace/}{/home/rstudio/workspace/98-literatur}{/home/rstudio/workspace/assets/logos}}
+
+
+
+%................................................................................
+%	SET-UP FOR R
+
+
+
+
+
+
+
+%................................................................................
+%	BEGIN DOCUMENT
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+\section*{Einführung \& Motivation}
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Einführung \& Motivation}
+
+  Warum Mehrperiodenprognosen?
+
+  \begin{itemize}
+    \item Viele Entscheidungen erfordern Prognosen über mehrere Perioden:
+    \begin{itemize}
+      \item Konjunktur- und Inflationsprognosen
+      \item Unternehmensplanung und Budgetierung
+      \item Finanzmarkt- und Risikoprognosen
+    \end{itemize}
+
+    \item Einperiodenprognosen reichen dafür oft nicht aus.
+
+    \item Wie können wir Werte für $T+2$, $T+3$ oder noch weiter in der Zukunft prognostizieren?
+  \end{itemize}
+
+  % \vspace{0.5cm}
+
+  Zwei grundlegende Ansätze:
+
+  \begin{enumerate}
+    \item Iterierte Mehrperiodenprognosen
+    \item Direkte Mehrperiodenprognosen
+  \end{enumerate}
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+\section*{Iterative Mehrperiodenprognosen}
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Iterative Mehrperiodenprognosen \hfill (1/6)}
+
+  Einführung (generell)
+  
+  \begin{itemize}
+    \item Prognosen bisher: ein Schritt in die Zukunft.
+    \item Oft ist eine Prognose über mehrere Perioden notwendig.
+    \item Zwei Hauptmethoden:
+    \begin{itemize}
+      \item Iterative Prognosen
+      \item Direkte Prognosen
+    \end{itemize}
+    % \item Fokus: Iterative Mehrperiodenprognosen
+  \end{itemize}  
+
+  Grundidee der Iterativen Prognose
+  
+  \begin{itemize}
+    % \item Schrittweise Vorhersage: Jede Prognose baut auf den zuvor berechneten Prognosen auf.
+    \item Jede Prognose baut auf den zuvor berechneten Prognosen auf.
+    \item Beispiel: Prognose für $T+2$ verwendet Prognose für $T+1$.
+    \item Dieser Prozess wird so lange wiederholt, bis der gewünschte Horizont $h$ erreicht ist.
+  \end{itemize}  
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Iterative Mehrperiodenprognosen \hfill (2/6)}
+
+  Iterative AR(1)-Prognose
+  \[
+  \text{GDPGR}_t = 1.95 + 0.34 \cdot \text{GDPGR}_{t-1}
+  \]
+  
+  \vspace{-0.25cm}
+  
+  \begin{itemize}
+    \item Prognose für Q4 2017 mit Daten bis Q3 2017:
+    \[
+    \widehat{\text{GDPGR}}_{2017:Q4|2017:Q3} = 1.95 + 0.34 \cdot 3.11 = 3.0
+    \]
+    \item Prognose für Q1 2018:
+    \[
+    \widehat{\text{GDPGR}}_{2018:Q1|2017:Q3} = 1.95 + 0.34 \cdot 3.0 = 3.0
+    \]
+  \end{itemize}  
+
+  Iterative AR(p)-Prognose
+  \[
+  \text{GDPGR}_t = 1.60 + 0.28 \cdot \text{GDPGR}_{t-1} + 0.18 \cdot \text{GDPGR}_{t-2}
+  \]
+  
+  \vspace{-0.25cm}
+  
+  \begin{itemize}
+    \item Prognose für Q1 2018:
+    \[
+    % \widehat{\text{GDPGR}}_{2018:Q1|2017:Q3} = 1.60 + 0.28 \cdot 3.0 + 0.18 \cdot 3.1 = 3.0
+    \widehat{\text{GDPGR}}_{2018:Q1|2017:Q3} = 1.60 + 0.28 \cdot 3.01 + 0.18 \cdot 3.11 = 3.0
+    \]
+  \end{itemize}
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Iterative Mehrperiodenprognosen \hfill (3/6)}
+
+  % Visualisierung
+
+  \begin{center}
+    % trim= left bottom right top
+    \includegraphics[page=559, clip, trim=1.50cm 16.50cm 3.00cm 2.00cm, width=1.00\textwidth]{StockWatson_2020_IntroductionToEconometrics.pdf}
+  \end{center}
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Iterative Mehrperiodenprognosen \hfill (4/6)}
+
+  % Iterative VAR-Prognose}
+  %
+  % \begin{itemize}
+  %   \item Multivariat: Mehrere Variablen gleichzeitig (z.B. GDPGR, TSpread).
+  %   \item Prognose basiert auf vorhergesagten Werten aller Variablen.
+  %   \item Beispiel:
+  %   \begin{align*}
+  %   \hat{\text{GDPGR}}_{2018:Q1|2017:Q3} &= 0.54 + 0.29 \cdot 2.8 + 0.20 \cdot 3.1 \\
+  %   &\quad - 0.86 \cdot 1.3 + 1.28 \cdot 1.2 = 2.4
+  %   \end{align*}
+  % \end{itemize}
+
+  % Formeln für Iterative Prognosen
+
+  Univariat (AR(p)):
+  
+  \[
+  \widehat{Y}_{T+2|T} = \widehat{b}_0 + \widehat{b}_1 \widehat{Y}_{T+1|T} + \widehat{b}_2 Y_T + \ldots + \widehat{b}_p Y_{T-p+2}
+  \]
+
+  Multivariat (VAR(p)):
+  
+  \[
+  \widehat{Y}_{T+2|T} = \sum_{i=1}^{p} \widehat{A}_i Y_{T+2-i} + \sum_{i=1}^{p} \widehat{B}_i X_{T+2-i}
+  \]
+  
+  Alle Koeffizienten sind OLS-Schätzungen.
+  
+  % \begin{itemize}
+  %   \item Alle Koeffizienten sind OLS-Schätzungen.
+  % \end{itemize}
+
+  % Fazit
+  % 
+  % \begin{itemize}
+  %   \item Iterative Prognosen sind bei vielen Anwendungen zuverlässiger.
+  %   \item Bieten konsistente Methodik für AR- und VAR-Modelle.
+  %   \item Für längere Horizonte sind Genauigkeit und Annahmen kritisch.
+  % \end{itemize}
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Iterative Mehrperiodenprognosen \hfill (5/6)}
+
+  \metroset{block=fill}
+
+  \begin{alertblock}{Schlüsselkonzept: Iterative Mehrperiodenprognosen}
+
+  Die Iterative Mehrperiodenprognose mit einem AR-Modell wird schrittweise berechnet.
+  
+  Zuerst wird die Einperiodenprognose berechnet, anschließend daraus die Zweiperiodenprognose usw.
+  
+  Die Iterativen Zwei- und Dreiperiodenprognosen mit einem AR($p$)-Modell lauten:
+  
+  \vspace{-0.25cm}
+  
+  \begin{align*}
+  \widehat{Y}_{T+2|T} &= \widehat{\beta}_0 + \widehat{\beta}_1 \widehat{Y}_{T+1|T} + \widehat{\beta}_2 Y_T + \widehat{\beta}_3 Y_{T-1} + \cdots + \widehat{\beta}_p Y_{T-p+2} \\
+  \widehat{Y}_{T+3|T} &= \widehat{\beta}_0 + \widehat{\beta}_1 \widehat{Y}_{T+2|T} + \widehat{\beta}_2 \widehat{Y}_{T+1|T} + \widehat{\beta}_3 Y_T + \cdots + \widehat{\beta}_p Y_{T-p+3} \\
+  \cdots
+  \end{align*}
+  
+  \vspace{-0.25cm}
+  
+  Dabei sind die $\widehat{\beta}$ die OLS-Schätzwerte der AR($p$)-Koeffizienten.
+  
+	\end{alertblock}
+  
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Iterative Mehrperiodenprognosen \hfill (6/6)}
+
+  \metroset{block=fill}
+
+  \begin{alertblock}{Schlüsselkonzept: Iterative Mehrperiodenprognosen \hfill (cont.)}
+
+  Die Iterative Mehrperiodenprognose mit einem VAR-Modell erfolgt analog: %Zuerst werden Einperiodenprognosen für alle Variablen im VAR berechnet. Diese Prognosen dienen als Grundlage für die Zweiperiodenprognose usw.
+
+\begin{itemize}
+  \item Zuerst werden Einperiodenprognosen für alle Variablen im VAR berechnet.
+  \item Diese Prognosen dienen als Grundlage für die Zweiperiodenprognose usw.
+\end{itemize}
+
+  Iterative Zweiperiodenprognose für $Y_{T+2}$ aus einem VAR($p$)-Modell mit zwei Variablen:
+
+  \begin{align*}
+  \widehat{Y}_{T+2|T} = & \; \widehat{\beta}_{10} + \widehat{\beta}_{11} \widehat{Y}_{T+1|T} + \widehat{\beta}_{12} Y_T + \widehat{\beta}_{13} Y_{T-1} + \cdots + \widehat{\beta}_{1p} Y_{T-p+2} \\
+  & + \widehat{\gamma}_{11} \widehat{X}_{T+1|T} + \widehat{\gamma}_{12} X_T + \widehat{\gamma}_{13} X_{T-1} + \cdots + \widehat{\gamma}_{1p} X_{T-p+2}
+  \end{align*}
+
+  Auch hier werden für die Koeffizienten OLS-Schätzwerte verwendet.
+
+	\end{alertblock}
+  
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+\section*{Direkte Mehrperioden-Prognosen}
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Direkte Mehrperioden-Prognosen \hfill (1/2)}
+
+  Was sind direkte Mehrperioden-Prognosen?
+  
+  \begin{itemize}
+    \item Direkte Prognosen werden ohne Iteration berechnet.
+    \item Eine Regression schätzt direkt $Y_{T+h}$ mit verzögerten Regressoren.
+    \item Die Schätzkoeffizienten können sofort für die Prognose verwendet werden.
+  \end{itemize}  
+
+  Beispiel: Direkte Zwei-Perioden-Prognose
+  
+  \vspace{-0.50cm}
+  
+  \begin{align*}
+    \text{GDPGR}_{t|t-2} &= 0{,}56 + 0{,}31 \cdot \text{GDPGR}_{t-2} + 0{,}04 \cdot \text{GDPGR}_{t-3} \\
+    &+ 0{,}56 \cdot \text{TSpread}_{t-2} + 0{,}04 \cdot \text{TSpread}_{t-3}
+  \end{align*}
+
+  \vspace{-0.25cm}
+
+  \begin{itemize}
+    \item Prognose für 2018:Q1 basierend auf 2017:Q3 ergibt ca. 2{,}4\%.
+  \end{itemize}
+
+  Wichtig
+  
+  \begin{itemize}
+    % \item Mehrperioden-Fehler sind seriell korreliert.
+    \item Bei $h$-Schritt-Prognosen überlappen sich die Prognosefehler.
+    \item Dadurch entstehen serielle Korrelationen der Fehlerterme.
+    \item $\Rightarrow$ Verwende Newey-West HAC-Standardfehler.
+  \end{itemize}  
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+% %..............................................................................
+% \begin{frame}
+%   \frametitle{Direkte Mehrperioden-Prognosen \hfill (2/X)}
+% 
+%   Allgemeine Form der direkten Prognose
+%   
+%   \begin{align*}
+%     Y_t = d_0 + \sum_{i=1}^{p} d_i Y_{t-h-i+1} + \sum_{j=0}^{p} d_{p+j+1} X_{t-h-j} + u_t
+%   \end{align*}
+%   
+%   \begin{itemize}
+%     \item $h$: Prognosehorizont
+%     \item $p$: Anzahl der Verzögerungen
+%   \end{itemize} 
+%   
+%   Iterative Prognosen – Zum Vergleich
+%   
+%   \begin{itemize}
+%     \item Prognose in mehreren Schritten:
+%     \begin{enumerate}
+%       \item Schätzung der Ein-Perioden-Vorhersage
+%       \item Nutzung dieser für die Zwei-Perioden-Prognose usw.
+%     \end{enumerate}
+%     \item Gleiches Vorgehen für AR(p) und VAR(p)
+%   \end{itemize}  
+% 
+% \end{frame}
+% % Notes
+% \setbeamerfont{note page}{size=\small}
+% \note[itemize]{
+%   \item ...
+% }
+% %..............................................................................
+
+
+
+% %..............................................................................
+% \begin{frame}
+%   \frametitle{Direkte Mehrperioden-Prognosen \hfill (3/X)}
+% 
+%   HAC-Standardfehler bei direkter Prognose
+%   
+%   \begin{itemize}
+%     \item Mehrperioden-Fehler sind seriell korreliert.
+%     \item $\Rightarrow$ Verwende Newey-West HAC-Standardfehler.
+%     \item Trunkierungsparameter $m$ gemäß:
+%     \[
+%     m = \lfloor 4(T/100)^{2/9} \rfloor \quad \text{(Beispiel: $T=147 \Rightarrow m=4$)}
+%     \]
+%   \end{itemize}  
+% 
+% \end{frame}
+% % Notes
+% \setbeamerfont{note page}{size=\small}
+% \note[itemize]{
+%   \item ...
+% }
+% %..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Direkte Mehrperioden-Prognosen \hfill (2/2)}
+
+  \metroset{block=fill}
+
+  \begin{alertblock}{Schl\"usselkonzept: Direkte Mehrperioden-Prognosen}
+
+  Die direkte Mehrperioden-Prognose $h$ Perioden in die Zukunft basierend auf $p$ Verzögerungen von $Y_t$ und einem zusätzlichen Prädiktor $X_t$ erfolgt durch die Schätzung der folgenden Regression:
+
+  \[
+  Y_t = \delta_0 + \delta_1 Y_{t-h} + \cdots + \delta_p Y_{t-p-h+1} + \delta_{p+1} X_{t-h}
+  + \cdots + \delta_{2p} X_{t-p-h+1} + u_t
+  \]
+  
+  und anschließend durch direkte Verwendung der geschätzten Koeffizienten zur Prognose von $Y_{T+h}$ mit Daten bis zur Periode $T$.
+  
+	\end{alertblock}
+  
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Welche Methode sollten Sie verwenden? \hfill (1/2)}
+
+  Zwei Methoden zur Mehrperiodenprognose
+  
+  1. Iterative Methode:
+  \begin{itemize}
+    \item Prognose durch wiederholte Anwendung des Ein-Perioden-Modells (z.B. AR oder VAR).
+    \item Verwendung desselben Modells für jede Prognosehorizont.
+  \end{itemize}
+  
+  2. Direkte Methode:
+  \begin{itemize}
+    \item Direkte Schätzung eines Modells für die Prognose $h$ Perioden im Voraus.
+    \item Unterschiedliches Modell für jeden Prognosehorizont.
+  \end{itemize}  
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Welche Methode sollten Sie verwenden? \hfill (2/2)}
+
+  Warum meistens die iterative Methode?
+  
+  \begin{itemize}
+    \item Theoretisch effizienter: Wenn das Ein-Perioden-Modell korrekt spezifiziert ist, liefert die iterative Methode effizientere Schätzungen.
+    \item Praktisch stabiler: Die Verwendung desselben Modells für verschiedene Prognosehorizonte führt zu konsistenteren Prognosepfaden.
+    \item Weniger Zufallsschwankungen: Direkte Methode führt durch Schätzfehler eher zu unruhigen Prognoseverläufen.
+  \end{itemize}
+  
+  Wann ist die direkte Methode besser?
+  
+  \begin{itemize}
+    \item Wenn das Ein-Perioden-Modell nicht korrekt spezifiziert ist.
+    % \item Beispiel: Falsche Spezifikation eines oder mehrerer Gleichungen in einem VAR-Modell (z.B. vernachlässigte Nichtlinearitäten).
+    \item Folge: Iterative Methode kann verzerrte und ineffiziente Prognosen liefern.
+    \item Direkte Methode hat in solchen Fällen potenziell geringeren mittleren quadratischen Prognosefehler (MSFE).
+  \end{itemize}  
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+% %..............................................................................
+% \begin{frame}
+%   \frametitle{Welche Methode sollten Sie verwenden? \hfill (3/X)}
+% 
+%   Zusammenfassung
+%   
+%   \begin{itemize}
+%     \item Iterative Methode ist meist bevorzugt – effizient und stabil.
+%     \item Direkte Methode bei Modellunsicherheit vorteilhaft.
+%     \item Wahl der Methode hängt von Modellspezifikation und Ziel der Prognose ab.
+%   \end{itemize}  
+% 
+% \end{frame}
+% % Notes
+% \setbeamerfont{note page}{size=\small}
+% \note[itemize]{
+%   \item ...
+% }
+% %..............................................................................
+
+
+
+\section*{Fazit}
+
+
+
+%..............................................................................
+\begin{frame}
+  \frametitle{Fazit}
+
+  \begin{itemize}
+    \item Mehrperiodenprognosen ermöglichen Vorhersagen mehrere Schritte in die Zukunft.
+
+    \item Iterierte Prognosen verwenden ein Einperiodenmodell wiederholt und bauen auf vorherigen Prognosen auf.
+
+    \item Direkte Prognosen schätzen den gewünschten Prognosehorizont unmittelbar.
+
+    \item In den meisten Anwendungen werden iterierte Prognosen bevorzugt.
+
+    \item Direkte Prognosen können vorteilhaft sein, wenn das Einperiodenmodell fehlspezifiziert ist.
+  \end{itemize}
+
+\end{frame}
+% Notes
+\setbeamerfont{note page}{size=\small}
+\note[itemize]{
+  \item ...
+}
+%..............................................................................
+
+
+
+% \begin{frame}[allowframebreaks]{References}
+% 
+%   \bibliography{bibliography}
+%   \bibliographystyle{abbrv}
+% 
+% \end{frame}
+
+
+
+\end{document}
